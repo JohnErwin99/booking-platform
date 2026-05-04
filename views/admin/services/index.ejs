@@ -1,0 +1,48 @@
+<div class="toolbar">
+  <a href="/admin/services/new" class="btn btn-primary">+ Add Service</a>
+  <span class="text-muted"><%= serviceCount %> service<%= serviceCount !== 1 ? 's' : '' %></span>
+</div>
+
+<% if (serviceCount === 0) { %>
+  <div class="empty-state">
+    <p>No services yet. Add your first service to start accepting bookings.</p>
+  </div>
+<% } %>
+
+<% Object.entries(categories).forEach(([catName, services]) => { %>
+  <div class="section">
+    <h2 class="section-title"><%= catName %></h2>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Duration</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% services.forEach(s => { %>
+            <tr>
+              <td>
+                <strong><%= s.name %></strong>
+                <% if (s.description) { %><br><small class="text-muted"><%= s.description %></small><% } %>
+              </td>
+              <td><%= s.duration_minutes %> min</td>
+              <td><%= helpers.formatPrice(s.price_cents) %></td>
+              <td><span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span></td>
+              <td>
+                <a href="/admin/services/<%= s.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                <form method="POST" action="/admin/services/<%= s.id %>/delete" style="display:inline">
+                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this service?')">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% }) %>

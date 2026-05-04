@@ -1,0 +1,69 @@
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-number"><%= stats.today %></div>
+    <div class="stat-label">Today's Bookings</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number"><%= stats.thisWeek %></div>
+    <div class="stat-label">This Week</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number"><%= stats.total %></div>
+    <div class="stat-label">Total Bookings</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number"><%= stats.staffCount %></div>
+    <div class="stat-label">Active Staff</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number"><%= stats.customerCount %></div>
+    <div class="stat-label">Total Customers</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Upcoming Bookings</h2>
+  <% if (recentBookings.length === 0) { %>
+    <div class="empty-state">
+      <p>No upcoming bookings. Share your booking page to get started!</p>
+      <a href="/book/<%= tenant ? tenant.slug : user.tenant_slug %>" target="_blank" class="btn btn-primary">View Booking Page</a>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Staff</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentBookings.forEach(b => { %>
+            <tr>
+              <td><%= b.booking_date %></td>
+              <td><%= b.start_time %></td>
+              <td><%= b.customer_name %></td>
+              <td><%= b.service_name %></td>
+              <td><%= b.staff_name %></td>
+              <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<div class="quick-actions">
+  <h2 class="section-title">Quick Actions</h2>
+  <div class="actions-grid">
+    <a href="/admin/bookings" class="action-card">View All Bookings</a>
+    <a href="/admin/staff/new" class="action-card">Add Staff Member</a>
+    <a href="/admin/services/new" class="action-card">Add Service</a>
+    <a href="/admin/settings" class="action-card">Settings</a>
+  </div>
+</div>

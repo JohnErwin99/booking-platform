@@ -1,0 +1,206 @@
+<div class="settings-tabs" x-data="{ tab: 'branding' }">
+  <div class="tab-nav">
+    <button @click="tab = 'branding'" :class="{ active: tab === 'branding' }" class="tab-btn">Branding</button>
+    <button @click="tab = 'policies'" :class="{ active: tab === 'policies' }" class="tab-btn">Policies</button>
+    <button @click="tab = 'hours'" :class="{ active: tab === 'hours' }" class="tab-btn">Business Hours</button>
+    <button @click="tab = 'widget'" :class="{ active: tab === 'widget' }" class="tab-btn">Widget</button>
+  </div>
+
+  <!-- Branding Tab -->
+  <div x-show="tab === 'branding'" class="tab-content">
+    <form method="POST" action="/admin/settings/branding" class="settings-form">
+      <div class="form-group">
+        <label>Business Name</label>
+        <input type="text" name="name" value="<%= tenant.name %>" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Primary Color</label>
+          <input type="color" name="primary_color" value="<%= tenant.primary_color %>">
+        </div>
+        <div class="form-group">
+          <label>Secondary Color</label>
+          <input type="color" name="secondary_color" value="<%= tenant.secondary_color %>">
+        </div>
+        <div class="form-group">
+          <label>Accent Color</label>
+          <input type="color" name="accent_color" value="<%= tenant.accent_color %>">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Heading Font</label>
+          <input type="text" name="font_heading" value="<%= tenant.font_heading %>">
+        </div>
+        <div class="form-group">
+          <label>Body Font</label>
+          <input type="text" name="font_body" value="<%= tenant.font_body %>">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Timezone</label>
+          <input type="text" name="timezone" value="<%= tenant.timezone %>" placeholder="America/New_York">
+        </div>
+        <div class="form-group">
+          <label>Currency</label>
+          <select name="currency">
+            <option value="USD" <%= tenant.currency === 'USD' ? 'selected' : '' %>>USD</option>
+            <option value="EUR" <%= tenant.currency === 'EUR' ? 'selected' : '' %>>EUR</option>
+            <option value="GBP" <%= tenant.currency === 'GBP' ? 'selected' : '' %>>GBP</option>
+            <option value="CAD" <%= tenant.currency === 'CAD' ? 'selected' : '' %>>CAD</option>
+            <option value="AUD" <%= tenant.currency === 'AUD' ? 'selected' : '' %>>AUD</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Branding</button>
+    </form>
+  </div>
+
+  <!-- Policies Tab -->
+  <div x-show="tab === 'policies'" class="tab-content">
+    <form method="POST" action="/admin/settings/policies" class="settings-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cancellation Window (hours before appointment)</label>
+          <input type="number" name="cancellation_hours" value="<%= tenant.cancellation_hours %>" min="0">
+        </div>
+        <div class="form-group">
+          <label>Reschedule Window (hours before)</label>
+          <input type="number" name="reschedule_hours" value="<%= tenant.reschedule_hours %>" min="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>No-Show Fee ($)</label>
+        <input type="number" name="no_show_fee" value="<%= (tenant.no_show_fee_cents / 100).toFixed(2) %>" min="0" step="0.01">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Deposit Type</label>
+          <select name="deposit_type">
+            <option value="none" <%= tenant.deposit_type === 'none' ? 'selected' : '' %>>No Deposit</option>
+            <option value="percentage" <%= tenant.deposit_type === 'percentage' ? 'selected' : '' %>>Percentage</option>
+            <option value="fixed" <%= tenant.deposit_type === 'fixed' ? 'selected' : '' %>>Fixed Amount</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Deposit Value</label>
+          <input type="number" name="deposit_value" value="<%= tenant.deposit_value %>" min="0" step="0.01">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Policies</button>
+    </form>
+  </div>
+
+  <!-- Hours Tab -->
+  <div x-show="tab === 'hours'" class="tab-content">
+    <p class="text-muted">Set business hours for your default location. Staff-specific overrides can be set on each staff member's page.</p>
+    <form method="POST" action="/admin/settings/hours" class="settings-form" x-data="hoursEditor()">
+      <input type="hidden" name="location_id" value="<%= locations.length ? locations.find(l => l.is_default)?.id || locations[0].id : '' %>">
+      <input type="hidden" name="hours" :value="JSON.stringify(hours)">
+
+      <% const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; %>
+      <% for (let d = 0; d < 7; d++) { %>
+        <% const existing = businessHours.find(h => h.weekday === d); %>
+        <div class="hours-row">
+          <label class="day-label"><%= dayNames[d] %></label>
+          <label class="toggle-label">
+            <input type="checkbox"
+              :checked="!hours[<%= d %>].closed"
+              @change="hours[<%= d %>].closed = !$event.target.checked">
+            Open
+          </label>
+          <template x-if="!hours[<%= d %>].closed">
+            <div class="time-inputs">
+              <input type="time" x-model="hours[<%= d %>].open_at">
+              <span>to</span>
+              <input type="time" x-model="hours[<%= d %>].close_at">
+              <span class="break-label">Break:</span>
+              <input type="time" x-model="hours[<%= d %>].break_start" placeholder="Break start">
+              <span>to</span>
+              <input type="time" x-model="hours[<%= d %>].break_end" placeholder="Break end">
+            </div>
+          </template>
+        </div>
+      <% } %>
+      <button type="submit" class="btn btn-primary">Save Hours</button>
+    </form>
+  </div>
+
+  <!-- Widget Tab -->
+  <div x-show="tab === 'widget'" class="tab-content">
+    <h3 style="margin-bottom:8px">Embed Booking Widget</h3>
+    <p class="text-muted" style="margin-bottom:24px">Add the Bookwize booking widget to any website. Choose a mode below and copy the code snippet.</p>
+
+    <div class="form-group">
+      <label>Your Booking Page Link</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" readonly value="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/book/<%= tenant.slug %>" id="bookingLink" style="flex:1">
+        <button type="button" class="btn btn-outline" onclick="copySnippet('bookingLink')">Copy</button>
+      </div>
+    </div>
+
+    <hr style="margin:28px 0;border:none;border-top:1px solid #eee">
+
+    <h4 style="margin-bottom:12px">Option 1: Popup Button</h4>
+    <p class="text-muted" style="margin-bottom:12px">Adds a "Book Now" button that opens the booking wizard in a popup modal. Best for headers, nav bars, or call-to-action sections.</p>
+    <div class="form-group">
+      <label>Snippet</label>
+      <textarea readonly rows="4" id="popupSnippet" class="code-snippet" style="font-family:monospace;font-size:.82rem;background:#f8f8f8;border-radius:8px;padding:12px"><script src="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/js/bookwize-widget.js" data-slug="<%= tenant.slug %>" data-mode="popup" data-button-text="Book Now" data-button-color="<%= tenant.primary_color %>"><%= '' %></script></textarea>
+      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('popupSnippet')">Copy Snippet</button>
+    </div>
+
+    <hr style="margin:28px 0;border:none;border-top:1px solid #eee">
+
+    <h4 style="margin-bottom:12px">Option 2: Inline Widget</h4>
+    <p class="text-muted" style="margin-bottom:12px">Embeds the full booking flow directly into your page. Best for dedicated booking pages.</p>
+    <div class="form-group">
+      <label>Snippet</label>
+      <textarea readonly rows="5" id="inlineSnippet" class="code-snippet" style="font-family:monospace;font-size:.82rem;background:#f8f8f8;border-radius:8px;padding:12px"><div id="bookwize-widget"></div>
+<script src="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/js/bookwize-widget.js" data-slug="<%= tenant.slug %>" data-mode="inline" data-container="bookwize-widget"><%= '' %></script></textarea>
+      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('inlineSnippet')">Copy Snippet</button>
+    </div>
+
+    <hr style="margin:28px 0;border:none;border-top:1px solid #eee">
+
+    <h4 style="margin-bottom:12px">Option 3: Direct iFrame</h4>
+    <p class="text-muted" style="margin-bottom:12px">For maximum control, embed the booking page directly as an iframe.</p>
+    <div class="form-group">
+      <label>Snippet</label>
+      <textarea readonly rows="3" id="iframeSnippet" class="code-snippet" style="font-family:monospace;font-size:.82rem;background:#f8f8f8;border-radius:8px;padding:12px"><iframe src="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/book/<%= tenant.slug %>/embed" width="100%" height="700" style="border:none;border-radius:12px" title="Book with <%= tenant.name %>"></iframe></textarea>
+      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('iframeSnippet')">Copy Snippet</button>
+    </div>
+
+    <script>
+      function copySnippet(id) {
+        const el = document.getElementById(id);
+        el.select();
+        document.execCommand('copy');
+        const btn = el.parentElement.querySelector('.btn');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = orig, 2000);
+      }
+    </script>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
+<script>
+function hoursEditor() {
+  return {
+    hours: {
+      <% for (let d = 0; d < 7; d++) { %>
+        <% const existing = businessHours.find(h => h.weekday === d); %>
+        <%= d %>: {
+          closed: <%= existing ? 'false' : 'true' %>,
+          open_at: '<%= existing ? existing.open_at : '09:00' %>',
+          close_at: '<%= existing ? existing.close_at : '18:00' %>',
+          break_start: '<%= existing && existing.break_start ? existing.break_start : '' %>',
+          break_end: '<%= existing && existing.break_end ? existing.break_end : '' %>'
+        },
+      <% } %>
+    }
+  };
+}
+</script>

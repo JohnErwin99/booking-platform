@@ -1,0 +1,42 @@
+{
+  "name": "booking-platform",
+  "version": "1.0.0",
+  "description": "White-label booking platform for service businesses",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "seed": "knex seed:run",
+    "setup": "knex migrate:latest && knex seed:run"
+  },
+  "keywords": [
+    "booking",
+    "scheduling",
+    "white-label",
+    "saas"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "connect-flash": "^0.1.1",
+    "connect-session-knex": "^5.0.0",
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.19.0",
+    "jsonwebtoken": "^9.0.3",
+    "knex": "^3.2.10",
+    "multer": "^2.1.1",
+    "mysql2": "^3.22.3",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.7",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "stripe": "^22.1.0"
+  }
+}

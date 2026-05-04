@@ -1,0 +1,68 @@
+<div class="toolbar">
+  <form method="GET" action="/admin/bookings" class="filters-form">
+    <input type="date" name="from" value="<%= filters.from || '' %>" placeholder="From">
+    <input type="date" name="to" value="<%= filters.to || '' %>" placeholder="To">
+    <select name="staff_id">
+      <option value="">All Staff</option>
+      <% staffList.forEach(s => { %>
+        <option value="<%= s.id %>" <%= filters.staff_id == s.id ? 'selected' : '' %>><%= s.first_name %> <%= s.last_name %></option>
+      <% }) %>
+    </select>
+    <select name="status">
+      <option value="">All Status</option>
+      <option value="confirmed" <%= filters.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+      <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Completed</option>
+      <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+      <option value="no_show" <%= filters.status === 'no_show' ? 'selected' : '' %>>No Show</option>
+    </select>
+    <button type="submit" class="btn btn-secondary">Filter</button>
+    <a href="/admin/bookings" class="btn btn-ghost">Clear</a>
+  </form>
+</div>
+
+<div class="table-responsive">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Customer</th>
+        <th>Service</th>
+        <th>Staff</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (bookings.length === 0) { %>
+        <tr><td colspan="7" class="text-center">No bookings found.</td></tr>
+      <% } %>
+      <% bookings.forEach(b => { %>
+        <tr>
+          <td><%= b.booking_date %></td>
+          <td><%= helpers.formatTimeLabel(b.start_time) %></td>
+          <td>
+            <strong><%= b.customer_name %></strong>
+            <br><small class="text-muted"><%= b.customer_email %></small>
+          </td>
+          <td><%= b.service_name %></td>
+          <td><%= b.staff_name %></td>
+          <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
+          <td class="actions">
+            <% if (b.status === 'confirmed') { %>
+              <form method="POST" action="/admin/bookings/<%= b.id %>/complete" style="display:inline">
+                <button type="submit" class="btn btn-sm btn-success" title="Mark complete">Done</button>
+              </form>
+              <form method="POST" action="/admin/bookings/<%= b.id %>/cancel" style="display:inline">
+                <button type="submit" class="btn btn-sm btn-danger" title="Cancel" onclick="return confirm('Cancel this booking?')">Cancel</button>
+              </form>
+              <form method="POST" action="/admin/bookings/<%= b.id %>/no-show" style="display:inline">
+                <button type="submit" class="btn btn-sm btn-warning" title="No show">No Show</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

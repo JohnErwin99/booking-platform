@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    body { background: #f0f2f5; }
+    .sa-container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .sa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .sa-header h1 { font-size: 1.8rem; color: #1a1a2e; }
+    .sa-nav { display: flex; gap: 1rem; align-items: center; }
+  </style>
+</head>
+<body>
+  <div class="sa-container">
+    <div class="sa-header">
+      <h1>Tenant Management</h1>
+      <div class="sa-nav">
+        <a href="/superadmin/tenants/new" class="btn btn-primary">+ New Tenant</a>
+        <a href="/superadmin/logout" class="btn btn-ghost">Logout</a>
+      </div>
+    </div>
+
+    <%- include('../partials/flash') %>
+
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Business</th>
+            <th>Slug</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Bookings</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (tenants.length === 0) { %>
+            <tr><td colspan="7" class="text-center">No tenants yet. Create your first client!</td></tr>
+          <% } %>
+          <% tenants.forEach(t => { %>
+            <tr>
+              <td><strong><%= t.name %></strong></td>
+              <td><code><%= t.slug %></code></td>
+              <td><%= t.email %></td>
+              <td><span class="badge badge-<%= t.status === 'active' ? 'confirmed' : t.status === 'suspended' ? 'cancelled' : 'no_show' %>"><%= t.status %></span></td>
+              <td><%= countMap[t.id] || 0 %></td>
+              <td><%= new Date(t.created_at).toLocaleDateString() %></td>
+              <td>
+                <a href="/superadmin/tenants/<%= t.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="/book/<%= t.slug %>" target="_blank" class="btn btn-sm btn-ghost">View</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

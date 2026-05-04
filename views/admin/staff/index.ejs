@@ -1,0 +1,38 @@
+<div class="toolbar">
+  <a href="/admin/staff/new" class="btn btn-primary">+ Add Staff</a>
+</div>
+
+<div class="cards-grid">
+  <% if (staffList.length === 0) { %>
+    <div class="empty-state">
+      <p>No staff members yet. Add your first staff member to get started.</p>
+    </div>
+  <% } %>
+  <% staffList.forEach(s => { %>
+    <div class="staff-card">
+      <div class="staff-card-header">
+        <div class="staff-avatar">
+          <% if (s.photo_url) { %>
+            <img src="<%= s.photo_url %>" alt="<%= s.first_name %>">
+          <% } else { %>
+            <span class="avatar-initials"><%= s.first_name[0] %><%= s.last_name[0] %></span>
+          <% } %>
+        </div>
+        <div class="staff-info">
+          <h3><%= s.display_name || (s.first_name + ' ' + s.last_name) %></h3>
+          <% if (s.title) { %><span class="text-muted"><%= s.title %></span><% } %>
+        </div>
+      </div>
+      <div class="staff-card-body">
+        <div class="staff-meta">
+          <span><%= serviceCountMap[s.id] || 0 %> services</span>
+          <% if (s.location_name) { %><span><%= s.location_name %></span><% } %>
+          <span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span>
+        </div>
+      </div>
+      <div class="staff-card-footer">
+        <a href="/admin/staff/<%= s.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+      </div>
+    </div>
+  <% }) %>
+</div>

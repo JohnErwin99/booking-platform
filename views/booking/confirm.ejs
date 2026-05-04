@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed - <%= tenant.name %></title>
+  <link rel="stylesheet" href="/css/booking.css">
+  <style>
+    :root {
+      --primary: <%= tenant.primary_color %>;
+      --secondary: <%= tenant.secondary_color %>;
+      --accent: <%= tenant.accent_color %>;
+    }
+  </style>
+</head>
+<body>
+  <div class="booking-container">
+    <header class="booking-header">
+      <h1 class="booking-title"><%= tenant.name %></h1>
+    </header>
+    <div class="step success-step">
+      <div class="success-icon">&#10003;</div>
+      <h2>Booking Confirmed!</h2>
+      <div class="booking-summary">
+        <div class="summary-row"><span>Service:</span><span><%= booking.service_name %></span></div>
+        <div class="summary-row"><span>With:</span><span><%= booking.staff_name %></span></div>
+        <div class="summary-row"><span>Date:</span><span><%= booking.booking_date %></span></div>
+        <div class="summary-row"><span>Time:</span><span><%= booking.start_time %></span></div>
+        <div class="summary-row"><span>Status:</span><span class="badge badge-<%= booking.status %>"><%= booking.status %></span></div>
+      </div>
+      <a href="/book/<%= tenant.slug %>" class="btn btn-primary">Book Another Appointment</a>
+    </div>
+  </div>
+</body>
+</html>

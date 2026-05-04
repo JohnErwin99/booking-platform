@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Booking - <%= tenant.name %></title>
+  <link rel="stylesheet" href="/css/booking.css">
+  <style>
+    :root {
+      --primary: <%= tenant.primary_color %>;
+      --secondary: <%= tenant.secondary_color %>;
+      --accent: <%= tenant.accent_color %>;
+    }
+    .manage-card{background:#fff;border-radius:16px;padding:32px;max-width:480px;margin:0 auto;box-shadow:0 4px 24px rgba(0,0,0,.06)}
+    .manage-title{font-size:1.25rem;font-weight:700;margin-bottom:24px;text-align:center}
+    .manage-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f0;font-size:.95rem}
+    .manage-row:last-child{border-bottom:none}
+    .manage-row span:first-child{color:#888;font-weight:500}
+    .manage-row span:last-child{font-weight:600;color:#1a1a2e}
+    .badge{display:inline-block;padding:4px 12px;border-radius:100px;font-size:.78rem;font-weight:600;text-transform:capitalize}
+    .badge-confirmed{background:#e8f5e9;color:#2e7d32}
+    .badge-cancelled{background:#fce4ec;color:#c62828}
+    .manage-actions{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:10px;font-weight:600;font-size:.9rem;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{opacity:.9}
+    .btn-danger{background:#fff;color:#c62828;border:2px solid #c62828}
+    .btn-danger:hover{background:#c62828;color:#fff}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .cancelled-note{text-align:center;color:#c62828;font-weight:600;font-size:.9rem;margin-top:16px}
+  </style>
+</head>
+<body>
+  <div class="booking-container">
+    <header class="booking-header">
+      <h1 class="booking-title"><%= tenant.name %></h1>
+    </header>
+    <div class="manage-card">
+      <div class="manage-title">Your Booking</div>
+      <div class="manage-row"><span>Service</span><span><%= booking.service_name %></span></div>
+      <div class="manage-row"><span>With</span><span><%= booking.staff_name %></span></div>
+      <div class="manage-row"><span>Date</span><span><%= booking.booking_date instanceof Date ? booking.booking_date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : booking.booking_date %></span></div>
+      <div class="manage-row"><span>Time</span><span><%= booking.start_time %></span></div>
+      <div class="manage-row"><span>Status</span><span class="badge badge-<%= booking.status %>"><%= booking.status %></span></div>
+      <div class="manage-actions">
+        <a href="/book/<%= tenant.slug %>" class="btn btn-primary">Book Another Appointment</a>
+        <% if (booking.status === 'confirmed') { %>
+          <button class="btn btn-danger" id="cancelBtn" onclick="cancelBooking()">Cancel Booking</button>
+        <% } else if (booking.status === 'cancelled') { %>
+          <p class="cancelled-note">This booking has been cancelled.</p>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <script>
+    function cancelBooking() {
+      if (!confirm('Are you sure you want to cancel this booking?')) return;
+      const btn = document.getElementById('cancelBtn');
+      btn.textContent = 'Cancelling...';
+      btn.disabled = true;
+      fetch('/book/<%= tenant.slug %>/cancel/<%= booking.manage_token %>', { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert(data.message || 'Could not cancel booking.');
+            btn.textContent = 'Cancel Booking';
+            btn.disabled = false;
+          }
+        })
+        .catch(() => {
+          alert('Connection error. Please try again.');
+          btn.textContent = 'Cancel Booking';
+          btn.disabled = false;
+        });
+    }
+  </script>
+</body>
+</html>

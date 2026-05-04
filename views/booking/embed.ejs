@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book - <%= tenant.name %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=<%= encodeURIComponent(tenant.font_heading) %>:wght@400;600;700&family=<%= encodeURIComponent(tenant.font_body) %>:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/booking.css">
+  <style>
+    :root {
+      --primary: <%= tenant.primary_color %>;
+      --secondary: <%= tenant.secondary_color %>;
+      --accent: <%= tenant.accent_color %>;
+      --font-heading: '<%= tenant.font_heading %>', serif;
+      --font-body: '<%= tenant.font_body %>', sans-serif;
+    }
+    /* Iframe overrides — tighter spacing, no extra margins */
+    html, body { margin: 0; padding: 0; background: #fff; }
+    .booking-container { max-width: 100%; margin: 0; padding: 16px; box-shadow: none; border-radius: 0; }
+    .booking-header { padding: 8px 0 12px; }
+    .booking-title { font-size: 1.15rem; }
+    .booking-subtitle { font-size: .85rem; margin-bottom: 0; }
+    .progress-bar { margin-bottom: 16px; }
+    .step-title { font-size: 1rem; margin-bottom: 12px; }
+    .staff-grid { gap: 8px; }
+    .staff-card { padding: 12px; }
+    .service-item { padding: 12px; }
+    .booking-summary { padding: 12px; }
+    .btn-book { width: 100%; }
+  </style>
+</head>
+<body>
+  <div class="booking-container" x-data="bookingWizard()" x-cloak>
+    <!-- Header -->
+    <header class="booking-header">
+      <% if (tenant.logo_url) { %>
+        <img src="<%= tenant.logo_url %>" alt="<%= tenant.name %>" class="booking-logo">
+      <% } %>
+      <h1 class="booking-title"><%= tenant.name %></h1>
+      <p class="booking-subtitle">Book your appointment</p>
+    </header>
+
+    <!-- Progress -->
+    <div class="progress-bar">
+      <template x-for="(label, i) in stepLabels" :key="i">
+        <div class="progress-step" :class="{ active: step > i, current: step === i + 1 }">
+          <div class="step-dot" x-text="i + 1"></div>
+          <span class="step-label" x-text="label"></span>
+        </div>
+      </template>
+    </div>
+
+    <!-- Step 1: Staff Selection -->
+    <div x-show="step === 1" class="step">
+      <h2 class="step-title">Choose your professional</h2>
+      <div class="staff-grid">
+        <% staff.forEach(s => { %>
+          <div class="staff-card" @click="selectStaff(<%= s.id %>, '<%= (s.display_name || s.first_name + ' ' + s.last_name).replace(/'/g, "\\'") %>')"
+               :class="{ selected: staffId === <%= s.id %> }">
+            <div class="staff-avatar-lg">
+              <% if (s.photo_url) { %>
+                <img src="<%= s.photo_url %>" alt="<%= s.first_name %>">
+              <% } else { %>
+                <span><%= s.first_name[0] %><%= s.last_name[0] %></span>
+              <% } %>
+            </div>
+            <h3><%= s.display_name || (s.first_name + ' ' + s.last_name) %></h3>
+            <% if (s.title) { %><p class="staff-title"><%= s.title %></p><% } %>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Step 2: Service Selection -->
+    <div x-show="step === 2" class="step">
+      <h2 class="step-title">Select a service</h2>
+      <div class="service-list">
+        <% services.forEach(s => { %>
+          <div class="service-item"
+               @click="selectService(<%= s.id %>, '<%= s.name.replace(/'/g, "\\'") %>', <%= s.duration_minutes %>, <%= s.price_cents %>)"
+               :class="{ selected: serviceId === <%= s.id %> }"
+               data-staff-services="<%= JSON.stringify(staffServices.filter(ss => ss.service_id === s.id).map(ss => ss.staff_id)) %>">
+            <div class="service-info">
+              <h3><%= s.name %></h3>
+              <% if (s.description) { %><p><%= s.description %></p><% } %>
+            </div>
+            <div class="service-meta">
+              <span class="service-duration"><%= s.duration_minutes %> min</span>
+              <span class="service-price"><%= helpers.formatPrice(s.price_cents) %></span>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <button @click="step = 1" class="btn btn-back">Back</button>
+    </div>
+
+    <!-- Step 3: Date & Time -->
+    <div x-show="step === 3" class="step">
+      <h2 class="step-title">Pick a date & time</h2>
+      <div class="datetime-picker">
+        <div class="calendar-section">
+          <div class="calendar-header">
+            <button @click="changeMonth(-1)" class="cal-nav">&lt;</button>
+            <span class="cal-month" x-text="monthLabel"></span>
+            <button @click="changeMonth(1)" class="cal-nav">&gt;</button>
+          </div>
+          <div class="calendar-grid">
+            <template x-for="d in ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']">
+              <div class="cal-day-name" x-text="d"></div>
+            </template>
+            <template x-for="cell in calendarCells" :key="cell.key">
+              <div class="cal-cell"
+                   :class="{ today: cell.isToday, disabled: cell.disabled, selected: selectedDate === cell.date, other: cell.otherMonth }"
+                   @click="!cell.disabled && !cell.otherMonth && selectDate(cell.date)"
+                   x-text="cell.day"></div>
+            </template>
+          </div>
+        </div>
+
+        <div class="timeslots-section" x-show="selectedDate">
+          <h3 class="timeslots-title" x-show="selectedDate">
+            <span x-text="formatDateLabel(selectedDate)"></span>
+          </h3>
+          <div x-show="loadingSlots" class="loading">Loading available times...</div>
+          <div x-show="closedMessage" class="closed-msg" x-text="closedMessage"></div>
+          <div class="timeslots-grid" x-show="!loadingSlots && !closedMessage">
+            <template x-for="slot in slots" :key="slot.time">
+              <button class="timeslot"
+                      :class="{ selected: selectedTime === slot.time }"
+                      @click="selectTime(slot.time, slot.label)"
+                      x-text="slot.label"></button>
+            </template>
+          </div>
+          <div x-show="!loadingSlots && !closedMessage && slots.length === 0" class="no-slots">
+            No available times for this date.
+          </div>
+        </div>
+      </div>
+      <button @click="step = 2" class="btn btn-back">Back</button>
+    </div>
+
+    <!-- Step 4: Customer Details -->
+    <div x-show="step === 4" class="step">
+      <h2 class="step-title">Your details</h2>
+      <form @submit.prevent="submitBooking()" class="booking-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" x-model="firstName" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" x-model="lastName" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" x-model="email" required>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" x-model="phone">
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea x-model="notes" rows="2" placeholder="Any special requests..."></textarea>
+        </div>
+
+        <!-- Summary -->
+        <div class="booking-summary">
+          <h3>Booking Summary</h3>
+          <div class="summary-row"><span>Service:</span><span x-text="serviceName"></span></div>
+          <div class="summary-row"><span>With:</span><span x-text="staffName"></span></div>
+          <div class="summary-row"><span>Date:</span><span x-text="formatDateLabel(selectedDate)"></span></div>
+          <div class="summary-row"><span>Time:</span><span x-text="selectedTimeLabel"></span></div>
+          <div class="summary-row"><span>Duration:</span><span x-text="serviceDuration + ' min'"></span></div>
+          <div class="summary-row total"><span>Price:</span><span x-text="'$' + (servicePrice / 100).toFixed(2)"></span></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-book" :disabled="submitting">
+          <span x-show="!submitting">Confirm Booking</span>
+          <span x-show="submitting">Booking...</span>
+        </button>
+        <button type="button" @click="step = 3" class="btn btn-back">Back</button>
+      </form>
+    </div>
+
+    <!-- Step 5: Success -->
+    <div x-show="step === 5" class="step success-step">
+      <div class="success-icon">&#10003;</div>
+      <h2>Booking Confirmed!</h2>
+      <p>A confirmation email will be sent to <strong x-text="email"></strong>.</p>
+      <div class="booking-summary">
+        <div class="summary-row"><span>Service:</span><span x-text="serviceName"></span></div>
+        <div class="summary-row"><span>With:</span><span x-text="staffName"></span></div>
+        <div class="summary-row"><span>Date:</span><span x-text="formatDateLabel(selectedDate)"></span></div>
+        <div class="summary-row"><span>Time:</span><span x-text="selectedTimeLabel"></span></div>
+      </div>
+      <a :href="googleCalendarUrl()" target="_blank" class="btn btn-secondary">Add to Google Calendar</a>
+      <button @click="resetWizard()" class="btn btn-ghost">Book Another</button>
+    </div>
+
+    <!-- Error Toast -->
+    <div x-show="errorMsg" x-transition class="toast toast-error" @click="errorMsg = ''">
+      <span x-text="errorMsg"></span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
+  <script>
+    const SLUG = '<%= tenant.slug %>';
+
+    function bookingWizard() {
+      return {
+        step: 1,
+        stepLabels: ['Staff', 'Service', 'Date & Time', 'Details'],
+
+        staffId: null, staffName: '',
+        serviceId: null, serviceName: '', serviceDuration: 0, servicePrice: 0,
+        selectedDate: '', selectedTime: '', selectedTimeLabel: '',
+        firstName: '', lastName: '', email: '', phone: '', notes: '',
+
+        slots: [], loadingSlots: false, closedMessage: '',
+        submitting: false, errorMsg: '', bookingId: null,
+
+        viewYear: new Date().getFullYear(),
+        viewMonth: new Date().getMonth(),
+
+        get monthLabel() {
+          return new Date(this.viewYear, this.viewMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        },
+
+        get calendarCells() {
+          const firstDay = new Date(this.viewYear, this.viewMonth, 1).getDay();
+          const daysInMonth = new Date(this.viewYear, this.viewMonth + 1, 0).getDate();
+          const today = new Date().toISOString().split('T')[0];
+          const cells = [];
+          for (let i = 0; i < firstDay; i++) {
+            cells.push({ key: 'pad-' + i, day: '', disabled: true, otherMonth: true });
+          }
+          for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${this.viewYear}-${String(this.viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            cells.push({ key: dateStr, day: d, date: dateStr, isToday: dateStr === today, disabled: dateStr < today, otherMonth: false });
+          }
+          return cells;
+        },
+
+        selectStaff(id, name) { this.staffId = id; this.staffName = name; this.step = 2; },
+
+        selectService(id, name, duration, price) {
+          this.serviceId = id; this.serviceName = name;
+          this.serviceDuration = duration; this.servicePrice = price; this.step = 3;
+        },
+
+        async selectDate(date) {
+          this.selectedDate = date; this.selectedTime = ''; this.selectedTimeLabel = '';
+          this.closedMessage = ''; this.loadingSlots = true; this.slots = [];
+          try {
+            const resp = await fetch(`/api/${SLUG}/availability?date=${date}&staff_id=${this.staffId}&service_id=${this.serviceId}`);
+            const data = await resp.json();
+            if (data.closed) { this.closedMessage = data.reason || 'Closed'; }
+            else {
+              this.slots = data.slots;
+              if (data.price_cents) this.servicePrice = data.price_cents;
+              if (data.duration) this.serviceDuration = data.duration;
+            }
+          } catch (err) { this.errorMsg = 'Failed to load availability.'; }
+          this.loadingSlots = false;
+        },
+
+        selectTime(time, label) { this.selectedTime = time; this.selectedTimeLabel = label; this.step = 4; },
+
+        changeMonth(dir) {
+          this.viewMonth += dir;
+          if (this.viewMonth > 11) { this.viewMonth = 0; this.viewYear++; }
+          if (this.viewMonth < 0) { this.viewMonth = 11; this.viewYear--; }
+        },
+
+        async submitBooking() {
+          if (!this.firstName || !this.lastName || !this.email) {
+            this.errorMsg = 'Please fill in all required fields.'; return;
+          }
+          this.submitting = true; this.errorMsg = '';
+          try {
+            const resp = await fetch(`/api/${SLUG}/book`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                staff_id: this.staffId, service_id: this.serviceId,
+                date: this.selectedDate, time: this.selectedTime,
+                first_name: this.firstName, last_name: this.lastName,
+                email: this.email, phone: this.phone, notes: this.notes
+              })
+            });
+            const data = await resp.json();
+            if (resp.ok && data.success) { this.bookingId = data.booking_id; this.step = 5; }
+            else { this.errorMsg = data.error || 'Booking failed. Please try again.'; }
+          } catch (err) { this.errorMsg = 'Network error. Please try again.'; }
+          this.submitting = false;
+        },
+
+        formatDateLabel(dateStr) {
+          if (!dateStr) return '';
+          const d = new Date(dateStr + 'T00:00:00');
+          return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+        },
+
+        googleCalendarUrl() {
+          const d = this.selectedDate.replace(/-/g, '');
+          const [h, m] = this.selectedTime.split(':');
+          const start = `${d}T${h}${m}00`;
+          const endMin = parseInt(h) * 60 + parseInt(m) + this.serviceDuration;
+          const eh = Math.floor(endMin / 60).toString().padStart(2, '0');
+          const em = (endMin % 60).toString().padStart(2, '0');
+          const end = `${d}T${eh}${em}00`;
+          const title = encodeURIComponent(`${this.serviceName} with ${this.staffName}`);
+          return `https://calendar.google.com/calendar/event?action=TEMPLATE&text=${title}&dates=${start}/${end}`;
+        },
+
+        resetWizard() {
+          this.step = 1;
+          this.staffId = null; this.staffName = '';
+          this.serviceId = null; this.serviceName = '';
+          this.selectedDate = ''; this.selectedTime = '';
+          this.firstName = ''; this.lastName = '';
+          this.email = ''; this.phone = ''; this.notes = '';
+          this.slots = []; this.bookingId = null;
+        }
+      };
+    }
+  </script>
+</body>
+</html>

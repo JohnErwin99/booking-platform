@@ -1,0 +1,54 @@
+<div class="toolbar">
+  <form method="GET" action="/admin/customers" class="search-form">
+    <input type="text" name="search" value="<%= search %>" placeholder="Search customers...">
+    <button type="submit" class="btn btn-secondary">Search</button>
+    <% if (search) { %><a href="/admin/customers" class="btn btn-ghost">Clear</a><% } %>
+  </form>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="text-muted"><%= pagination.count %> customer<%= pagination.count !== 1 ? 's' : '' %></span>
+    <a href="/admin/customers/export" class="btn btn-outline btn-sm">Export CSV</a>
+    <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('csvFile').click()">Import CSV</button>
+    <form id="importForm" method="POST" action="/admin/customers/import" enctype="multipart/form-data" style="display:none">
+      <input type="file" id="csvFile" name="csv" accept=".csv" onchange="document.getElementById('importForm').submit()">
+    </form>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Bookings</th>
+        <th>Last Visit</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (customers.length === 0) { %>
+        <tr><td colspan="6" class="text-center">No customers found.</td></tr>
+      <% } %>
+      <% customers.forEach(c => { %>
+        <tr>
+          <td><a href="/admin/customers/<%= c.id %>"><strong><%= c.first_name %> <%= c.last_name %></strong></a></td>
+          <td><%= c.email %></td>
+          <td><%= c.phone || '-' %></td>
+          <td><%= c.total_bookings %></td>
+          <td><%= c.last_visit_date || 'Never' %></td>
+          <td><a href="/admin/customers/<%= c.id %>" class="btn btn-sm btn-secondary">View</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<% if (pagination.total > 1) { %>
+  <div class="pagination">
+    <% for (let p = 1; p <= pagination.total; p++) { %>
+      <a href="/admin/customers?search=<%= search %>&page=<%= p %>"
+         class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
+    <% } %>
+  </div>
+<% } %>

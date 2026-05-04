@@ -1,0 +1,101 @@
+<div class="form-page">
+  <a href="/admin/staff" class="back-link">Back to Staff</a>
+
+  <form method="POST" action="/admin/staff<%= staffMember ? '/' + staffMember.id : '' %>" class="settings-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name *</label>
+        <input type="text" name="first_name" value="<%= staffMember ? staffMember.first_name : '' %>" required>
+      </div>
+      <div class="form-group">
+        <label>Last Name *</label>
+        <input type="text" name="last_name" value="<%= staffMember ? staffMember.last_name : '' %>" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Display Name (shown to customers)</label>
+      <input type="text" name="display_name" value="<%= staffMember ? staffMember.display_name || '' : '' %>" placeholder="e.g., Steve">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="<%= staffMember ? staffMember.email || '' : '' %>">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="<%= staffMember ? staffMember.phone || '' : '' %>">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" name="title" value="<%= staffMember ? staffMember.title || '' : '' %>" placeholder="e.g., Senior Barber">
+    </div>
+
+    <div class="form-group">
+      <label>Bio</label>
+      <textarea name="bio" rows="3"><%= staffMember ? staffMember.bio || '' : '' %></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Location</label>
+      <select name="location_id">
+        <option value="">All Locations</option>
+        <% locations.forEach(l => { %>
+          <option value="<%= l.id %>" <%= staffMember && staffMember.location_id == l.id ? 'selected' : '' %>><%= l.name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Slot Duration (minutes)</label>
+        <input type="number" name="slot_duration" value="<%= staffMember ? staffMember.slot_duration : 30 %>" min="5" step="5">
+      </div>
+      <div class="form-group">
+        <label>Buffer Before (min)</label>
+        <input type="number" name="buffer_before" value="<%= staffMember ? staffMember.buffer_before : 0 %>" min="0" step="5">
+      </div>
+      <div class="form-group">
+        <label>Buffer After (min)</label>
+        <input type="number" name="buffer_after" value="<%= staffMember ? staffMember.buffer_after : 0 %>" min="0" step="5">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Commission Rate (%)</label>
+      <input type="number" name="commission_rate" value="<%= staffMember ? staffMember.commission_rate || '' : '' %>" min="0" max="100" step="0.5">
+    </div>
+
+    <% if (services.length) { %>
+      <div class="form-group">
+        <label>Assigned Services</label>
+        <div class="checkbox-grid">
+          <% services.forEach(svc => { %>
+            <label class="checkbox-label">
+              <input type="checkbox" name="services" value="<%= svc.id %>"
+                <%= assignedServices.includes(svc.id) ? 'checked' : '' %>>
+              <%= svc.name %> (<%= svc.duration_minutes %>min)
+            </label>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (staffMember) { %>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" name="is_active" value="1" <%= staffMember.is_active ? 'checked' : '' %>>
+          Active (accepting bookings)
+        </label>
+      </div>
+    <% } %>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary"><%= staffMember ? 'Update' : 'Add' %> Staff Member</button>
+      <a href="/admin/staff" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>

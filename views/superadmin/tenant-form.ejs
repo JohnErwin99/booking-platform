@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    body { background: #f0f2f5; }
+    .sa-container { max-width: 700px; margin: 0 auto; padding: 2rem; }
+    .sa-container h1 { margin-bottom: 1.5rem; color: #1a1a2e; }
+  </style>
+</head>
+<body>
+  <div class="sa-container">
+    <a href="/superadmin/tenants" class="back-link">Back to Tenants</a>
+    <h1><%= editTenant ? 'Edit' : 'New' %> Tenant</h1>
+
+    <%- include('../partials/flash') %>
+
+    <form method="POST" action="/superadmin/tenants<%= editTenant ? '/' + editTenant.id : '' %>" class="settings-form">
+      <div class="form-group">
+        <label>Business Name *</label>
+        <input type="text" name="business_name" value="<%= editTenant ? editTenant.name : '' %>" required placeholder="Steve's Barbershop">
+      </div>
+
+      <% if (!editTenant) { %>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Owner First Name *</label>
+            <input type="text" name="owner_first_name" required>
+          </div>
+          <div class="form-group">
+            <label>Owner Last Name</label>
+            <input type="text" name="owner_last_name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Owner Email *</label>
+          <input type="email" name="owner_email" required placeholder="owner@business.com">
+        </div>
+        <div class="form-group">
+          <label>Owner Password *</label>
+          <input type="password" name="owner_password" required minlength="6">
+        </div>
+      <% } %>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="<%= editTenant ? editTenant.phone || '' : '' %>">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Timezone</label>
+          <input type="text" name="timezone" value="<%= editTenant ? editTenant.timezone : 'America/New_York' %>" placeholder="America/New_York">
+        </div>
+        <div class="form-group">
+          <label>Currency</label>
+          <select name="currency">
+            <% ['USD','EUR','GBP','CAD','AUD'].forEach(c => { %>
+              <option value="<%= c %>" <%= (editTenant ? editTenant.currency : 'USD') === c ? 'selected' : '' %>><%= c %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <% if (editTenant) { %>
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <% ['active','trial','suspended'].forEach(s => { %>
+              <option value="<%= s %>" <%= editTenant.status === s ? 'selected' : '' %>><%= s %></option>
+            <% }) %>
+          </select>
+        </div>
+      <% } %>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%= editTenant ? 'Update' : 'Create' %> Tenant</button>
+        <a href="/superadmin/tenants" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

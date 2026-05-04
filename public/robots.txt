@@ -1,0 +1,21 @@
+# Bookwize - robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /api/
+
+# Allow AI crawlers for AEO
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://bookwizeapp.com/sitemap.xml

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Widget Test Page</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1 { margin-bottom: 8px; }
+    p { color: #666; }
+    hr { margin: 40px 0; border: none; border-top: 1px solid #eee; }
+    h2 { margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Bookwize Widget Test</h1>
+  <p>This page simulates an external website embedding the Bookwize widget.</p>
+
+  <hr>
+
+  <h2>Popup Mode (Button)</h2>
+  <p>Click the button below to open the booking widget in a popup:</p>
+  <script src="/js/bookwize-widget.js"
+          data-slug="demo"
+          data-mode="popup"
+          data-button-text="Book an Appointment"
+          data-button-color="#F28C38"></script>
+
+  <hr>
+
+  <h2>Inline Mode</h2>
+  <p>The booking widget is embedded directly below:</p>
+  <div id="bookwize-widget"></div>
+  <script src="/js/bookwize-widget.js"
+          data-slug="demo"
+          data-mode="inline"
+          data-container="bookwize-widget"></script>
+</body>
+</html>
