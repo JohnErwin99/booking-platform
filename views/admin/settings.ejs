@@ -4,6 +4,7 @@
     <button @click="tab = 'policies'" :class="{ active: tab === 'policies' }" class="tab-btn">Policies</button>
     <button @click="tab = 'hours'" :class="{ active: tab === 'hours' }" class="tab-btn">Business Hours</button>
     <button @click="tab = 'widget'" :class="{ active: tab === 'widget' }" class="tab-btn">Widget</button>
+    <button @click="tab = 'account'" :class="{ active: tab === 'account' }" class="tab-btn">Account</button>
   </div>
 
   <!-- Branding Tab -->
@@ -182,6 +183,26 @@
         setTimeout(() => btn.textContent = orig, 2000);
       }
     </script>
+  </div>
+
+  <!-- Account Tab -->
+  <div x-show="tab === 'account'" class="tab-content">
+    <h3 style="margin-bottom:24px">Change Password</h3>
+    <form method="POST" action="/admin/settings/password" class="settings-form">
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" name="current_password" required>
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" name="new_password" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" name="confirm_password" required minlength="6">
+      </div>
+      <button type="submit" class="btn btn-primary">Change Password</button>
+    </form>
   </div>
 </div>
 

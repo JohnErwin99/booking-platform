@@ -448,6 +448,38 @@ ul{list-style:none}
 .faq-item summary::-webkit-details-marker{display:none}
 .faq-item p{padding:0 0 22px;color:#737373;font-size:.925rem;line-height:1.75}
 
+/* ====== MOBILE APP ====== */
+.mobile-app{padding:120px 0;background:#fff}
+.mobile-app-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+}
+.mobile-app-content h2{
+  font-size:2rem;font-weight:800;color:#1A1A2E;
+  margin:12px 0 16px;line-height:1.2;letter-spacing:-.03em;
+}
+.mobile-app-content p{
+  color:#737373;font-size:1rem;line-height:1.7;margin-bottom:24px;
+}
+.mobile-app-features{margin-bottom:32px}
+.mobile-app-features li{
+  padding:6px 0;font-size:.925rem;color:#525252;
+  display:flex;align-items:center;gap:10px;
+}
+.mobile-app-features li::before{content:'✓';color:#F28C38;font-weight:700;font-size:.85rem}
+.coming-soon-badge{
+  display:inline-block;
+  background:linear-gradient(135deg,#1A1A2E,#2a2a4e);
+  color:#fff;font-weight:700;font-size:.85rem;
+  padding:12px 28px;border-radius:12px;
+  letter-spacing:.02em;
+}
+.mobile-app-image{position:relative}
+.mobile-app-image img{
+  width:100%;max-width:400px;margin:0 auto;display:block;
+  border-radius:20px;
+  box-shadow:0 24px 64px rgba(26,26,46,.12);
+}
+
 /* ====== CTA ====== */
 .cta{
   padding:120px 0;
@@ -528,6 +560,10 @@ ul{list-style:none}
   .step-divider{transform:rotate(90deg)}
 
   .section-header h2{font-size:1.75rem}
+
+  .mobile-app-inner{grid-template-columns:1fr;gap:40px;text-align:center}
+  .mobile-app-features{display:inline-block;text-align:left}
+  .mobile-app-image img{max-width:320px}
 
   .footer-inner{grid-template-columns:1fr}
   .footer-bottom{flex-direction:column;gap:12px;text-align:center}

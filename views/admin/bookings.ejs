@@ -18,51 +18,175 @@
     <button type="submit" class="btn btn-secondary">Filter</button>
     <a href="/admin/bookings" class="btn btn-ghost">Clear</a>
   </form>
+  <div class="view-toggle">
+    <button class="btn btn-sm" id="listViewBtn" onclick="switchView('list')">List</button>
+    <button class="btn btn-sm" id="calendarViewBtn" onclick="switchView('calendar')">Calendar</button>
+  </div>
 </div>
 
-<div class="table-responsive">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Customer</th>
-        <th>Service</th>
-        <th>Staff</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (bookings.length === 0) { %>
-        <tr><td colspan="7" class="text-center">No bookings found.</td></tr>
-      <% } %>
-      <% bookings.forEach(b => { %>
+<!-- List View -->
+<div id="listView">
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
         <tr>
-          <td><%= b.booking_date %></td>
-          <td><%= helpers.formatTimeLabel(b.start_time) %></td>
-          <td>
-            <strong><%= b.customer_name %></strong>
-            <br><small class="text-muted"><%= b.customer_email %></small>
-          </td>
-          <td><%= b.service_name %></td>
-          <td><%= b.staff_name %></td>
-          <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
-          <td class="actions">
-            <% if (b.status === 'confirmed') { %>
-              <form method="POST" action="/admin/bookings/<%= b.id %>/complete" style="display:inline">
-                <button type="submit" class="btn btn-sm btn-success" title="Mark complete">Done</button>
-              </form>
-              <form method="POST" action="/admin/bookings/<%= b.id %>/cancel" style="display:inline">
-                <button type="submit" class="btn btn-sm btn-danger" title="Cancel" onclick="return confirm('Cancel this booking?')">Cancel</button>
-              </form>
-              <form method="POST" action="/admin/bookings/<%= b.id %>/no-show" style="display:inline">
-                <button type="submit" class="btn btn-sm btn-warning" title="No show">No Show</button>
-              </form>
-            <% } %>
-          </td>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Customer</th>
+          <th>Service</th>
+          <th>Staff</th>
+          <th>Status</th>
+          <th>Actions</th>
         </tr>
-      <% }) %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% if (bookings.length === 0) { %>
+          <tr><td colspan="7" class="text-center">No bookings found.</td></tr>
+        <% } %>
+        <% bookings.forEach(b => { %>
+          <tr>
+            <td><%= b.booking_date %></td>
+            <td><%= helpers.formatTimeLabel(b.start_time) %></td>
+            <td>
+              <strong><%= b.customer_name %></strong>
+              <br><small class="text-muted"><%= b.customer_email %></small>
+            </td>
+            <td><%= b.service_name %></td>
+            <td><%= b.staff_name %></td>
+            <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
+            <td class="actions">
+              <% if (b.status === 'confirmed') { %>
+                <form method="POST" action="/admin/bookings/<%= b.id %>/complete" style="display:inline">
+                  <button type="submit" class="btn btn-sm btn-success" title="Mark complete">Done</button>
+                </form>
+                <form method="POST" action="/admin/bookings/<%= b.id %>/cancel" style="display:inline">
+                  <button type="submit" class="btn btn-sm btn-danger" title="Cancel" onclick="return confirm('Cancel this booking?')">Cancel</button>
+                </form>
+                <form method="POST" action="/admin/bookings/<%= b.id %>/no-show" style="display:inline">
+                  <button type="submit" class="btn btn-sm btn-warning" title="No show">No Show</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
 </div>
+
+<!-- Calendar View -->
+<div id="calendarView" style="display:none">
+  <div id="calendar"></div>
+</div>
+
+<!-- Event Detail Modal -->
+<div id="eventModal" style="display:none">
+  <div class="modal-overlay" onclick="closeModal()">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 id="modalTitle"></h3>
+      <div class="modal-body">
+        <div class="modal-row"><span>Customer</span><span id="modalCustomer"></span></div>
+        <div class="modal-row"><span>Service</span><span id="modalService"></span></div>
+        <div class="modal-row"><span>Staff</span><span id="modalStaff"></span></div>
+        <div class="modal-row"><span>Time</span><span id="modalTime"></span></div>
+        <div class="modal-row"><span>Status</span><span id="modalStatus"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+
+<style>
+  .view-toggle{display:flex;gap:4px;background:rgba(232,223,208,.35);border-radius:10px;padding:3px}
+  .view-toggle .btn{border:none;border-radius:8px;padding:6px 16px;font-size:.82rem;font-weight:600;background:transparent;color:#6B7280;cursor:pointer}
+  .view-toggle .btn.active{background:#fff;color:#1A1A2E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+
+  #calendar{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-top:4px}
+  .fc .fc-toolbar-title{font-size:1.1rem;font-weight:700;color:#1A1A2E}
+  .fc .fc-button{background:#F28C38;border:none;font-size:.8rem;font-weight:600;border-radius:8px;padding:6px 14px}
+  .fc .fc-button:hover{background:#e07b28}
+  .fc .fc-button-active{background:#1A1A2E}
+  .fc .fc-daygrid-day-number{font-size:.85rem;color:#1A1A2E;font-weight:500}
+  .fc .fc-event{border-radius:6px;padding:2px 6px;font-size:.75rem;border:none;cursor:pointer}
+  .fc .fc-timegrid-slot{height:48px}
+  .fc .fc-col-header-cell-cushion{font-size:.8rem;font-weight:600;color:#6B7280;text-transform:uppercase}
+
+  .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .modal-card{background:#fff;border-radius:16px;padding:28px;max-width:400px;width:90%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.15)}
+  .modal-close{position:absolute;top:12px;right:14px;border:none;background:none;font-size:1.4rem;color:#9CA3AF;cursor:pointer}
+  .modal-card h3{font-size:1.1rem;font-weight:700;color:#1A1A2E;margin-bottom:16px;padding-right:24px}
+  .modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F3F4F6;font-size:.9rem}
+  .modal-row span:first-child{color:#9CA3AF;font-weight:500}
+  .modal-row span:last-child{color:#1A1A2E;font-weight:600}
+</style>
+
+<script>
+  let currentView = 'list';
+  let calendar;
+
+  function switchView(view) {
+    currentView = view;
+    document.getElementById('listView').style.display = view === 'list' ? '' : 'none';
+    document.getElementById('calendarView').style.display = view === 'calendar' ? '' : 'none';
+    document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
+    document.getElementById('calendarViewBtn').classList.toggle('active', view === 'calendar');
+
+    if (view === 'calendar' && !calendar) {
+      initCalendar();
+    }
+    if (calendar) calendar.updateSize();
+  }
+
+  function initCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'timeGridWeek',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      slotMinTime: '07:00:00',
+      slotMaxTime: '22:00:00',
+      allDaySlot: false,
+      height: 'auto',
+      nowIndicator: true,
+      events: function(info, successCallback, failureCallback) {
+        fetch('/admin/bookings/api?start=' + info.startStr.split('T')[0] + '&end=' + info.endStr.split('T')[0])
+          .then(r => r.json())
+          .then(data => successCallback(data))
+          .catch(err => failureCallback(err));
+      },
+      eventClick: function(info) {
+        const e = info.event;
+        const props = e.extendedProps;
+        const parts = e.title.split(' - ');
+        document.getElementById('modalTitle').textContent = e.title;
+        document.getElementById('modalCustomer').textContent = parts[0] || '';
+        document.getElementById('modalService').textContent = parts[1] || '';
+        document.getElementById('modalStaff').textContent = props.staffName || '';
+        const start = e.start ? e.start.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+        const end = e.end ? e.end.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+        document.getElementById('modalTime').textContent = start + ' - ' + end;
+        document.getElementById('modalStatus').textContent = props.status || '';
+        document.getElementById('eventModal').style.display = '';
+      }
+    });
+    calendar.render();
+  }
+
+  function closeModal() {
+    document.getElementById('eventModal').style.display = 'none';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // Default to list view active
+  document.getElementById('listViewBtn').classList.add('active');
+</script>

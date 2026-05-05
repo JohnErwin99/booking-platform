@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../../config/database');
 const { slugify } = require('../../utils/helpers');
+const { sendEmail } = require('../../services/emailService');
 const router = express.Router();
 
 // Superadmin auth check
@@ -176,7 +177,35 @@ router.post('/tenants', requireSuperadmin, async (req, res, next) => {
       }
     ]);
 
-    req.flash('success', `Tenant "${business_name}" created. Owner can log in at /admin/login`);
+    // Send welcome email to the new business owner
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    sendEmail({
+      to: owner_email,
+      subject: `Welcome to Bookwize — Your account is ready!`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #1e293b;">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h2 style="margin: 0; color: #F28C38;">Bookwize</h2>
+          </div>
+          <div style="background: #f8fafc; border-radius: 12px; padding: 24px; line-height: 1.7;">
+            <p style="margin: 0 0 12px;">Hi ${owner_first_name || 'there'},</p>
+            <p style="margin: 0 0 12px;">Your business <strong>${business_name}</strong> has been set up on Bookwize!</p>
+            <p style="margin: 0 0 12px;">Here are your login details:</p>
+            <p style="margin: 0 0 6px;"><strong>Admin Dashboard:</strong> <a href="${baseUrl}/admin/login">${baseUrl}/admin/login</a></p>
+            <p style="margin: 0 0 6px;"><strong>Email:</strong> ${owner_email}</p>
+            <p style="margin: 0 0 6px;"><strong>Password:</strong> ${owner_password}</p>
+            <p style="margin: 0 0 12px;"><strong>Booking Page:</strong> <a href="${baseUrl}/book/${slug}">${baseUrl}/book/${slug}</a></p>
+            <p style="margin: 0 0 12px;">We recommend changing your password after your first login.</p>
+            <p style="margin: 0;">Welcome aboard!<br>The Bookwize Team</p>
+          </div>
+          <p style="text-align: center; margin-top: 24px; font-size: 13px; color: #94a3b8;">
+            Sent by Bookwize
+          </p>
+        </div>`,
+      text: `Hi ${owner_first_name || 'there'},\n\nYour business "${business_name}" has been set up on Bookwize!\n\nAdmin Dashboard: ${baseUrl}/admin/login\nEmail: ${owner_email}\nPassword: ${owner_password}\nBooking Page: ${baseUrl}/book/${slug}\n\nWe recommend changing your password after your first login.\n\nWelcome aboard!\nThe Bookwize Team`
+    }).catch(err => console.error('Welcome email failed:', err.message));
+
+    req.flash('success', `Tenant "${business_name}" created. Welcome email sent to ${owner_email}.`);
     res.redirect('/superadmin/tenants');
   } catch (err) {
     next(err);

@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const db = require('../../config/database');
 const requireRole = require('../../middleware/requireRole');
 const router = express.Router();
@@ -113,6 +114,44 @@ router.post('/settings/hours', requireRole('owner', 'manager'), async (req, res,
     }
 
     req.flash('success', 'Business hours updated.');
+    res.redirect('/admin/settings');
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /admin/settings/password
+router.post('/settings/password', async (req, res, next) => {
+  try {
+    const { current_password, new_password, confirm_password } = req.body;
+
+    if (!current_password || !new_password || !confirm_password) {
+      req.flash('error', 'All password fields are required.');
+      return res.redirect('/admin/settings');
+    }
+
+    if (new_password !== confirm_password) {
+      req.flash('error', 'New passwords do not match.');
+      return res.redirect('/admin/settings');
+    }
+
+    if (new_password.length < 6) {
+      req.flash('error', 'Password must be at least 6 characters.');
+      return res.redirect('/admin/settings');
+    }
+
+    const user = await db('users').where('id', req.user.id).first();
+    const valid = await bcrypt.compare(current_password, user.password_hash);
+
+    if (!valid) {
+      req.flash('error', 'Current password is incorrect.');
+      return res.redirect('/admin/settings');
+    }
+
+    const hash = await bcrypt.hash(new_password, 12);
+    await db('users').where('id', req.user.id).update({ password_hash: hash });
+
+    req.flash('success', 'Password changed successfully.');
     res.redirect('/admin/settings');
   } catch (err) {
     next(err);

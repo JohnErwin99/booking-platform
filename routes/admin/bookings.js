@@ -130,20 +130,32 @@ router.get('/bookings/api', async (req, res, next) => {
       .whereNot('status', 'cancelled');
 
     // Format for FullCalendar
-    const events = bookings.map(b => ({
+    const events = bookings.map(b => {
+      let dateStr;
+      if (b.booking_date instanceof Date) {
+        dateStr = b.booking_date.getFullYear() + '-' +
+          String(b.booking_date.getMonth() + 1).padStart(2, '0') + '-' +
+          String(b.booking_date.getDate()).padStart(2, '0');
+      } else {
+        dateStr = String(b.booking_date).slice(0, 10);
+      }
+      const startTime = String(b.start_time).slice(0, 5);
+      const endTime = String(b.end_time).slice(0, 5);
+      return {
       id: b.id,
       title: `${b.customer_name} - ${b.service_name}`,
-      start: `${b.booking_date}T${b.start_time}`,
-      end: `${b.booking_date}T${b.end_time}`,
-      color: b.status === 'completed' ? '#4CAF50' :
-             b.status === 'no_show' ? '#f44336' : '#2196F3',
+      start: `${dateStr}T${startTime}`,
+      end: `${dateStr}T${endTime}`,
+      color: b.status === 'completed' ? '#22C55E' :
+             b.status === 'no_show' ? '#EF4444' : '#F28C38',
       extendedProps: {
         staffName: b.staff_name,
         customerPhone: b.customer_phone,
         status: b.status,
         priceCents: b.price_cents
       }
-    }));
+    };
+    });
 
     res.json(events);
   } catch (err) {

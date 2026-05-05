@@ -2,36 +2,176 @@
 <html lang="en">
 <head>
   <%- include('../partials/head') %>
-  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #f0f2f5; }
-    .login-card { background: #fff; border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
-    .login-card h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #1a1a2e; }
-    .login-card p { color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 500; font-size: 0.85rem; color: #444; }
-    .form-group input { width: 100%; padding: 0.7rem 0.9rem; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; transition: border-color 0.2s; box-sizing: border-box; }
-    .form-group input:focus { outline: none; border-color: #4F46E5; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
-    .btn-login { width: 100%; padding: 0.75rem; background: #4F46E5; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .btn-login:hover { background: #4338CA; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      min-height:100vh;
+      background:#FAF7FF;
+      color:#1A1A2E;
+      overflow-x:hidden;
+    }
+    .login-page{
+      display:grid;grid-template-columns:1fr 1fr;
+      min-height:100vh;
+    }
+    /* Left side — branding */
+    .login-brand{
+      display:flex;flex-direction:column;justify-content:center;
+      padding:64px;
+      background:
+        radial-gradient(ellipse at 20% 50%,rgba(242,140,56,.06) 0%,transparent 70%),
+        #FAF7FF;
+      position:relative;overflow:hidden;
+    }
+    .login-brand::before{
+      content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+      background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23E8DFD0' fill-opacity='0.15'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity:.5;
+    }
+    .login-brand > *{position:relative;z-index:1}
+    .login-brand .logo-row{
+      display:flex;align-items:center;gap:12px;margin-bottom:48px;
+    }
+    .login-brand .logo-row img{width:36px;height:36px}
+    .login-brand .logo-row span{font-size:1.2rem;font-weight:700;color:#1A1A2E}
+    .login-brand .tag{
+      display:inline-block;font-size:.78rem;font-weight:600;
+      color:#F28C38;background:rgba(242,140,56,.08);
+      padding:6px 16px;border-radius:100px;margin-bottom:20px;
+    }
+    .login-brand h1{
+      font-size:clamp(2.2rem,4vw,3.2rem);font-weight:900;
+      line-height:1.1;letter-spacing:-.04em;margin-bottom:20px;
+    }
+    .login-brand h1 .gradient-text{
+      background:linear-gradient(135deg,#F28C38 0%,#e07b28 50%,#c96a1e 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .login-brand p{
+      font-size:1.05rem;color:#737373;line-height:1.7;max-width:440px;
+    }
+    .login-brand .features-list{margin-top:32px}
+    .login-brand .features-list li{
+      display:flex;align-items:center;gap:10px;
+      padding:7px 0;font-size:.925rem;color:#525252;list-style:none;
+    }
+    .login-brand .features-list li::before{content:'✓';color:#F28C38;font-weight:700}
+
+    /* Right side — login form */
+    .login-form-wrap{
+      display:flex;align-items:center;justify-content:center;
+      padding:48px;
+      background:#fff;
+    }
+    .login-card{
+      width:100%;max-width:400px;
+    }
+    .login-card h2{
+      font-size:1.5rem;font-weight:800;color:#1A1A2E;margin-bottom:6px;
+    }
+    .login-card .subtitle{
+      color:#9CA3AF;font-size:.9rem;margin-bottom:28px;
+    }
+    .form-group{margin-bottom:18px}
+    .form-group label{
+      display:block;margin-bottom:6px;
+      font-weight:600;font-size:.82rem;color:#6B7280;
+    }
+    .form-group input{
+      width:100%;padding:13px 16px;
+      border:1.5px solid #E8DFD0;border-radius:12px;
+      font-size:.95rem;color:#1A1A2E;background:#FAF7FF;
+      transition:all .2s;
+    }
+    .form-group input:focus{
+      outline:none;border-color:#F28C38;
+      box-shadow:0 0 0 3px rgba(242,140,56,.1);
+    }
+    .form-group input::placeholder{color:#D1D5DB}
+    .btn-login{
+      width:100%;padding:14px;margin-top:8px;
+      background:linear-gradient(135deg,#F28C38 0%,#e07b28 100%);
+      color:#fff;border:none;border-radius:12px;
+      font-size:1rem;font-weight:600;cursor:pointer;
+      transition:all .25s;
+      box-shadow:0 4px 16px rgba(242,140,56,.25);
+    }
+    .btn-login:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 24px rgba(242,140,56,.3);
+    }
+    .login-footer{
+      text-align:center;margin-top:24px;font-size:.82rem;color:#9CA3AF;
+    }
+    .login-footer a{color:#F28C38;text-decoration:none;font-weight:600}
+    .login-footer a:hover{text-decoration:underline}
+
+    /* Flash messages */
+    .flash-error{
+      background:#FEE2E2;color:#991B1B;padding:10px 14px;
+      border-radius:10px;font-size:.85rem;margin-bottom:16px;
+      border:1px solid #FECACA;
+    }
+    .flash-success{
+      background:#DCFCE7;color:#166534;padding:10px 14px;
+      border-radius:10px;font-size:.85rem;margin-bottom:16px;
+      border:1px solid #BBF7D0;
+    }
+
+    /* Responsive */
+    @media(max-width:768px){
+      .login-page{grid-template-columns:1fr}
+      .login-brand{display:none}
+      .login-form-wrap{min-height:100vh}
+    }
   </style>
 </head>
 <body>
-  <div class="login-card">
-    <h1>Admin Login</h1>
-    <p>Sign in to manage your bookings</p>
-    <%- include('../partials/flash') %>
-    <form method="POST" action="/admin/login">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required autofocus placeholder="you@business.com">
+  <div class="login-page">
+    <!-- Left — Branding -->
+    <div class="login-brand">
+      <div class="logo-row">
+        <img src="/img/logo.svg" alt="Bookwize">
+        <span>Bookwize</span>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required placeholder="Your password">
+      <span class="tag">Efficient booking solutions for modern businesses</span>
+      <h1><span class="gradient-text">Stack your schedule.</span></h1>
+      <p>The all-in-one online booking system for salons, barbershops, and service businesses in Canada. Manage appointments, staff, and clients from one dashboard.</p>
+      <ul class="features-list">
+        <li>24/7 online booking page</li>
+        <li>Staff & service management</li>
+        <li>Automated email reminders</li>
+        <li>White-label branding</li>
+        <li>Embeddable widget for any website</li>
+      </ul>
+    </div>
+
+    <!-- Right — Login Form -->
+    <div class="login-form-wrap">
+      <div class="login-card">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to manage your bookings</p>
+        <%- include('../partials/flash') %>
+        <form method="POST" action="/admin/login">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autofocus placeholder="you@business.com">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required placeholder="Enter your password">
+          </div>
+          <button type="submit" class="btn-login">Sign In</button>
+        </form>
+        <div class="login-footer">
+          <a href="/">← Back to Bookwize</a>
+        </div>
       </div>
-      <button type="submit" class="btn-login">Sign In</button>
-    </form>
+    </div>
   </div>
 </body>
 </html>
