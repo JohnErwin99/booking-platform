@@ -17,6 +17,11 @@ const { processReminders, processFollowups } = require('./services/notificationS
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy (needed for secure cookies behind Render/Cloudflare)
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // ======================
 // View Engine
 // ======================
