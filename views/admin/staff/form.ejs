@@ -1,7 +1,7 @@
 <div class="form-page">
   <a href="/admin/staff" class="back-link">Back to Staff</a>
 
-  <form method="POST" action="/admin/staff<%= staffMember ? '/' + staffMember.id : '' %>" class="settings-form">
+  <form method="POST" action="/admin/staff<%= staffMember ? '/' + staffMember.id : '' %>" class="settings-form" enctype="multipart/form-data">
     <div class="form-row">
       <div class="form-group">
         <label>First Name *</label>
@@ -14,18 +14,43 @@
     </div>
 
     <div class="form-group">
+      <label>Photo</label>
+      <% if (staffMember && staffMember.photo_url) { %>
+        <div style="margin-bottom:8px">
+          <img src="<%= staffMember.photo_url %>" alt="Current photo" style="width:80px;height:80px;border-radius:12px;object-fit:cover">
+        </div>
+      <% } %>
+      <input type="file" name="photo" accept="image/*">
+    </div>
+
+    <div class="form-group">
       <label>Display Name (shown to customers)</label>
       <input type="text" name="display_name" value="<%= staffMember ? staffMember.display_name || '' : '' %>" placeholder="e.g., Steve">
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="email" value="<%= staffMember ? staffMember.email || '' : '' %>">
+        <label>Email *</label>
+        <input type="email" name="email" value="<%= staffMember ? staffMember.email || '' : '' %>" required>
       </div>
       <div class="form-group">
         <label>Phone</label>
         <input type="text" name="phone" value="<%= staffMember ? staffMember.phone || '' : '' %>">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Role *</label>
+        <select name="role">
+          <option value="staff" <%= staffUser && staffUser.role === 'staff' ? 'selected' : '' %>>Staff</option>
+          <option value="manager" <%= staffUser && staffUser.role === 'manager' ? 'selected' : '' %>>Manager</option>
+          <option value="owner" <%= staffUser && staffUser.role === 'owner' ? 'selected' : '' %>>Owner</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><%= staffMember ? 'New Password (leave blank to keep current)' : 'Password *' %></label>
+        <input type="password" name="password" <%= staffMember ? '' : 'required' %> minlength="6" placeholder="<%= staffMember ? 'Leave blank to keep current' : 'Min 6 characters' %>">
       </div>
     </div>
 

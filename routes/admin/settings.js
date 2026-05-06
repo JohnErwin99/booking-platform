@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../../config/database');
+const upload = require('../../config/upload');
 const requireRole = require('../../middleware/requireRole');
 const router = express.Router();
 
@@ -152,6 +153,38 @@ router.post('/settings/password', async (req, res, next) => {
     await db('users').where('id', req.user.id).update({ password_hash: hash });
 
     req.flash('success', 'Password changed successfully.');
+    res.redirect('/admin/settings');
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /admin/settings/photo - Upload profile photo
+router.post('/settings/photo', upload.single('photo'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      req.flash('error', 'Please select an image.');
+      return res.redirect('/admin/settings');
+    }
+    const photoUrl = `/uploads/${req.file.filename}`;
+    await db('users').where('id', req.user.id).update({ photo_url: photoUrl });
+    req.flash('success', 'Profile photo updated.');
+    res.redirect('/admin/settings');
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /admin/settings/logo - Upload business logo
+router.post('/settings/logo', requireRole('owner'), upload.single('logo'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      req.flash('error', 'Please select an image.');
+      return res.redirect('/admin/settings');
+    }
+    const logoUrl = `/uploads/${req.file.filename}`;
+    await db('tenants').where('id', req.user.tenant_id).update({ logo_url: logoUrl });
+    req.flash('success', 'Business logo updated.');
     res.redirect('/admin/settings');
   } catch (err) {
     next(err);

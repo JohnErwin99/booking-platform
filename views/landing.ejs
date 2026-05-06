@@ -161,14 +161,16 @@
         <a href="/admin/login" class="btn btn-ghost-nav">Log in</a>
         <a href="#pricing" class="btn btn-primary-nav">Get Started</a>
       </div>
-      <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <button class="nav-toggle" id="navToggle" onclick="toggleMenu()" aria-label="Menu">
+        <svg class="icon-menu" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg class="icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
+    <div class="dotted-surface" id="dottedSurface"></div>
     <div class="container hero-inner">
       <div class="hero-content">
         <div class="hero-badge">Efficient booking solutions for modern businesses</div>
@@ -176,7 +178,6 @@
         <p class="hero-sub">The all-in-one online booking system for salons, barbershops, and service businesses in Canada. Manage appointments, staff, and clients from one dashboard.</p>
         <div class="hero-actions">
           <a href="#pricing" class="btn btn-primary btn-lg">Get Started</a>
-          <a href="/book/demo" class="btn btn-outline btn-lg">See Live Demo</a>
         </div>
         <p class="hero-note">No credit card required &middot; Setup in under 5 minutes</p>
       </div>
@@ -231,6 +232,21 @@
         <div class="hero-float hero-float-2">
           <span class="float-number">+38%</span>
           <span class="float-label">more bookings</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hero Scroll Animation -->
+  <section class="hero-scroll" id="heroScroll">
+    <div class="hero-scroll-inner">
+      <div class="hero-scroll-header">
+        <h2>Your entire business<br><span class="gradient-text">in one dashboard.</span></h2>
+        <p>Manage bookings, staff, customers, and analytics — everything you need, beautifully organized.</p>
+      </div>
+      <div class="hero-scroll-card" id="scrollCard">
+        <div class="scroll-card-frame">
+          <img src="/img/mobiledashboard.jpeg" alt="Bookwize dashboard — manage bookings, staff, and customers" class="scroll-card-img">
         </div>
       </div>
     </div>
@@ -478,6 +494,9 @@
           <a href="#" class="btn btn-primary btn-block btn-checkout" data-stripe-monthly="team_monthly" data-stripe-onetime="team_onetime">Get Started</a>
         </div>
       </div>
+      <div style="text-align:center;margin-top:32px">
+        <a href="/book/demo" class="btn btn-outline btn-lg">See Live Demo</a>
+      </div>
     </div>
   </section>
 
@@ -600,25 +619,158 @@
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
+    // Dotted surface 3D wave animation
+    (function() {
+      const container = document.getElementById('dottedSurface');
+      if (!container || !window.THREE) return;
+
+      const SEPARATION = 120;
+      const AMOUNTX = 50;
+      const AMOUNTY = 50;
+      let count = 0;
+
+      const scene = new THREE.Scene();
+
+      const camera = new THREE.PerspectiveCamera(60, container.offsetWidth / container.offsetHeight, 1, 10000);
+      camera.position.set(0, 400, 1100);
+      camera.lookAt(0, 0, 0);
+
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(container.offsetWidth, container.offsetHeight);
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+
+      // Create particle grid
+      const positions = [];
+      const colors = [];
+
+      for (let ix = 0; ix < AMOUNTX; ix++) {
+        for (let iy = 0; iy < AMOUNTY; iy++) {
+          const x = ix * SEPARATION - (AMOUNTX * SEPARATION) / 2;
+          const z = iy * SEPARATION - (AMOUNTY * SEPARATION) / 2;
+          positions.push(x, 0, z);
+          // Bookwize orange-ish dots: rgb(242, 140, 56) normalized
+          colors.push(0.95, 0.55, 0.22);
+        }
+      }
+
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+      const material = new THREE.PointsMaterial({
+        size: 5,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.6,
+        sizeAttenuation: true
+      });
+
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        const posArr = geometry.attributes.position.array;
+        let i = 0;
+        for (let ix = 0; ix < AMOUNTX; ix++) {
+          for (let iy = 0; iy < AMOUNTY; iy++) {
+            posArr[i * 3 + 1] =
+              Math.sin((ix + count) * 0.3) * 40 +
+              Math.sin((iy + count) * 0.5) * 40;
+            i++;
+          }
+        }
+        geometry.attributes.position.needsUpdate = true;
+        renderer.render(scene, camera);
+        count += 0.06;
+      }
+
+      function onResize() {
+        camera.aspect = container.offsetWidth / container.offsetHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+      }
+
+      window.addEventListener('resize', onResize);
+      animate();
+    })();
+
     // Sticky nav
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 20);
     });
 
-    // Smooth scroll for anchor links
+    // Mobile menu toggle
+    function toggleMenu() {
+      const links = document.querySelector('.nav-links');
+      const isOpen = links.classList.toggle('open');
+      document.querySelector('.icon-menu').style.display = isOpen ? 'none' : '';
+      document.querySelector('.icon-close').style.display = isOpen ? '' : 'none';
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    function closeMenu() {
+      const links = document.querySelector('.nav-links');
+      links.classList.remove('open');
+      document.querySelector('.icon-menu').style.display = '';
+      document.querySelector('.icon-close').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // Smooth scroll for anchor links + close mobile menu
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         if (a.classList.contains('btn-checkout')) return;
         const target = document.querySelector(a.getAttribute('href'));
         if (target) {
           e.preventDefault();
+          closeMenu();
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          document.querySelector('.nav-links').classList.remove('open');
         }
       });
     });
+
+    // Close menu when clicking non-anchor links on mobile
+    document.querySelectorAll('.nav-links a:not([href^="#"])').forEach(a => {
+      a.addEventListener('click', () => closeMenu());
+    });
+
+    // Hero scroll animation (3D card rotate on scroll)
+    (function() {
+      const section = document.getElementById('heroScroll');
+      const card = document.getElementById('scrollCard');
+      if (!section || !card) return;
+
+      const isMobile = window.innerWidth <= 768;
+      const startRotate = isMobile ? 15 : 20;
+      const startScale = isMobile ? 0.85 : 1.05;
+      const endScale = isMobile ? 0.95 : 1;
+
+      function updateScroll() {
+        const rect = section.getBoundingClientRect();
+        const sectionHeight = section.offsetHeight;
+        const viewHeight = window.innerHeight;
+
+        // Progress: 0 when section top enters viewport, 1 when section bottom leaves
+        const rawProgress = (viewHeight - rect.top) / (viewHeight + sectionHeight);
+        const progress = Math.max(0, Math.min(1, rawProgress));
+
+        const rotate = startRotate * (1 - progress);
+        const scale = startScale + (endScale - startScale) * progress;
+        const translateY = -100 * progress;
+
+        card.style.transform = `perspective(1200px) rotateX(${rotate}deg) scale(${scale}) translateY(${translateY}px)`;
+      }
+
+      window.addEventListener('scroll', updateScroll, { passive: true });
+      updateScroll();
+    })();
 
     // Pricing toggle
     let billingMode = 'monthly';

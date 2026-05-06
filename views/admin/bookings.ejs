@@ -45,7 +45,7 @@
         <% } %>
         <% bookings.forEach(b => { %>
           <tr>
-            <td><%= b.booking_date %></td>
+            <td><%= new Date(b.booking_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }) %></td>
             <td><%= helpers.formatTimeLabel(b.start_time) %></td>
             <td>
               <strong><%= b.customer_name %></strong>

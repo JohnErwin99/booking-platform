@@ -9,6 +9,20 @@
 
   <!-- Branding Tab -->
   <div x-show="tab === 'branding'" class="tab-content">
+    <!-- Logo Upload -->
+    <form method="POST" action="/admin/settings/logo" enctype="multipart/form-data" class="settings-form" style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #eee">
+      <div class="form-group">
+        <label>Business Logo</label>
+        <% if (tenant.logo_url) { %>
+          <div style="margin-bottom:8px">
+            <img src="<%= tenant.logo_url %>" alt="Current logo" style="width:80px;height:80px;border-radius:12px;object-fit:contain;background:#f8f8f8;padding:8px">
+          </div>
+        <% } %>
+        <input type="file" name="logo" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-secondary">Upload Logo</button>
+    </form>
+
     <form method="POST" action="/admin/settings/branding" class="settings-form">
       <div class="form-group">
         <label>Business Name</label>
@@ -187,6 +201,20 @@
 
   <!-- Account Tab -->
   <div x-show="tab === 'account'" class="tab-content">
+    <!-- Profile Photo -->
+    <h3 style="margin-bottom:16px">Profile Photo</h3>
+    <form method="POST" action="/admin/settings/photo" enctype="multipart/form-data" class="settings-form" style="margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid #eee">
+      <div class="form-group">
+        <% if (user.photo_url) { %>
+          <div style="margin-bottom:8px">
+            <img src="<%= user.photo_url %>" alt="Profile photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover">
+          </div>
+        <% } %>
+        <input type="file" name="photo" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-secondary">Upload Photo</button>
+    </form>
+
     <h3 style="margin-bottom:24px">Change Password</h3>
     <form method="POST" action="/admin/settings/password" class="settings-form">
       <div class="form-group">

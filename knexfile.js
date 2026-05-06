@@ -11,6 +11,7 @@ module.exports = {
       database: process.env.DB_NAME || 'booking_platform',
       charset: 'utf8mb4',
       timezone: 'Z',
+      dateStrings: true,
       ...(process.env.DB_SOCKET ? { socketPath: process.env.DB_SOCKET } : {})
     },
     pool: {
@@ -40,6 +41,7 @@ module.exports = {
       database: process.env.DB_NAME,
       charset: 'utf8mb4',
       timezone: 'Z',
+      dateStrings: true,
       enableKeepAlive: true,
       keepAliveInitialDelay: 10000
     },
