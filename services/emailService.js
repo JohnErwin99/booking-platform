@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
  * @param {object} opts - { to, subject, html, text, icalEvent }
  * @returns {Promise<object>} nodemailer info
  */
-async function sendEmail({ to, subject, html, text, icalEvent }) {
+async function sendEmail({ to, subject, html, text, icalEvent }, retries = 3) {
   const from = process.env.SMTP_FROM || process.env.SMTP_USER;
 
   const mailOptions = {
@@ -40,7 +40,18 @@ async function sendEmail({ to, subject, html, text, icalEvent }) {
     }];
   }
 
-  return transporter.sendMail(mailOptions);
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await transporter.sendMail(mailOptions);
+    } catch (err) {
+      console.error(`Email attempt ${attempt}/${retries} failed (${to}):`, err.message);
+      if (attempt < retries) {
+        await new Promise(r => setTimeout(r, 2000 * attempt));
+      } else {
+        throw err;
+      }
+    }
+  }
 }
 
 /**
