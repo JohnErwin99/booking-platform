@@ -205,7 +205,7 @@ router.post('/tenants', requireSuperadmin, async (req, res, next) => {
       text: `Hi ${owner_first_name || 'there'},\n\nYour business "${business_name}" has been set up on Bookwize!\n\nAdmin Dashboard: ${baseUrl}/admin/login\nEmail: ${owner_email}\nPassword: ${owner_password}\nBooking Page: ${baseUrl}/book/${slug}\n\nWe recommend changing your password after your first login.\n\nWelcome aboard!\nThe Bookwize Team`
     }).catch(err => console.error('Welcome email failed:', err.message));
 
-    req.flash('success', `Tenant "${business_name}" created. Welcome email sent to ${owner_email}.`);
+    req.flash('success', `Tenant "${business_name}" created. A welcome email with login credentials has been sent to ${owner_email}. Ask them to check their inbox or spam folder.`);
     res.redirect('/superadmin/tenants');
   } catch (err) {
     next(err);

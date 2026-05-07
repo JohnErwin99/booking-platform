@@ -255,7 +255,7 @@ router.post('/:slug/book', async (req, res, next) => {
         success: true,
         booking_id: bookingId,
         manage_token: manageToken,
-        message: `Booking confirmed! A confirmation will be sent to ${customerEmail}.`
+        message: `Booking confirmed! A confirmation email has been sent to ${customerEmail}. Please check your inbox or spam folder.`
       });
     } catch (err) {
       // Handle duplicate entry (double-booking prevention)

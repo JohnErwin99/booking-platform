@@ -94,10 +94,11 @@ router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), a
       return res.redirect('/admin/staff/new');
     }
 
-    // Check if email already exists
-    const existingUser = await db('users').where('email', email.toLowerCase().trim()).first();
+    // Check if email already exists for this tenant
+    const existingUser = await db('users')
+      .where({ tenant_id: tenantId, email: email.toLowerCase().trim() }).first();
     if (existingUser) {
-      req.flash('error', 'A user with this email already exists.');
+      req.flash('error', 'A user with this email already exists in your business.');
       return res.redirect('/admin/staff/new');
     }
 
@@ -165,7 +166,7 @@ router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), a
       text: `Hi ${first_name},\n\nAn account has been created for you on ${tenant.name}.\n\nLogin: ${baseUrl}/admin/login\nEmail: ${email}\nPassword: ${password}\nRole: ${role || 'staff'}\n\nPlease change your password after first login.`
     }).catch(err => console.error('Staff welcome email failed:', err.message));
 
-    req.flash('success', `Staff member added. Login credentials sent to ${email}.`);
+    req.flash('success', `Staff member added. A welcome email with login credentials has been sent to ${email}. Please ask them to check their inbox or spam folder.`);
     res.redirect('/admin/staff');
   } catch (err) {
     next(err);
