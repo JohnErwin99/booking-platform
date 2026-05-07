@@ -51,12 +51,28 @@
     <main class="main-content">
       <header class="topbar">
         <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">&#9776;</button>
+        <% if (title !== 'Dashboard') { %>
+          <a href="/admin/dashboard" class="back-btn" aria-label="Back to dashboard">&larr;</a>
+        <% } %>
         <h1 class="page-title"><%= title %></h1>
         <div class="topbar-right">
           <span class="user-name"><%= user ? user.first_name : '' %></span>
           <span class="user-role badge"><%= user ? user.role : '' %></span>
         </div>
       </header>
+
+      <% if (typeof trialDaysLeft !== 'undefined') { %>
+        <div style="background:<%= trialExpired ? '#FEE2E2' : 'linear-gradient(135deg,#FFF3E6,#FEF3C7)' %>;padding:12px 20px;border-radius:14px;margin:16px 16px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <span style="font-size:.85rem;font-weight:600;color:<%= trialExpired ? '#991B1B' : '#92400E' %>">
+            <% if (trialExpired) { %>
+              Your free trial has expired. Upgrade to keep your bookings active.
+            <% } else { %>
+              Free trial — <%= trialDaysLeft %> day<%= trialDaysLeft !== 1 ? 's' : '' %> remaining
+            <% } %>
+          </span>
+          <a href="/#pricing" style="font-size:.82rem;font-weight:700;color:#fff;background:#F28C38;padding:6px 18px;border-radius:10px;text-decoration:none">Upgrade Now</a>
+        </div>
+      <% } %>
 
       <div class="content-area">
         <%- include('../partials/flash') %>
@@ -65,10 +81,35 @@
     </main>
   </div>
 
+  <!-- Mobile Bottom Tab Bar -->
+  <nav class="mobile-tabs">
+    <a href="/admin/dashboard" class="<%= title === 'Dashboard' ? 'active' : '' %>">
+      <span class="tab-icon">&#9632;</span>Home
+    </a>
+    <a href="/admin/bookings" class="<%= title === 'Bookings' ? 'active' : '' %>">
+      <span class="tab-icon">&#128197;</span>Bookings
+    </a>
+    <a href="/admin/customers" class="<%= title === 'Customers' ? 'active' : '' %>">
+      <span class="tab-icon">&#128101;</span>Clients
+    </a>
+    <a href="/admin/staff" class="<%= title === 'Staff' ? 'active' : '' %>">
+      <span class="tab-icon">&#128100;</span>Staff
+    </a>
+    <a href="/admin/settings" class="<%= title === 'Settings' ? 'active' : '' %>">
+      <span class="tab-icon">&#9881;</span>Settings
+    </a>
+  </nav>
+
   <script>
     // Close sidebar on mobile when clicking outside
     document.querySelector('.main-content').addEventListener('click', () => {
       document.getElementById('sidebar').classList.remove('open');
+    });
+    // Close sidebar when a nav item is clicked (mobile)
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('open');
+      });
     });
   </script>
   <%- typeof extraScripts !== 'undefined' ? extraScripts : '' %>

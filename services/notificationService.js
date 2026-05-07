@@ -67,6 +67,8 @@ function buildVars(booking, tenant) {
     booking_time: formatTimeLabel(booking.start_time),
     staff_name: booking.staff_name,
     manage_link: `${process.env.BASE_URL || 'http://localhost:3000'}/book/${tenant.slug}/manage/${booking.manage_token}`,
+    confirm_link: `${process.env.BASE_URL || 'http://localhost:3000'}/book/${tenant.slug}/confirm-attendance/${booking.manage_token}`,
+    cancel_link: `${process.env.BASE_URL || 'http://localhost:3000'}/book/${tenant.slug}/cancel/${booking.manage_token}`,
     booking_link: `${process.env.BASE_URL || 'http://localhost:3000'}/book/${tenant.slug}`
   };
 }
@@ -115,13 +117,33 @@ async function sendNotification(booking, tenant, type) {
     const textBody = renderTemplate(template.body_template, vars);
 
     // Convert plain text to simple HTML
+    let bodyHtml = textBody.split('\n').map(line => line.trim() ? `<p style="margin: 0 0 12px;">${line}</p>` : '').join('\n');
+
+    // Convert confirm/cancel links into styled buttons
+    if (vars.confirm_link) {
+      bodyHtml = bodyHtml.replace(
+        new RegExp(`(✅[^:]*:\\s*)${vars.confirm_link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g'),
+        `<div style="margin:16px 0;text-align:center"><a href="${vars.confirm_link}" style="display:inline-block;padding:14px 32px;background:#22C55E;color:#fff;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none">✅ I'll be there</a></div>`
+      );
+      bodyHtml = bodyHtml.replace(
+        new RegExp(`(❌[^:]*:\\s*)${vars.cancel_link.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g'),
+        `<div style="margin:8px 0 16px;text-align:center"><a href="${vars.cancel_link}" style="display:inline-block;padding:14px 32px;background:#fff;color:#EF4444;font-weight:700;font-size:15px;border-radius:12px;text-decoration:none;border:2px solid #EF4444">❌ I need to cancel</a></div>`
+      );
+    }
+
+    // Also linkify any remaining URLs in the body
+    bodyHtml = bodyHtml.replace(/(https?:\/\/[^\s<]+)/g, (url) => {
+      if (url.includes('confirm-attendance') || url.includes('cancel')) return url;
+      return `<a href="${url}" style="color:#F28C38">${url}</a>`;
+    });
+
     const htmlBody = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 32px 24px; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 24px;">
-          <h2 style="margin: 0; color: ${tenant.primary_color || '#4F46E5'};">${tenant.name}</h2>
+          <h2 style="margin: 0; color: ${tenant.primary_color || '#F28C38'};">${tenant.name}</h2>
         </div>
         <div style="background: #f8fafc; border-radius: 12px; padding: 24px; line-height: 1.7;">
-          ${textBody.split('\n').map(line => line.trim() ? `<p style="margin: 0 0 12px;">${line}</p>` : '').join('\n')}
+          ${bodyHtml}
         </div>
         <p style="text-align: center; margin-top: 24px; font-size: 13px; color: #94a3b8;">
           Sent by ${tenant.name} via Bookwize
@@ -316,9 +338,37 @@ async function processFollowups() {
   }
 }
 
+/**
+ * Cron job: auto-complete bookings that were confirmed by the customer
+ * once their appointment end time has passed.
+ */
+async function autoCompleteConfirmed() {
+  try {
+    const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+
+    const bookings = await db('bookings')
+      .where({ status: 'confirmed', customer_confirmed: true })
+      .where('booking_date', '<=', todayStr);
+
+    for (const booking of bookings) {
+      const [h, m] = booking.end_time.split(':');
+      const endTime = new Date(`${booking.booking_date}T${h.padStart(2, '0')}:${m.padStart(2, '0')}:00`);
+
+      if (now > endTime) {
+        await db('bookings').where('id', booking.id).update({ status: 'completed' });
+        console.log(`Auto-completed booking ${booking.id} (customer confirmed)`);
+      }
+    }
+  } catch (err) {
+    console.error('Auto-complete cron error:', err.message);
+  }
+}
+
 module.exports = {
   sendBookingConfirmation,
   sendBookingCancellation,
   processReminders,
-  processFollowups
+  processFollowups,
+  autoCompleteConfirmed
 };

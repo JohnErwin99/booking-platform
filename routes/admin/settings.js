@@ -159,6 +159,39 @@ router.post('/settings/password', async (req, res, next) => {
   }
 });
 
+// POST /admin/settings/billing-portal - Redirect to Stripe Customer Portal
+router.post('/settings/billing-portal', requireRole('owner'), async (req, res, next) => {
+  try {
+    const tenantId = req.user.tenant_id;
+
+    // Find the Stripe customer ID from subscriptions
+    const subscription = await db('subscriptions')
+      .where('tenant_id', tenantId)
+      .whereNotNull('stripe_customer_id')
+      .orderBy('created_at', 'desc')
+      .first();
+
+    if (!subscription || !subscription.stripe_customer_id) {
+      req.flash('error', 'No active subscription found. Please subscribe to a plan first.');
+      return res.redirect('/admin/settings');
+    }
+
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: subscription.stripe_customer_id,
+      return_url: `${baseUrl}/admin/settings`,
+    });
+
+    res.redirect(portalSession.url);
+  } catch (err) {
+    console.error('Billing portal error:', err.message);
+    req.flash('error', 'Could not open billing portal. Please try again.');
+    res.redirect('/admin/settings');
+  }
+});
+
 // POST /admin/settings/photo - Upload profile photo
 router.post('/settings/photo', upload.single('photo'), async (req, res, next) => {
   try {

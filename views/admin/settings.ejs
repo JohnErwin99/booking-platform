@@ -5,6 +5,7 @@
     <button @click="tab = 'hours'" :class="{ active: tab === 'hours' }" class="tab-btn">Business Hours</button>
     <button @click="tab = 'widget'" :class="{ active: tab === 'widget' }" class="tab-btn">Widget</button>
     <button @click="tab = 'account'" :class="{ active: tab === 'account' }" class="tab-btn">Account</button>
+    <button @click="tab = 'billing'" :class="{ active: tab === 'billing' }" class="tab-btn">Billing</button>
   </div>
 
   <!-- Branding Tab -->
@@ -231,6 +232,57 @@
       </div>
       <button type="submit" class="btn btn-primary">Change Password</button>
     </form>
+  </div>
+
+  <!-- Billing Tab -->
+  <div x-show="tab === 'billing'" class="tab-content">
+    <h3 style="margin-bottom:8px">Your Plan</h3>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+      <span class="badge" style="font-size:.85rem;padding:6px 16px;text-transform:capitalize"><%= tenant.plan %></span>
+      <% if (tenant.plan === 'trial' && tenant.trial_ends_at) { %>
+        <span style="color:#92400E;font-size:.85rem">
+          <% const trialEnd = new Date(tenant.trial_ends_at); const daysLeft = Math.max(0, Math.ceil((trialEnd - new Date()) / 86400000)); %>
+          <%= daysLeft %> day<%= daysLeft !== 1 ? 's' : '' %> remaining
+        </span>
+      <% } %>
+    </div>
+
+    <% if (tenant.plan === 'trial') { %>
+      <div style="background:linear-gradient(135deg,#FFF3E6,#FEF3C7);border-radius:16px;padding:24px;margin-bottom:24px">
+        <p style="font-size:.9rem;color:#92400E;font-weight:600;margin-bottom:12px">Upgrade to remove trial limits</p>
+        <p style="font-size:.85rem;color:#92400E;margin-bottom:16px">Get unlimited bookings, full white-label branding, and priority support.</p>
+        <a href="/#pricing" class="btn btn-primary">View Plans & Upgrade</a>
+      </div>
+    <% } else { %>
+      <div style="background:#F9FAFB;border-radius:16px;padding:24px;margin-bottom:24px">
+        <p style="font-size:.9rem;font-weight:600;margin-bottom:12px">Manage your subscription</p>
+        <p style="font-size:.85rem;color:#737373;margin-bottom:16px">Upgrade, downgrade, update payment method, or cancel your subscription through the Stripe Customer Portal.</p>
+        <form method="POST" action="/admin/settings/billing-portal">
+          <button type="submit" class="btn btn-primary">Manage Subscription</button>
+        </form>
+      </div>
+    <% } %>
+
+    <div style="border-top:1px solid #eee;padding-top:20px">
+      <h4 style="margin-bottom:12px;font-size:.9rem">Plan Comparison</h4>
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+        <thead>
+          <tr style="border-bottom:2px solid #E8DFD0">
+            <th style="text-align:left;padding:8px 0;color:#9CA3AF">Feature</th>
+            <th style="text-align:center;padding:8px;color:#9CA3AF">Solo $19/mo</th>
+            <th style="text-align:center;padding:8px;color:#F28C38;font-weight:700">Team $39/mo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Staff members</td><td style="text-align:center">1</td><td style="text-align:center">Up to 5</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Bookings</td><td style="text-align:center">Unlimited</td><td style="text-align:center">Unlimited</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">White-label branding</td><td style="text-align:center">Basic</td><td style="text-align:center">Full</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Email reminders</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Embeddable widget</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
+          <tr><td style="padding:8px 0">Priority support</td><td style="text-align:center">—</td><td style="text-align:center">&#10003;</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

@@ -59,8 +59,13 @@ router.get('/:slug/availability', async (req, res, next) => {
       .first();
 
     if (!hours) {
+      // Try staff's assigned location, or fall back to default location
+      const locationId = staffMember.location_id
+        || (await db('locations').where({ tenant_id: tenantId, is_default: true }).first())?.id
+        || (await db('locations').where('tenant_id', tenantId).first())?.id;
+
       hours = await db('business_hours')
-        .where({ tenant_id: tenantId, location_id: staffMember.location_id, staff_id: null, weekday: dayOfWeek })
+        .where({ tenant_id: tenantId, location_id: locationId, staff_id: null, weekday: dayOfWeek })
         .first();
     }
 
@@ -138,6 +143,25 @@ router.post('/:slug/book', async (req, res, next) => {
   try {
     const tenant = await db('tenants').where('slug', req.params.slug).first();
     if (!tenant) return res.status(404).json({ error: 'Business not found.' });
+
+    // Trial limits check
+    if (tenant.plan === 'trial') {
+      // Check if trial expired
+      if (tenant.trial_ends_at && new Date(tenant.trial_ends_at) < new Date()) {
+        return res.status(403).json({ error: 'This business\'s free trial has expired. Please contact them to upgrade.' });
+      }
+      // Check 10 bookings/month limit
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      const monthStr = monthStart.toISOString().slice(0, 10);
+      const [{ count: monthlyCount }] = await db('bookings')
+        .where('tenant_id', tenant.id)
+        .where('created_at', '>=', monthStr)
+        .count('id as count');
+      if (monthlyCount >= 10) {
+        return res.status(403).json({ error: 'This business has reached their monthly booking limit. Please contact them.' });
+      }
+    }
 
     const tenantId = tenant.id;
     const { staff_id, service_id, location_id, date, time, first_name, last_name, email, phone, notes } = req.body;

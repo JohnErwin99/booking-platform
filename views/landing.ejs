@@ -11,6 +11,8 @@
   <meta name="author" content="Bookwize">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://bookwizeapp.com/">
+  <link rel="alternate" hreflang="en-ca" href="https://bookwizeapp.com/">
+  <link rel="alternate" hreflang="fr-ca" href="https://bookwizeapp.com/fr">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -27,9 +29,11 @@
   <meta name="twitter:description" content="All-in-one booking and CRM platform. Manage appointments, staff, and clients. Trusted by businesses across Canada.">
   <meta name="twitter:image" content="https://bookwizeapp.com/img/og-share.png">
 
-  <!-- Favicon -->
+  <!-- Favicon + PWA -->
   <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/img/logo.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1A1A2E">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +60,75 @@
       "@type": "ContactPoint",
       "contactType": "customer support",
       "url": "https://bookwizeapp.com"
+    },
+    "sameAs": [
+      "https://www.instagram.com/bookwizeapp"
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Bookwize",
+    "url": "https://bookwizeapp.com",
+    "logo": "https://bookwizeapp.com/img/logo.svg",
+    "description": "Bookwize is a commission-free online booking and CRM platform built for salons, barbershops, and service businesses in Canada, starting at $19/month.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Montreal",
+      "addressRegion": "QC",
+      "addressCountry": "CA"
+    },
+    "priceRange": "$19-$599"
+  }
+  </script>
+
+  <!-- JSON-LD: WebSite with SearchAction -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Bookwize",
+    "url": "https://bookwizeapp.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://bookwizeapp.com/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
     }
+  }
+  </script>
+
+  <!-- JSON-LD: HowTo (3-step setup) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Set Up Online Booking for Your Business with Bookwize",
+    "description": "Get your online booking page live in under 5 minutes with Bookwize. No technical knowledge required.",
+    "totalTime": "PT5M",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Create your business",
+        "text": "Sign up for free, add your services and team members, set your business hours. Takes about 3 minutes.",
+        "image": "https://bookwizeapp.com/img/signup.png"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Share your booking link",
+        "text": "Get a unique URL for your business. Share it on social media, your website, or via text message.",
+        "image": "https://bookwizeapp.com/img/bookinglink.png"
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Get booked",
+        "text": "Clients book appointments on their own. You get notified instantly, they get an email confirmation. Everyone wins.",
+        "image": "https://bookwizeapp.com/img/dashboard.png"
+      }
+    ]
   }
   </script>
 
@@ -73,15 +145,10 @@
     "featureList": "Online Booking, Staff Management, CRM, Automated Reminders, White-Label Branding, Embeddable Widget, Multi-Location Support",
     "offers": {
       "@type": "AggregateOffer",
-      "priceCurrency": "USD",
+      "priceCurrency": "CAD",
       "lowPrice": "19",
       "highPrice": "599",
       "offerCount": "4"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "48"
     }
   }
   </script>
@@ -139,6 +206,38 @@
           "@type": "Answer",
           "text": "Yes. Bookwize automatically sends email confirmations when a booking is made and reminders 24 hours before the appointment to reduce no-shows. SMS reminders are available on paid plans."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does Bookwize cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bookwize starts at $19 CAD/month for the Solo plan or $299 one-time. The Team plan is $39/month or $599 one-time for up to 5 staff. No commission, no hidden fees. A 14-day free trial is available with no credit card required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Bookwize better than Fresha, Booksy, or Vagaro?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bookwize is the only booking platform built for Canadian businesses with French and English support. Unlike Fresha (20% commission on new clients), Bookwize has zero commission. Unlike Booksy and Vagaro, Bookwize offers full white-label branding and one-time payment options starting at $299."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Bookwize work in Canada and Quebec?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Bookwize is based in Montreal, Quebec, Canada. It supports CAD, all Canadian timezones, and is fully bilingual (French and English), designed specifically for Canadian service businesses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use Bookwize without paying commission on bookings?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. Bookwize charges a flat monthly fee or one-time payment with zero commission, percentage, or per-booking fee. You keep 100% of your revenue, unlike Fresha which charges 20% on new client bookings."
+        }
       }
     ]
   }
@@ -154,12 +253,25 @@
         <span>Bookwize</span>
       </a>
       <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#pricing">Pricing</a>
+        <a href="#features" data-en="Features" data-fr="Fonctionnalités">Features</a>
+        <a href="#pricing" data-en="Pricing" data-fr="Tarifs">Pricing</a>
         <a href="#faq">FAQ</a>
-        <a href="#app">iOS App — Coming Soon</a>
-        <a href="/admin/login" class="btn btn-ghost-nav">Log in</a>
-        <a href="#pricing" class="btn btn-primary-nav">Get Started</a>
+        <a href="#app" data-en="Mobile App" data-fr="Appli mobile">Mobile App</a>
+        <div class="nav-dropdown">
+          <a href="#" class="nav-dropdown-toggle" onclick="event.preventDefault()">Resources</a>
+          <div class="nav-dropdown-menu">
+            <a href="/alternative/booksy">Bookwize vs Booksy</a>
+            <a href="/alternative/fresha">Bookwize vs Fresha</a>
+            <a href="/alternative/vagaro">Bookwize vs Vagaro</a>
+          </div>
+        </div>
+        <div class="lang-toggle" onclick="toggleLang()">
+          <span class="lang-label lang-en">EN</span>
+          <div class="lang-switch"><div class="lang-knob"></div></div>
+          <span class="lang-label lang-fr">FR</span>
+        </div>
+        <a href="/admin/login" class="btn btn-ghost-nav" data-en="Log in" data-fr="Connexion">Log in</a>
+        <a href="/admin/signup" class="btn btn-primary-nav" data-en="Start Free Trial" data-fr="Essai gratuit">Start Free Trial</a>
       </div>
       <button class="nav-toggle" id="navToggle" onclick="toggleMenu()" aria-label="Menu">
         <svg class="icon-menu" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -168,18 +280,27 @@
     </div>
   </nav>
 
+  <!-- Install Banner -->
+  <div class="install-banner" id="installBanner">
+    <div class="container install-inner">
+      <span>Add Bookwize to your home screen — tap <strong>Share</strong> then <strong>"Add to Home Screen"</strong> for an app-like experience.</span>
+      <button onclick="document.getElementById('installBanner').style.display='none'" aria-label="Dismiss">&times;</button>
+    </div>
+  </div>
+
   <!-- Hero -->
   <section class="hero">
     <div class="dotted-surface" id="dottedSurface"></div>
     <div class="container hero-inner">
       <div class="hero-content">
-        <div class="hero-badge">Efficient booking solutions for modern businesses</div>
-        <h1><span class="gradient-text">Stack your schedule.</span></h1>
-        <p class="hero-sub">The all-in-one online booking system for salons, barbershops, and service businesses in Canada. Manage appointments, staff, and clients from one dashboard.</p>
+        <div class="hero-badge" data-en="Efficient booking solutions for modern businesses" data-fr="Solutions de réservation pour entreprises modernes">Efficient booking solutions for modern businesses</div>
+        <h1><span class="gradient-text" data-en="Stack your schedule." data-fr="Remplissez votre agenda.">Stack your schedule.</span></h1>
+        <h2 class="hero-h2" data-en="Online Booking System for Salons, Barbershops & Service Businesses in Canada" data-fr="Système de réservation en ligne pour salons, barbiers et entreprises de services au Canada">Online Booking System for Salons, Barbershops & Service Businesses in Canada</h2>
+        <p class="hero-sub" data-en="The all-in-one online booking system for salons, barbershops, and service businesses in Canada. Manage appointments, staff, and clients from one dashboard." data-fr="Le système de réservation en ligne tout-en-un pour les salons, barbiers et entreprises de services au Canada. Gérez rendez-vous, personnel et clients depuis un seul tableau de bord.">The all-in-one online booking system for salons, barbershops, and service businesses in Canada. Manage appointments, staff, and clients from one dashboard.</p>
         <div class="hero-actions">
-          <a href="#pricing" class="btn btn-primary btn-lg">Get Started</a>
+          <a href="/admin/signup" class="btn btn-primary btn-lg" data-en="Start Free Trial" data-fr="Essai gratuit">Start Free Trial</a>
         </div>
-        <p class="hero-note">No credit card required &middot; Setup in under 5 minutes</p>
+        <p class="hero-note" data-en="No credit card required &middot; Setup in under 5 minutes" data-fr="Aucune carte de crédit requise &middot; Configuration en 5 minutes">No credit card required &middot; Setup in under 5 minutes</p>
       </div>
       <div class="hero-visual">
         <div class="hero-mockup">
@@ -246,7 +367,8 @@
       </div>
       <div class="hero-scroll-card" id="scrollCard">
         <div class="scroll-card-frame">
-          <img src="/img/mobiledashboard.jpeg" alt="Bookwize dashboard — manage bookings, staff, and customers" class="scroll-card-img">
+          <img src="/img/dashboard.png" alt="Bookwize dashboard — manage bookings, staff, and customers" class="scroll-card-img scroll-desktop">
+          <img loading="lazy" src="/img/mobiledashboard.jpeg" alt="Bookwize mobile dashboard" class="scroll-card-img scroll-mobile">
         </div>
       </div>
     </div>
@@ -258,27 +380,27 @@
       <p class="logos-label">Trusted by businesses across Canada</p>
       <div class="logos-row">
         <div class="logo-item">
-          <img src="/img/partner1.png" alt="Century Farm Foods logo">
+          <img loading="lazy" src="/img/partner1.png" alt="Century Farm Foods logo">
           <span>Century Farm Foods</span>
         </div>
         <div class="logo-item">
-          <img src="/img/partner2.png" alt="Faded Studio logo">
+          <img loading="lazy" src="/img/partner2.png" alt="Faded Studio logo">
           <span>Faded Studio</span>
         </div>
         <div class="logo-item">
-          <img src="/img/partner3.png" alt="Green & Gold logo">
+          <img loading="lazy" src="/img/partner3.png" alt="Green & Gold logo">
           <span>Green & Gold</span>
         </div>
         <div class="logo-item">
-          <img src="/img/partner4.png" alt="HoneyLash Eyelash Extensions logo">
+          <img loading="lazy" src="/img/partner4.png" alt="HoneyLash Eyelash Extensions logo">
           <span>HoneyLash</span>
         </div>
         <div class="logo-item">
-          <img src="/img/partner5.png" alt="BH logo">
+          <img loading="lazy" src="/img/partner5.png" alt="BH logo">
           <span>BH</span>
         </div>
         <div class="logo-item">
-          <img src="/img/partner6.png" alt="Clippers MTL Salon de barbier logo">
+          <img loading="lazy" src="/img/partner6.png" alt="Clippers MTL Salon de barbier logo">
           <span>Clippers MTL</span>
         </div>
       </div>
@@ -299,42 +421,42 @@
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">
-            <img src="/img/onlinebooking.png" alt="24/7 Online Booking">
+            <img loading="lazy" src="/img/onlinebooking.png" alt="24/7 Online Booking">
           </div>
           <h3>24/7 Online Booking</h3>
           <p>Clients book anytime from your branded page. No more missed calls or back-and-forth texts.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
-            <img src="/img/staffmanagement.png" alt="Staff Management">
+            <img loading="lazy" src="/img/staffmanagement.png" alt="Staff Management">
           </div>
           <h3>Staff Management</h3>
           <p>Each team member gets their own schedule, services, and availability. Clients pick who they want.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
-            <img src="/img/noshow.png" alt="No-Show Protection">
+            <img loading="lazy" src="/img/noshow.png" alt="No-Show Protection">
           </div>
           <h3>No-Show Protection</h3>
           <p>Automatic email reminders and confirmations keep your chair filled and your revenue predictable.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
-            <img src="/img/whitelabel.png" alt="White-Label Branding">
+            <img loading="lazy" src="/img/whitelabel.png" alt="White-Label Branding">
           </div>
           <h3>White-Label Branding</h3>
           <p>Your colors, your logo, your fonts. The booking page looks like it was built just for your business.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
-            <img src="/img/embed.png" alt="Embed Anywhere">
+            <img loading="lazy" src="/img/embed.png" alt="Embed Anywhere">
           </div>
           <h3>Embed Anywhere</h3>
           <p>Drop a widget on your website, share a link on Instagram, or add a QR code to your business card.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
-            <img src="/img/multilocation.png" alt="Multi-Location">
+            <img loading="lazy" src="/img/multilocation.png" alt="Multi-Location">
           </div>
           <h3>Multi-Location</h3>
           <p>Manage multiple businesses or locations from a single dashboard. Scale without switching tools.</p>
@@ -353,7 +475,8 @@
       </div>
       <div class="steps-row">
         <div class="step-item">
-          <div class="step-number">1</div>
+          <div class="step-img"><img loading="lazy" src="/img/signup.png" alt="Sign up to Bookwize"></div>
+          <div class="step-label">Step 1</div>
           <h3>Create your business</h3>
           <p>Sign up, add your services and team members, set your hours. Takes about 3 minutes.</p>
         </div>
@@ -361,7 +484,8 @@
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M12 20h16m0 0l-6-6m6 6l-6 6" stroke="#E8DFD0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="step-item">
-          <div class="step-number">2</div>
+          <div class="step-img"><img loading="lazy" src="/img/bookinglink.png" alt="Share your booking link"></div>
+          <div class="step-label">Step 2</div>
           <h3>Share your booking link</h3>
           <p>Get a unique URL for your business. Share it on social media, your website, or via text.</p>
         </div>
@@ -369,7 +493,8 @@
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M12 20h16m0 0l-6-6m6 6l-6 6" stroke="#E8DFD0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="step-item">
-          <div class="step-number">3</div>
+          <div class="step-img"><img loading="lazy" src="/img/dashboard.png" alt="Bookwize admin dashboard"></div>
+          <div class="step-label">Step 3</div>
           <h3>Get booked</h3>
           <p>Clients book appointments on their own. You get notified, they get confirmed. Everyone wins.</p>
         </div>
@@ -442,6 +567,39 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- For Businesses -->
+  <section class="for-businesses">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">For Your Industry</span>
+        <h2>Built for service businesses across Canada</h2>
+        <p><strong>Bookwize is a commission-free online booking and CRM platform built for salons, barbershops, and service businesses in Canada, starting at $19/month.</strong></p>
+      </div>
+      <div class="business-cards">
+        <a href="/salon-booking-montreal" class="business-card">
+          <h3>&#128135; Salons & Barbershops in Montreal</h3>
+          <p>From the Plateau to NDG, Montreal's busiest salons and barbershops use Bookwize to manage appointments, reduce no-shows, and let clients book 24/7.</p>
+          <ul>
+            <li>Fully bilingual — English and French</li>
+            <li>Clippers MTL and Faded Studio already use Bookwize</li>
+            <li>No commission — keep 100% of your revenue</li>
+          </ul>
+          <span class="business-card-link">Learn more &rarr;</span>
+        </a>
+        <a href="/booking-software-canada" class="business-card">
+          <h3>&#127464;&#127462; Service Businesses Across Canada</h3>
+          <p>Whether you're a spa in Toronto, a wellness studio in Vancouver, or a barbershop in Calgary — Bookwize supports all Canadian timezones and CAD payments.</p>
+          <ul>
+            <li>White-label branding — your logo, your colors</li>
+            <li>One-time payment from $299 — no recurring fees</li>
+            <li>Compare us to Booksy, Fresha, and Vagaro</li>
+          </ul>
+          <span class="business-card-link">Learn more &rarr;</span>
+        </a>
       </div>
     </div>
   </section>
@@ -540,6 +698,22 @@
           <summary>Does Bookwize work for businesses with multiple staff or locations?</summary>
           <p>Yes. Bookwize supports multiple staff members, each with their own schedule, services, and availability. The Team plan supports up to 5 staff. Multi-location management is also available, letting you run everything from a single dashboard.</p>
         </details>
+        <details class="faq-item">
+          <summary>How much does Bookwize cost?</summary>
+          <p>Bookwize starts at $19 CAD/month for the Solo plan (1 staff member) or $299 one-time. The Team plan is $39/month or $599 one-time and supports up to 5 staff members. There are no hidden fees, no commission on bookings, and no marketplace charges. A 14-day free trial is available with no credit card required.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is Bookwize better than Fresha, Booksy, or Vagaro?</summary>
+          <p>Bookwize is the only booking platform built specifically for Canadian businesses with full French and English support. Unlike Fresha (which charges 20% on new clients), Bookwize has zero commission. Unlike Booksy and Vagaro, Bookwize offers full white-label branding and a one-time payment option. Compare features at our <a href="/alternative/booksy">Booksy</a>, <a href="/alternative/fresha">Fresha</a>, and <a href="/alternative/vagaro">Vagaro</a> comparison pages.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Does Bookwize work in Canada and Quebec?</summary>
+          <p>Yes. Bookwize is based in Montreal, Quebec, Canada. The platform supports Canadian dollars (CAD), Eastern Time and all Canadian timezones, and is fully bilingual (French and English). It's designed specifically for Canadian service businesses including salons, barbershops, spas, and wellness practitioners.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Can I use Bookwize without paying commission on bookings?</summary>
+          <p>Absolutely. Bookwize charges a flat monthly fee or one-time payment — there is never any commission, percentage, or per-booking fee. You keep 100% of your revenue. This is a key difference from platforms like Fresha which charge 20% commission on new client bookings.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -549,22 +723,26 @@
     <div class="container">
       <div class="mobile-app-inner">
         <div class="mobile-app-content">
-          <span class="section-tag">Mobile App</span>
-          <h2>Manage your business on the go</h2>
-          <p>View bookings, manage staff, track customers, and update settings — all from your phone. The Bookwize iOS app puts your entire dashboard in your pocket.</p>
+          <span class="section-tag">Works on any device</span>
+          <h2>Your dashboard, right in your pocket</h2>
+          <p>Bookwize works beautifully on your phone — no app download needed. Add it to your home screen for an instant app experience.</p>
           <ul class="mobile-app-features">
-            <li>Real-time booking notifications</li>
+            <li>Full dashboard on mobile</li>
             <li>View and manage appointments</li>
             <li>Staff and service management</li>
             <li>Customer notes and history</li>
-            <li>Share your booking link instantly</li>
+            <li>Works offline-ready in your browser</li>
           </ul>
           <div class="mobile-app-badge">
-            <span class="coming-soon-badge">Coming Soon to the App Store</span>
+            <div class="homescreen-steps">
+              <p><strong>Add to home screen:</strong></p>
+              <p>iPhone: Tap <strong>Share</strong> → <strong>Add to Home Screen</strong></p>
+              <p>Android: Tap <strong>&#8942;</strong> → <strong>Add to Home Screen</strong></p>
+            </div>
           </div>
         </div>
         <div class="mobile-app-image">
-          <img src="/img/mobiledashboard.jpeg" alt="Bookwize mobile app dashboard">
+          <img loading="lazy" src="/img/mobiledashboard.jpeg" alt="Bookwize mobile app dashboard">
         </div>
       </div>
     </div>
@@ -604,22 +782,21 @@
         </div>
         <div class="footer-col">
           <h4>Support</h4>
-          <a href="#">Help Center</a>
-          <a href="#">Contact</a>
-          <a href="#">Status</a>
+          <a href="#faq">Help Center</a>
+          <a href="https://www.instagram.com/bookwizeapp" target="_blank">Contact</a>
         </div>
       </div>
     </div>
     <div class="container footer-bottom">
       <p>&copy; 2026 Bookwize. All rights reserved.</p>
       <div class="footer-legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
       </div>
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script>
     // Dotted surface 3D wave animation
     (function() {
@@ -771,6 +948,108 @@
       window.addEventListener('scroll', updateScroll, { passive: true });
       updateScroll();
     })();
+
+    // Language toggle
+    let currentLang = 'en';
+
+    function toggleLang() {
+      currentLang = currentLang === 'en' ? 'fr' : 'en';
+      document.querySelector('.lang-toggle').classList.toggle('fr', currentLang === 'fr');
+      document.documentElement.lang = currentLang === 'fr' ? 'fr-CA' : 'en-CA';
+
+      // Translate all elements with data-en/data-fr
+      document.querySelectorAll('[data-en][data-fr]').forEach(el => {
+        el.innerHTML = el.getAttribute('data-' + currentLang);
+      });
+
+      // Translate section tags and headings without data attributes
+      const t = translations[currentLang];
+      Object.entries(t).forEach(([selector, text]) => {
+        const el = document.querySelector(selector);
+        if (el) el.innerHTML = text;
+      });
+    }
+
+    const translations = {
+      fr: {
+        '.features .section-tag': 'Fonctionnalités',
+        '.features-header-left h2': 'Tout ce dont vous avez besoin pour gérer vos réservations',
+        '.feature-card:nth-child(1) h3': 'Réservation en ligne 24/7',
+        '.feature-card:nth-child(1) p': 'Les clients réservent à tout moment depuis votre page personnalisée. Plus d\'appels manqués.',
+        '.feature-card:nth-child(2) h3': 'Gestion du personnel',
+        '.feature-card:nth-child(2) p': 'Chaque membre a son propre horaire et ses services. Les clients choisissent qui ils veulent.',
+        '.feature-card:nth-child(3) h3': 'Protection contre les absences',
+        '.feature-card:nth-child(3) p': 'Rappels automatiques par courriel pour garder votre agenda plein.',
+        '.feature-card:nth-child(4) h3': 'Marque blanche',
+        '.feature-card:nth-child(4) p': 'Vos couleurs, votre logo, vos polices. Votre page de réservation à votre image.',
+        '.feature-card:nth-child(5) h3': 'Intégrable partout',
+        '.feature-card:nth-child(5) p': 'Widget pour votre site web, lien Instagram, ou code QR pour votre carte d\'affaires.',
+        '.feature-card:nth-child(6) h3': 'Multi-emplacements',
+        '.feature-card:nth-child(6) p': 'Gérez plusieurs entreprises depuis un seul tableau de bord.',
+        '.how-it-works .section-tag': 'Comment ça marche',
+        '.how-it-works h2': 'En ligne en trois étapes',
+        '.how-it-works .section-header p': 'Votre page de réservation sera en ligne avant que votre café ne refroidisse.',
+        '.step-item:nth-child(1) h3': 'Créez votre entreprise',
+        '.step-item:nth-child(1) p': 'Inscrivez-vous, ajoutez vos services et votre équipe. Ça prend 3 minutes.',
+        '.step-item:nth-child(3) h3': 'Partagez votre lien',
+        '.step-item:nth-child(3) p': 'Obtenez une URL unique. Partagez-la sur les réseaux sociaux ou par texto.',
+        '.step-item:nth-child(5) h3': 'Recevez des réservations',
+        '.step-item:nth-child(5) p': 'Les clients réservent eux-mêmes. Vous êtes notifié, ils sont confirmés.',
+        '.pricing .section-tag': 'Tarifs',
+        '.pricing .section-header h2': 'Des prix simples et transparents',
+        '.pricing .section-header p': 'Payez une fois ou abonnez-vous mensuellement. Aucuns frais cachés.',
+        '.hero-scroll-header h2': 'Votre entreprise entière<br><span class="gradient-text">dans un seul tableau de bord.</span>',
+        '.hero-scroll-header p': 'Gérez réservations, personnel, clients et statistiques — tout est là.',
+        '.testimonials .section-tag': 'Témoignages',
+        '.testimonials .section-header h2': 'Aimé par les propriétaires d\'entreprise',
+        '.mobile-app-content .section-tag': 'Fonctionne sur tout appareil',
+        '.mobile-app-content h2': 'Votre tableau de bord dans votre poche',
+        '.mobile-app-content p': 'Bookwize fonctionne sur votre téléphone — aucun téléchargement requis. Ajoutez-le à votre écran d\'accueil.',
+        '.faq .section-tag': 'FAQ',
+        '.faq .section-header h2': 'Questions fréquemment posées',
+        '.cta-inner h2': 'Prêt à remplir votre agenda?',
+        '.cta-inner p': 'Rejoignez les entreprises qui font confiance à Bookwize. Essayez gratuitement ou contactez-nous sur Instagram.',
+      },
+      en: {
+        '.features .section-tag': 'Features',
+        '.features-header-left h2': 'Everything you need to manage bookings',
+        '.feature-card:nth-child(1) h3': '24/7 Online Booking',
+        '.feature-card:nth-child(1) p': 'Clients book anytime from your branded page. No more missed calls or back-and-forth texts.',
+        '.feature-card:nth-child(2) h3': 'Staff Management',
+        '.feature-card:nth-child(2) p': 'Each team member gets their own schedule, services, and availability. Clients pick who they want.',
+        '.feature-card:nth-child(3) h3': 'No-Show Protection',
+        '.feature-card:nth-child(3) p': 'Automatic email reminders and confirmations keep your chair filled and your revenue predictable.',
+        '.feature-card:nth-child(4) h3': 'White-Label Branding',
+        '.feature-card:nth-child(4) p': 'Your colors, your logo, your fonts. The booking page looks like it was built just for your business.',
+        '.feature-card:nth-child(5) h3': 'Embed Anywhere',
+        '.feature-card:nth-child(5) p': 'Drop a widget on your website, share a link on Instagram, or add a QR code to your business card.',
+        '.feature-card:nth-child(6) h3': 'Multi-Location',
+        '.feature-card:nth-child(6) p': 'Manage multiple businesses or locations from a single dashboard. Scale without switching tools.',
+        '.how-it-works .section-tag': 'How It Works',
+        '.how-it-works h2': 'Up and running in three steps',
+        '.how-it-works .section-header p': "You'll have your first booking page live before your coffee gets cold.",
+        '.step-item:nth-child(1) h3': 'Create your business',
+        '.step-item:nth-child(1) p': 'Sign up, add your services and team members, set your hours. Takes about 3 minutes.',
+        '.step-item:nth-child(3) h3': 'Share your booking link',
+        '.step-item:nth-child(3) p': 'Get a unique URL for your business. Share it on social media, your website, or via text.',
+        '.step-item:nth-child(5) h3': 'Get booked',
+        '.step-item:nth-child(5) p': 'Clients book appointments on their own. You get notified, they get confirmed. Everyone wins.',
+        '.pricing .section-tag': 'Pricing',
+        '.pricing .section-header h2': 'Simple, transparent pricing',
+        '.pricing .section-header p': 'Pay once and own it forever, or subscribe monthly. No hidden fees, ever.',
+        '.hero-scroll-header h2': 'Your entire business<br><span class="gradient-text">in one dashboard.</span>',
+        '.hero-scroll-header p': 'Manage bookings, staff, customers, and analytics — everything you need, beautifully organized.',
+        '.testimonials .section-tag': 'Testimonials',
+        '.testimonials .section-header h2': 'Loved by business owners',
+        '.mobile-app-content .section-tag': 'Works on any device',
+        '.mobile-app-content h2': 'Your dashboard, right in your pocket',
+        '.mobile-app-content p': 'Bookwize works beautifully on your phone — no app download needed. Add it to your home screen for an instant app experience.',
+        '.faq .section-tag': 'FAQ',
+        '.faq .section-header h2': 'Frequently asked questions',
+        '.cta-inner h2': 'Ready to stack your schedule?',
+        '.cta-inner p': 'Join 10+ businesses that trust Bookwize to manage their appointments. Want to try before you buy? Contact us on Instagram for a free trial.',
+      }
+    };
 
     // Pricing toggle
     let billingMode = 'monthly';

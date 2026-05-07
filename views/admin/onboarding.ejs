@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Your Business — Bookwize</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#FAF7FF;color:#1A1A2E;min-height:100vh}
+
+    .wizard{max-width:580px;margin:0 auto;padding:32px 20px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+
+    /* Progress */
+    .progress{display:flex;gap:6px;margin-bottom:40px}
+    .progress-dot{flex:1;height:5px;border-radius:99px;background:#E8DFD0;transition:background .3s}
+    .progress-dot.active{background:#F28C38}
+    .progress-dot.done{background:#22C55E}
+
+    /* Step cards */
+    .step{display:none;animation:fadeUp .4s ease}
+    .step.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+    .step-emoji{font-size:3rem;margin-bottom:16px}
+    .step h2{font-size:1.6rem;font-weight:800;margin-bottom:8px;line-height:1.2}
+    .step p.desc{color:#9CA3AF;font-size:.95rem;line-height:1.6;margin-bottom:28px}
+
+    /* Form elements */
+    .field{margin-bottom:18px}
+    .field label{display:block;font-size:.82rem;font-weight:600;color:#6B7280;margin-bottom:6px}
+    .field input,.field select,.field textarea{
+      width:100%;padding:14px 16px;border:1.5px solid #E8DFD0;border-radius:16px;
+      font-size:.95rem;color:#1A1A2E;background:#fff;transition:all .2s;outline:none;
+    }
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:#F28C38;box-shadow:0 0 0 3px rgba(242,140,56,.1)}
+    .field input::placeholder{color:#D1D5DB}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field-file{position:relative}
+    .field-file input[type="file"]{padding:12px;background:#F9FAFB;cursor:pointer}
+
+    /* Buttons */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:14px 28px;border-radius:16px;font-size:.95rem;font-weight:600;
+      border:none;cursor:pointer;transition:all .25s;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,#F28C38,#e07b28);color:#fff;
+      box-shadow:0 4px 16px rgba(242,140,56,.25);width:100%;
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(242,140,56,.3)}
+    .btn-secondary{background:#fff;color:#1A1A2E;border:1.5px solid #E8DFD0;width:100%}
+    .btn-secondary:hover{border-color:#F28C38;color:#F28C38}
+    .btn-ghost{background:none;color:#9CA3AF;font-size:.85rem;padding:10px}
+    .btn-ghost:hover{color:#F28C38}
+    .btn-row{display:flex;gap:10px;margin-top:24px}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+    /* Tags / chips */
+    .added-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+    .chip{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:8px 14px;border-radius:12px;font-size:.82rem;font-weight:600;
+      background:rgba(242,140,56,.08);color:#F28C38;
+    }
+
+    /* Hours grid */
+    .hours-grid{display:flex;flex-direction:column;gap:8px}
+    .hour-row{
+      display:grid;grid-template-columns:80px 1fr 1fr auto;gap:8px;align-items:center;
+      padding:10px 14px;background:#fff;border-radius:14px;border:1.5px solid #E8DFD0;
+    }
+    .hour-row label{font-size:.85rem;font-weight:600;color:#1A1A2E}
+    .hour-row input[type="time"]{padding:8px 10px;border:1px solid #E8DFD0;border-radius:10px;font-size:.85rem}
+    .hour-toggle{width:44px;height:26px;border-radius:13px;background:#E8DFD0;border:none;cursor:pointer;position:relative;transition:background .2s}
+    .hour-toggle.on{background:#F28C38}
+    .hour-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+    .hour-toggle.on::after{left:21px}
+
+    /* Success */
+    .success-icon{width:80px;height:80px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.5rem;color:#fff}
+    .booking-link{
+      display:block;padding:16px;background:#F9FAFB;border-radius:16px;
+      text-align:center;font-size:.95rem;font-weight:600;color:#F28C38;
+      border:1.5px dashed #E8DFD0;margin:20px 0;word-break:break-all;
+    }
+
+    @media(max-width:480px){
+      .field-row{grid-template-columns:1fr}
+      .hour-row{grid-template-columns:60px 1fr 1fr auto;gap:4px;padding:8px 10px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wizard" x-data="onboardingWizard()" x-cloak>
+    <!-- Progress bar -->
+    <div class="progress">
+      <template x-for="i in 5">
+        <div class="progress-dot" :class="{ active: step === i, done: step > i }"></div>
+      </template>
+    </div>
+
+    <!-- Step 1: Welcome / Business Info -->
+    <div class="step" :class="{ active: step === 1 }">
+      <div class="step-emoji">&#128075;</div>
+      <h2>Welcome to Bookwize!</h2>
+      <p class="desc">Let's set up your business in under 2 minutes. First, tell us about your business.</p>
+      <form @submit.prevent="saveBusiness()" id="businessForm" enctype="multipart/form-data">
+        <div class="field">
+          <label>Business Name</label>
+          <input type="text" x-model="business.name" placeholder="e.g. Faded Studio" required>
+        </div>
+        <div class="field">
+          <label>Logo (optional)</label>
+          <input type="file" name="logo" accept="image/*" class="field-file" @change="logoFile = $event.target.files[0]">
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input type="tel" x-model="business.phone" placeholder="(514) 555-0123">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Timezone</label>
+            <select x-model="business.timezone">
+              <option value="America/Montreal">Montreal (ET)</option>
+              <option value="America/Toronto">Toronto (ET)</option>
+              <option value="America/Vancouver">Vancouver (PT)</option>
+              <option value="America/Edmonton">Edmonton (MT)</option>
+              <option value="America/Winnipeg">Winnipeg (CT)</option>
+              <option value="America/New_York">New York (ET)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Currency</label>
+            <select x-model="business.currency">
+              <option value="CAD">CAD ($)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" :disabled="saving">
+          <span x-show="!saving">Next — Add your team</span>
+          <span x-show="saving">Saving...</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Step 2: Add Staff -->
+    <div class="step" :class="{ active: step === 2 }">
+      <div class="step-emoji">&#128102;</div>
+      <h2>Who's on your team?</h2>
+      <p class="desc">Add the people who will take bookings. You can always add more later.</p>
+
+      <div class="added-list" x-show="staffList.length">
+        <template x-for="s in staffList" :key="s.id">
+          <div class="chip" x-text="s.first_name + ' ' + s.last_name"></div>
+        </template>
+      </div>
+
+      <form @submit.prevent="addStaff()">
+        <div class="field-row">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" x-model="newStaff.first_name" placeholder="Steve" required>
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" x-model="newStaff.last_name" placeholder="Martinez" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" x-model="newStaff.email" placeholder="steve@business.com">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Title (optional)</label>
+            <input type="text" x-model="newStaff.title" placeholder="e.g. Senior Barber">
+          </div>
+          <div class="field">
+            <label>Role</label>
+            <select x-model="newStaff.role">
+              <option value="staff">Staff</option>
+              <option value="manager">Manager</option>
+              <option value="owner">Owner</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Password (for their login)</label>
+          <input type="password" x-model="newStaff.password" placeholder="Min 6 characters" minlength="6">
+        </div>
+        <button type="submit" class="btn btn-secondary" :disabled="saving">
+          <span x-show="!saving">+ Add Staff Member</span>
+          <span x-show="saving">Adding...</span>
+        </button>
+      </form>
+      <div class="btn-row">
+        <button class="btn btn-ghost" @click="step = 1">&larr; Back</button>
+        <button class="btn btn-primary" @click="step = 3" style="flex:1">
+          Next — Add services
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Add Services -->
+    <div class="step" :class="{ active: step === 3 }">
+      <div class="step-emoji">&#9986;&#65039;</div>
+      <h2>What services do you offer?</h2>
+      <p class="desc">Add the services clients can book. Each service has a name, duration, and price.</p>
+
+      <div class="added-list" x-show="serviceList.length">
+        <template x-for="s in serviceList" :key="s.id">
+          <div class="chip" x-text="s.name + ' — $' + (s.price_cents/100).toFixed(2)"></div>
+        </template>
+      </div>
+
+      <form @submit.prevent="addService()">
+        <div class="field">
+          <label>Service Name</label>
+          <input type="text" x-model="newService.name" placeholder="e.g. Haircut & Beard" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Duration (minutes)</label>
+            <input type="number" x-model="newService.duration_minutes" placeholder="30" min="5" step="5">
+          </div>
+          <div class="field">
+            <label>Price ($)</label>
+            <input type="number" x-model="newService.price" placeholder="40.00" min="0" step="0.01" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Category (optional)</label>
+          <input type="text" x-model="newService.category" placeholder="e.g. Haircuts">
+        </div>
+        <button type="submit" class="btn btn-secondary" :disabled="saving">
+          <span x-show="!saving">+ Add Service</span>
+          <span x-show="saving">Adding...</span>
+        </button>
+      </form>
+      <div class="btn-row">
+        <button class="btn btn-ghost" @click="step = 2">&larr; Back</button>
+        <button class="btn btn-primary" @click="step = 4" style="flex:1">
+          Next — Set your hours
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: Business Hours -->
+    <div class="step" :class="{ active: step === 4 }">
+      <div class="step-emoji">&#128337;</div>
+      <h2>When are you open?</h2>
+      <p class="desc">Set your business hours. Toggle off days you're closed.</p>
+
+      <div class="hours-grid">
+        <template x-for="(day, i) in dayNames" :key="i">
+          <div class="hour-row">
+            <label x-text="day.slice(0,3)"></label>
+            <template x-if="!hours[i].closed">
+              <input type="time" x-model="hours[i].open_at">
+            </template>
+            <template x-if="!hours[i].closed">
+              <input type="time" x-model="hours[i].close_at">
+            </template>
+            <template x-if="hours[i].closed">
+              <span style="grid-column:span 2;color:#9CA3AF;font-size:.85rem;text-align:center">Closed</span>
+            </template>
+            <button type="button" class="hour-toggle" :class="{ on: !hours[i].closed }"
+              @click="hours[i].closed = !hours[i].closed"></button>
+          </div>
+        </template>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" @click="step = 3">&larr; Back</button>
+        <button class="btn btn-primary" @click="saveHours()" :disabled="saving" style="flex:1">
+          <span x-show="!saving">Finish Setup</span>
+          <span x-show="saving">Saving...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 5: Done! -->
+    <div class="step" :class="{ active: step === 5 }" style="text-align:center">
+      <div class="success-icon">&#10003;</div>
+      <h2>You're all set!</h2>
+      <p class="desc">Your booking page is live and ready for clients.</p>
+      <div class="booking-link"><%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/book/<%= tenant.slug %></div>
+      <a href="/admin/dashboard" class="btn btn-primary">Go to Dashboard</a>
+      <div style="margin-top:16px">
+        <a href="/book/<%= tenant.slug %>" class="btn btn-ghost" target="_blank">Preview Booking Page &rarr;</a>
+      </div>
+    </div>
+
+    <div x-show="errorMsg" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#EF4444;color:#fff;padding:12px 24px;border-radius:14px;font-size:.85rem;font-weight:600;z-index:9999" x-transition @click="errorMsg=''">
+      <span x-text="errorMsg"></span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
+  <script>
+    function onboardingWizard() {
+      return {
+        step: 1,
+        saving: false,
+        errorMsg: '',
+        dayNames: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+
+        business: {
+          name: '<%= tenant.name %>',
+          phone: '<%= tenant.phone || "" %>',
+          timezone: '<%= tenant.timezone || "America/Montreal" %>',
+          currency: '<%= tenant.currency || "CAD" %>',
+        },
+        logoFile: null,
+
+        staffList: <%= JSON.stringify((staff || []).map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }))) %>,
+        newStaff: { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '' },
+
+        serviceList: <%= JSON.stringify((services || []).map(s => ({ id: s.id, name: s.name, price_cents: s.price_cents }))) %>,
+        newService: { name: '', duration_minutes: '30', price: '', category: '' },
+
+        hours: {
+          0: { open_at: '10:00', close_at: '17:00', closed: true },
+          1: { open_at: '09:00', close_at: '18:00', closed: false },
+          2: { open_at: '09:00', close_at: '18:00', closed: false },
+          3: { open_at: '09:00', close_at: '18:00', closed: false },
+          4: { open_at: '09:00', close_at: '18:00', closed: false },
+          5: { open_at: '09:00', close_at: '18:00', closed: false },
+          6: { open_at: '09:00', close_at: '17:00', closed: false },
+        },
+
+        async saveBusiness() {
+          this.saving = true;
+          try {
+            const form = new FormData();
+            form.append('name', this.business.name);
+            form.append('phone', this.business.phone);
+            form.append('timezone', this.business.timezone);
+            form.append('currency', this.business.currency);
+            if (this.logoFile) form.append('logo', this.logoFile);
+
+            const res = await fetch('/admin/onboarding/business', { method: 'POST', body: form });
+            const data = await res.json();
+            if (data.success) this.step = 2;
+            else this.errorMsg = data.error || 'Failed to save.';
+          } catch (e) { this.errorMsg = 'Connection error.'; }
+          this.saving = false;
+        },
+
+        async addStaff() {
+          if (!this.newStaff.first_name || !this.newStaff.last_name) return;
+          this.saving = true;
+          try {
+            const form = new FormData();
+            Object.entries(this.newStaff).forEach(([k, v]) => form.append(k, v));
+
+            const res = await fetch('/admin/onboarding/staff', { method: 'POST', body: form });
+            const data = await res.json();
+            if (data.success) {
+              this.staffList = data.staff.map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }));
+              this.newStaff = { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '' };
+            } else { this.errorMsg = data.error || 'Failed to add.'; }
+          } catch (e) { this.errorMsg = 'Connection error.'; }
+          this.saving = false;
+        },
+
+        async addService() {
+          if (!this.newService.name || !this.newService.price) return;
+          this.saving = true;
+          try {
+            const res = await fetch('/admin/onboarding/service', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.newService)
+            });
+            const data = await res.json();
+            if (data.success) {
+              this.serviceList = data.services.map(s => ({ id: s.id, name: s.name, price_cents: s.price_cents }));
+              this.newService = { name: '', duration_minutes: '30', price: '', category: '' };
+            } else { this.errorMsg = data.error || 'Failed to add.'; }
+          } catch (e) { this.errorMsg = 'Connection error.'; }
+          this.saving = false;
+        },
+
+        async saveHours() {
+          this.saving = true;
+          try {
+            const res = await fetch('/admin/onboarding/hours', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ hours: this.hours })
+            });
+            const data = await res.json();
+            if (data.success) {
+              // Mark onboarding complete
+              await fetch('/admin/onboarding/complete', { method: 'POST' });
+              this.step = 5;
+            } else { this.errorMsg = data.error || 'Failed to save.'; }
+          } catch (e) { this.errorMsg = 'Connection error.'; }
+          this.saving = false;
+        }
+      };
+    }
+  </script>
+</body>
+</html>

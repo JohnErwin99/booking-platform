@@ -176,4 +176,80 @@ router.post('/:slug/cancel/:token', async (req, res, next) => {
   }
 });
 
+// GET /book/:slug/confirm-attendance/:token - Customer confirms they'll attend
+router.get('/:slug/confirm-attendance/:token', async (req, res, next) => {
+  try {
+    const booking = await db('bookings')
+      .where('manage_token', req.params.token)
+      .first();
+
+    if (!booking) {
+      return res.status(404).render('errors/404', {
+        layout: false, message: 'Booking not found.', user: null, tenant: null
+      });
+    }
+
+    const tenant = await db('tenants').where('id', booking.tenant_id).first();
+
+    // Mark as confirmed_by_customer
+    await db('bookings').where('id', booking.id).update({
+      customer_confirmed: true,
+      updated_at: new Date()
+    });
+
+    res.render('booking/confirmed', {
+      layout: false,
+      title: 'Attendance Confirmed',
+      tenant,
+      booking,
+      user: null,
+      flash: { error: [], success: [] }
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /book/:slug/cancel-booking/:token - Customer cancels from email link
+router.get('/:slug/cancel-booking/:token', async (req, res, next) => {
+  try {
+    const booking = await db('bookings')
+      .where('manage_token', req.params.token)
+      .first();
+
+    if (!booking) {
+      return res.status(404).render('errors/404', {
+        layout: false, message: 'Booking not found.', user: null, tenant: null
+      });
+    }
+
+    if (booking.status !== 'cancelled') {
+      await db('bookings').where('id', booking.id).update({
+        status: 'cancelled',
+        cancelled_at: db.fn.now(),
+        cancelled_by: 'customer',
+        updated_at: new Date()
+      });
+
+      const { sendBookingCancellation } = require('../../services/notificationService');
+      sendBookingCancellation(booking.id).catch(err =>
+        console.error('Cancellation email error:', err.message)
+      );
+    }
+
+    const tenant = await db('tenants').where('id', booking.tenant_id).first();
+
+    res.render('booking/cancelled', {
+      layout: false,
+      title: 'Booking Cancelled',
+      tenant,
+      booking,
+      user: null,
+      flash: { error: [], success: [] }
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

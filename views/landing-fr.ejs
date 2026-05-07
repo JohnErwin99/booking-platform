@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>Bookwize — Système de réservation en ligne pour salons, barbiers et entreprises de services au Canada</title>
+  <meta name="description" content="Bookwize est une plateforme de réservation en ligne et CRM tout-en-un pour les salons, barbiers, spas et entreprises de services à Montréal et partout au Canada. Gérez les rendez-vous, le personnel et les clients depuis un seul tableau de bord.">
+  <meta name="keywords" content="système de réservation en ligne, logiciel de réservation, réservation Montréal, réservation salon, réservation barbier, prise de rendez-vous, logiciel de gestion salon, CRM salon, réservation Canada">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bookwizeapp.com/fr">
+  <link rel="alternate" hreflang="en-ca" href="https://bookwizeapp.com/">
+  <link rel="alternate" hreflang="fr-ca" href="https://bookwizeapp.com/fr">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bookwizeapp.com/fr">
+  <meta property="og:title" content="Bookwize — Système de réservation en ligne pour entreprises de services">
+  <meta property="og:description" content="Plateforme de réservation et CRM tout-en-un. Gérez rendez-vous, personnel et clients. Utilisé par des entreprises partout au Canada.">
+  <meta property="og:locale" content="fr_CA">
+
+  <!-- Favicon + PWA -->
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1A1A2E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/landing.css">
+
+  <!-- JSON-LD: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Bookwize",
+    "url": "https://bookwizeapp.com",
+    "logo": "https://bookwizeapp.com/img/logo.svg",
+    "description": "Plateforme de réservation en ligne et CRM pour salons, barbiers et entreprises de services au Canada.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Montréal",
+      "addressRegion": "QC",
+      "addressCountry": "CA"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Bookwize",
+    "url": "https://bookwizeapp.com",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "Système de réservation en ligne avec CRM pour salons, barbiers, spas et entreprises de services. Réservation 24/7, gestion du personnel, rappels automatiques, marque blanche.",
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "CAD",
+      "lowPrice": "19",
+      "highPrice": "599",
+      "offerCount": "4"
+    }
+  }
+  </script>
+
+  <!-- JSON-LD: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Quel est le meilleur système de réservation en ligne pour les salons et barbiers au Canada?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bookwize est une plateforme de réservation en ligne et CRM tout-en-un conçue pour les salons, barbiers, spas et entreprises de services à Montréal et partout au Canada. Elle offre la réservation 24/7, la gestion du personnel, les rappels par courriel automatiques, la marque blanche et des widgets intégrables. Les forfaits commencent à 19$/mois ou 299$ en paiement unique."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment fonctionne la réservation en ligne avec Bookwize?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Les clients visitent votre page de réservation Bookwize personnalisée, choisissent un service et un membre du personnel, sélectionnent une date et une heure disponibles, et confirment leur rendez-vous. Vous recevez une notification instantanée et le client reçoit une confirmation par courriel avec une invitation au calendrier."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Est-ce que Bookwize est disponible en français?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui! Bookwize est une entreprise basée à Montréal qui offre un support complet en français et en anglais. Notre plateforme est conçue pour les entreprises canadiennes bilingues."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="/fr" class="nav-brand">
+        <img class="nav-logo" src="/img/logo.svg" alt="Bookwize" width="32" height="32">
+        <span>Bookwize</span>
+      </a>
+      <div class="nav-links">
+        <a href="#fonctionnalites">Fonctionnalités</a>
+        <a href="#tarifs">Tarifs</a>
+        <a href="#faq">FAQ</a>
+        <a href="/">English</a>
+        <a href="/admin/login" class="btn btn-ghost-nav">Connexion</a>
+        <a href="/admin/signup" class="btn btn-primary-nav">Essai gratuit</a>
+      </div>
+      <button class="nav-toggle" onclick="toggleMenu()" aria-label="Menu">
+        <svg class="icon-menu" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg class="icon-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">Solutions de réservation pour entreprises modernes</div>
+        <h1><span class="gradient-text">Remplissez votre agenda.</span></h1>
+        <p class="hero-sub">Le système de réservation en ligne tout-en-un pour les salons, barbiers et entreprises de services à Montréal et partout au Canada. Gérez rendez-vous, personnel et clients depuis un seul tableau de bord.</p>
+        <div class="hero-actions">
+          <a href="/admin/signup" class="btn btn-primary btn-lg">Commencer l'essai gratuit</a>
+        </div>
+        <p class="hero-note">Aucune carte de crédit requise &middot; Configuration en moins de 5 minutes</p>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-mockup">
+          <div class="mockup-browser">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <div class="mockup-url">bookwizeapp.com/book/demo</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-header-bar"></div>
+            <div class="mockup-title-block">
+              <div class="mockup-avatar"></div>
+              <div class="mockup-lines">
+                <div class="mockup-line w70"></div>
+                <div class="mockup-line w40"></div>
+              </div>
+            </div>
+            <div class="mockup-cards">
+              <div class="mockup-card selected">
+                <div class="mockup-card-avatar"></div>
+                <div class="mockup-card-lines">
+                  <div class="mockup-line w60"></div>
+                  <div class="mockup-line w30"></div>
+                </div>
+                <div class="mockup-check">&#10003;</div>
+              </div>
+              <div class="mockup-card">
+                <div class="mockup-card-avatar"></div>
+                <div class="mockup-card-lines">
+                  <div class="mockup-line w50"></div>
+                  <div class="mockup-line w35"></div>
+                </div>
+              </div>
+            </div>
+            <div class="mockup-btn-row">
+              <div class="mockup-btn"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="fonctionnalites">
+    <div class="container">
+      <div class="features-header">
+        <div class="features-header-left">
+          <span class="section-tag">Fonctionnalités</span>
+          <h2>Tout ce dont vous avez besoin pour gérer vos réservations</h2>
+        </div>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><img loading="lazy" src="/img/onlinebooking.png" alt="Réservation en ligne 24/7"></div>
+          <h3>Réservation en ligne 24/7</h3>
+          <p>Les clients réservent à tout moment depuis votre page personnalisée. Plus d'appels manqués ni d'échanges de textos.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><img loading="lazy" src="/img/staffmanagement.png" alt="Gestion du personnel"></div>
+          <h3>Gestion du personnel</h3>
+          <p>Chaque membre de l'équipe a son propre horaire, ses services et sa disponibilité. Les clients choisissent qui ils veulent.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><img loading="lazy" src="/img/noshow.png" alt="Protection contre les absences"></div>
+          <h3>Protection contre les absences</h3>
+          <p>Rappels automatiques par courriel et confirmations pour garder votre chaise pleine et vos revenus prévisibles.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><img loading="lazy" src="/img/whitelabel.png" alt="Marque blanche"></div>
+          <h3>Marque blanche</h3>
+          <p>Vos couleurs, votre logo, vos polices. La page de réservation a l'air d'avoir été construite spécialement pour votre entreprise.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><img loading="lazy" src="/img/embed.png" alt="Intégrable partout"></div>
+          <h3>Intégrable partout</h3>
+          <p>Ajoutez un widget sur votre site web, partagez un lien sur Instagram, ou ajoutez un code QR à votre carte d'affaires.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><img loading="lazy" src="/img/multilocation.png" alt="Multi-emplacements"></div>
+          <h3>Multi-emplacements</h3>
+          <p>Gérez plusieurs entreprises ou emplacements depuis un seul tableau de bord. Évoluez sans changer d'outil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="tarifs">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Tarifs</span>
+        <h2>Des prix simples et transparents</h2>
+        <p>Payez une fois et gardez-le pour toujours, ou abonnez-vous mensuellement. Aucuns frais cachés.</p>
+      </div>
+      <div class="pricing-toggle">
+        <button class="toggle-btn active" data-billing="monthly">Mensuel</button>
+        <button class="toggle-btn" data-billing="onetime">Paiement unique</button>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card" data-plan="starter">
+          <div class="price-name">Solo / Débutant</div>
+          <div class="price-amount monthly-price"><span class="price-currency">$</span>19<span class="price-period">/mois</span></div>
+          <div class="price-amount onetime-price" style="display:none"><span class="price-currency">$</span>299<span class="price-period">unique</span></div>
+          <p class="price-desc">Parfait pour les professionnels solo qui débutent.</p>
+          <ul class="price-features">
+            <li>1 membre du personnel</li>
+            <li>Réservations illimitées</li>
+            <li>Page de réservation personnalisée</li>
+            <li>Notifications par courriel</li>
+            <li>Compatible mobile</li>
+          </ul>
+          <a href="/admin/signup" class="btn btn-outline btn-block">Commencer</a>
+        </div>
+        <div class="price-card popular" data-plan="team">
+          <div class="price-badge">Le plus populaire</div>
+          <div class="price-name">Équipe</div>
+          <div class="price-subtitle">Jusqu'à 5 employés</div>
+          <div class="price-amount monthly-price"><span class="price-currency">$</span>39<span class="price-period">/mois</span></div>
+          <div class="price-amount onetime-price" style="display:none"><span class="price-currency">$</span>599<span class="price-period">unique</span></div>
+          <p class="price-desc">Pour les équipes en croissance qui ont besoin de plus de puissance.</p>
+          <ul class="price-features">
+            <li>Jusqu'à 5 employés</li>
+            <li>Réservations illimitées</li>
+            <li>Marque blanche complète</li>
+            <li>Rappels par courriel et SMS</li>
+            <li>Widget intégrable</li>
+            <li>Gestion des clients</li>
+            <li>Support prioritaire</li>
+          </ul>
+          <a href="/admin/signup" class="btn btn-primary btn-block">Commencer</a>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:32px">
+        <a href="/book/demo" class="btn btn-outline btn-lg">Voir la démo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">FAQ</span>
+        <h2>Questions fréquemment posées</h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Quel est le meilleur système de réservation en ligne pour les salons et barbiers au Canada?</summary>
+          <p>Bookwize est une plateforme de réservation en ligne et CRM tout-en-un conçue pour les salons, barbiers, spas et entreprises de services à Montréal et partout au Canada. Elle offre la réservation 24/7, la gestion du personnel, les rappels automatiques, la marque blanche et des widgets intégrables. Les forfaits commencent à 19$/mois ou 299$ en paiement unique.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Comment fonctionne la réservation en ligne avec Bookwize?</summary>
+          <p>Les clients visitent votre page de réservation Bookwize, choisissent un service et un membre du personnel, sélectionnent une date et une heure disponibles, et confirment leur rendez-vous. Vous recevez une notification instantanée et le client reçoit une confirmation par courriel avec une invitation au calendrier. Aucun téléchargement d'application ni création de compte requis.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Combien de temps faut-il pour configurer un système de réservation?</summary>
+          <p>La plupart des entreprises sont en ligne en moins de 5 minutes. Ajoutez vos services, définissez vos heures d'ouverture, invitez votre équipe et partagez votre lien de réservation. C'est tout — aucune connaissance technique requise.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Est-ce que Bookwize envoie des rappels de rendez-vous?</summary>
+          <p>Oui. Bookwize envoie automatiquement des confirmations par courriel lors de la réservation et des rappels 24 heures avant le rendez-vous. Cela réduit considérablement les absences et garde votre horaire plein.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Est-ce que Bookwize est disponible en français?</summary>
+          <p>Oui! Bookwize est une entreprise basée à Montréal qui offre un support complet en français et en anglais. Notre plateforme est conçue pour les entreprises canadiennes bilingues.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Puis-je intégrer le widget de réservation sur mon site web?</summary>
+          <p>Oui. Bookwize fournit un code d'intégration que vous pouvez ajouter à n'importe quel site web. Il fonctionne sur WordPress, Squarespace, Wix, Shopify et tout site sur mesure.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container cta-inner">
+      <h2>Prêt à remplir votre agenda?</h2>
+      <p>Rejoignez les entreprises qui font confiance à Bookwize pour gérer leurs rendez-vous. Essayez gratuitement ou contactez-nous sur Instagram.</p>
+      <div class="cta-actions">
+        <a href="#tarifs" class="btn btn-white btn-lg">Voir les forfaits</a>
+        <a href="/book/demo" class="btn btn-ghost-white btn-lg">Essayer la démo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="/fr" class="nav-brand">
+          <img src="/img/logo.svg" alt="Bookwize" class="nav-logo">
+          <span>Bookwize</span>
+        </a>
+        <p>Solutions de réservation efficaces pour les entreprises modernes.</p>
+        <a href="https://www.instagram.com/bookwizeapp" target="_blank" rel="noopener" class="footer-social" aria-label="Bookwize sur Instagram">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.336 3.608 1.311.975.975 1.249 2.242 1.311 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.336 2.633-1.311 3.608-.975.975-2.242 1.249-3.608 1.311-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.336-3.608-1.311-.975-.975-1.249-2.242-1.311-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.062-1.366.336-2.633 1.311-3.608C4.519 2.567 5.786 2.293 7.152 2.231 8.418 2.175 8.796 2.163 12 2.163zM12 0C8.741 0 8.333.014 7.053.072 5.775.13 4.602.392 3.635.86a6.004 6.004 0 00-2.167 1.41A6.004 6.004 0 00.06 4.436C-.408 5.403-.142 6.576-.084 7.854.014 9.134 0 9.541 0 12.8c0 3.259.014 3.667.072 4.947.058 1.277.324 2.451.792 3.418a6.004 6.004 0 001.41 2.167 6.004 6.004 0 002.167 1.41c.967.468 2.14.734 3.418.792C9.134 23.986 9.541 24 12 24s2.866-.014 4.147-.072c1.277-.058 2.451-.324 3.418-.792a6.004 6.004 0 002.167-1.41 6.004 6.004 0 001.41-2.167c.468-.967.734-2.14.792-3.418.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.058-1.277-.324-2.451-.792-3.418a6.004 6.004 0 00-1.41-2.167A6.004 6.004 0 0019.565.86C18.598.392 17.425.128 16.147.07 14.867.014 14.459 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </a>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Produit</h4>
+          <a href="#fonctionnalites">Fonctionnalités</a>
+          <a href="#tarifs">Tarifs</a>
+          <a href="/book/demo">Démo</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#faq">Centre d'aide</a>
+          <a href="https://www.instagram.com/bookwizeapp" target="_blank">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; 2026 Bookwize. Tous droits réservés.</p>
+      <div class="footer-legal">
+        <a href="/privacy">Politique de confidentialité</a>
+        <a href="/terms">Conditions d'utilisation</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 20); });
+
+    function toggleMenu() {
+      const links = document.querySelector('.nav-links');
+      const isOpen = links.classList.toggle('open');
+      document.querySelector('.icon-menu').style.display = isOpen ? 'none' : '';
+      document.querySelector('.icon-close').style.display = isOpen ? '' : 'none';
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          document.querySelector('.nav-links').classList.remove('open');
+          document.body.style.overflow = '';
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    let billingMode = 'monthly';
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        billingMode = btn.dataset.billing;
+        document.querySelectorAll('.monthly-price').forEach(el => el.style.display = billingMode === 'monthly' ? '' : 'none');
+        document.querySelectorAll('.onetime-price').forEach(el => el.style.display = billingMode === 'onetime' ? '' : 'none');
+      });
+    });
+  </script>
+</body>
+</html>

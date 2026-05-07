@@ -1,5 +1,9 @@
 const express = require('express');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 const db = require('../../config/database');
+const { sendEmail } = require('../../services/emailService');
+const { slugify } = require('../../utils/helpers');
 const { createCheckoutSession, constructWebhookEvent, PLANS } = require('../../services/stripeService');
 const router = express.Router();
 
@@ -16,10 +20,17 @@ router.post('/checkout', async (req, res) => {
     }
 
     const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
+    // Pass tenant_id if user is logged in
+    const extra = {};
+    if (req.user && req.user.tenant_id) extra.tenant_id = req.user.tenant_id;
+    if (req.user && req.user.email) extra.email = req.user.email;
+
     const session = await createCheckoutSession(
       plan,
       `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      `${baseUrl}/checkout/cancel`
+      `${baseUrl}/checkout/cancel`,
+      extra
     );
 
     return res.json({ url: session.url });
@@ -50,8 +61,10 @@ router.post('/stripe/webhook', async (req, res) => {
         const { plan, billing, plan_key } = session.metadata;
         const config = PLANS[plan_key];
 
+        const tenantId = session.metadata.tenant_id ? parseInt(session.metadata.tenant_id) : null;
+
         await db('subscriptions').insert({
-          tenant_id: session.metadata.tenant_id || null,
+          tenant_id: tenantId,
           stripe_customer_id: session.customer,
           stripe_subscription_id: session.subscription || null,
           stripe_checkout_session_id: session.id,
@@ -65,6 +78,106 @@ router.post('/stripe/webhook', async (req, res) => {
             ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
             : null,
         });
+
+        // Upgrade tenant plan from trial to paid
+        if (tenantId) {
+          await db('tenants').where('id', tenantId).update({
+            plan: plan,
+            trial_ends_at: null,
+          });
+          console.log(`Tenant ${tenantId} upgraded to ${plan} plan`);
+        } else {
+          // No tenant_id — check if user exists by email
+          const customerEmail = session.customer_email || session.customer_details?.email || session.metadata.email;
+
+          if (customerEmail) {
+            const existingTenant = await db('tenants').where('email', customerEmail).first();
+
+            if (existingTenant) {
+              // Existing tenant — upgrade plan
+              await db('tenants').where('id', existingTenant.id).update({ plan, trial_ends_at: null });
+              await db('subscriptions')
+                .where('stripe_checkout_session_id', session.id)
+                .update({ tenant_id: existingTenant.id });
+              console.log(`Tenant ${existingTenant.id} (by email) upgraded to ${plan} plan`);
+            } else {
+              // No tenant exists — create new tenant + user
+              const tempPassword = crypto.randomBytes(6).toString('hex');
+              const slug = slugify(customerEmail.split('@')[0] + '-' + Date.now().toString(36));
+
+              const [newTenantId] = await db('tenants').insert({
+                name: customerEmail.split('@')[0] + '\'s Business',
+                slug,
+                email: customerEmail.toLowerCase().trim(),
+                status: 'active',
+                plan,
+                trial_ends_at: null,
+                onboarding_completed: false,
+                timezone: 'America/Montreal',
+                currency: 'CAD',
+              });
+
+              // Default location
+              const [locationId] = await db('locations').insert({
+                tenant_id: newTenantId,
+                name: 'Main Location',
+                is_default: true,
+              });
+
+              // Owner user
+              const passwordHash = await bcrypt.hash(tempPassword, 12);
+              await db('users').insert({
+                tenant_id: newTenantId,
+                email: customerEmail.toLowerCase().trim(),
+                password_hash: passwordHash,
+                first_name: customerEmail.split('@')[0],
+                last_name: '',
+                role: 'owner',
+              });
+
+              // Default business hours (Mon-Sat 9-18)
+              const defaultHours = [];
+              for (let day = 1; day <= 6; day++) {
+                defaultHours.push({ tenant_id: newTenantId, location_id: locationId, staff_id: null, weekday: day, open_at: '09:00:00', close_at: '18:00:00' });
+              }
+              await db('business_hours').insert(defaultHours);
+
+              // Notification templates
+              await db('notification_templates').insert([
+                { tenant_id: newTenantId, type: 'booking_confirmation', channel: 'email', subject: 'Booking Confirmed - {{business_name}}', body_template: 'Hi {{customer_name}},\n\nYour appointment has been confirmed!\n\nService: {{service_name}}\nDate: {{booking_date}}\nTime: {{booking_time}}\nWith: {{staff_name}}\n\nIf you need to make changes: {{manage_link}}\n\nSee you soon!\n{{business_name}}' },
+                { tenant_id: newTenantId, type: 'reminder_email', channel: 'email', subject: 'Reminder: Your appointment tomorrow - {{business_name}}', body_template: 'Hi {{customer_name}},\n\nFriendly reminder about your appointment tomorrow.\n\nService: {{service_name}}\nDate: {{booking_date}}\nTime: {{booking_time}}\nWith: {{staff_name}}\n\nNeed to reschedule? {{manage_link}}\n\nSee you soon!\n{{business_name}}' },
+                { tenant_id: newTenantId, type: 'booking_cancellation', channel: 'email', subject: 'Booking Cancelled - {{business_name}}', body_template: 'Hi {{customer_name}},\n\nYour appointment on {{booking_date}} at {{booking_time}} has been cancelled.\n\nTo book a new appointment: {{booking_link}}\n\n{{business_name}}' },
+              ]);
+
+              // Link subscription to new tenant
+              await db('subscriptions')
+                .where('stripe_checkout_session_id', session.id)
+                .update({ tenant_id: newTenantId });
+
+              // Send welcome email with credentials
+              const baseUrl = process.env.BASE_URL || 'https://bookwizeapp.com';
+              sendEmail({
+                to: customerEmail,
+                subject: 'Welcome to Bookwize — Your account is ready!',
+                html: `
+                  <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#1e293b">
+                    <h2 style="text-align:center;color:#F28C38;margin-bottom:24px">Welcome to Bookwize!</h2>
+                    <div style="background:#f8fafc;border-radius:16px;padding:24px;line-height:1.7">
+                      <p>Your <strong>${plan}</strong> plan is active. Here are your login details:</p>
+                      <p><strong>Dashboard:</strong> <a href="${baseUrl}/admin/login">${baseUrl}/admin/login</a></p>
+                      <p><strong>Email:</strong> ${customerEmail}</p>
+                      <p><strong>Temporary Password:</strong> ${tempPassword}</p>
+                      <p>Please change your password after your first login.</p>
+                      <p>Log in to complete your business setup with our guided wizard.</p>
+                    </div>
+                  </div>`,
+                text: `Welcome to Bookwize!\n\nYour ${plan} plan is active.\n\nDashboard: ${baseUrl}/admin/login\nEmail: ${customerEmail}\nPassword: ${tempPassword}\n\nPlease change your password after first login.`
+              }).catch(err => console.error('Welcome email failed:', err.message));
+
+              console.log(`New tenant ${newTenantId} created from Stripe payment (${customerEmail})`);
+            }
+          }
+        }
 
         console.log(`Subscription created: ${plan} (${billing}) — session ${session.id}`);
         break;
@@ -89,9 +202,17 @@ router.post('/stripe/webhook', async (req, res) => {
 
       case 'customer.subscription.deleted': {
         const sub = event.data.object;
+        const canceledSub = await db('subscriptions')
+          .where('stripe_subscription_id', sub.id)
+          .first();
         await db('subscriptions')
           .where('stripe_subscription_id', sub.id)
           .update({ status: 'canceled', updated_at: new Date() });
+        // Downgrade tenant back to trial
+        if (canceledSub && canceledSub.tenant_id) {
+          await db('tenants').where('id', canceledSub.tenant_id).update({ plan: 'trial' });
+          console.log(`Tenant ${canceledSub.tenant_id} downgraded to trial (subscription canceled)`);
+        }
         break;
       }
 
