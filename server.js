@@ -78,11 +78,8 @@ app.use((req, res, next) => {
 // Routes
 // ======================
 
-// Home page - redirect logged-in admins to dashboard
+// Home page - always show landing (admins need access for pricing/upgrade)
 app.get('/', (req, res) => {
-  if (req.isAuthenticated && req.isAuthenticated()) {
-    return res.redirect('/admin/dashboard');
-  }
   res.render('landing', { layout: false });
 });
 
