@@ -227,6 +227,45 @@ async function sendNotification(booking, tenant, type) {
       }
     }
 
+    // Also notify the business owner
+    try {
+      const ownerEmail = tenant.email;
+      if (ownerEmail && ownerEmail !== booking.customer_email) {
+        const dateLabel = formatDateLabel(booking.booking_date);
+        const timeLabel = formatTimeLabel(booking.start_time);
+
+        const ownerSubject = type === 'booking_confirmation'
+          ? `New Booking: ${booking.customer_name} — ${booking.service_name}`
+          : type === 'booking_cancellation'
+          ? `Cancelled: ${booking.customer_name} — ${booking.service_name}`
+          : `Booking Update: ${booking.customer_name}`;
+
+        const ownerHtml = `
+          <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#1e293b">
+            <h2 style="text-align:center;color:${tenant.primary_color || '#F28C38'}">${tenant.name}</h2>
+            <div style="background:#f8fafc;border-radius:12px;padding:24px;line-height:1.7">
+              <p style="margin:0 0 12px"><strong>${ownerSubject}</strong></p>
+              <p style="margin:0 0 8px">Client: ${booking.customer_name} (${booking.customer_email})</p>
+              <p style="margin:0 0 8px">Service: ${booking.service_name}</p>
+              <p style="margin:0 0 8px">Staff: ${booking.staff_name}</p>
+              <p style="margin:0 0 8px">Date: ${dateLabel}</p>
+              <p style="margin:0 0 8px">Time: ${timeLabel}</p>
+            </div>
+            <p style="text-align:center;margin-top:24px;font-size:13px;color:#94a3b8">Sent by ${tenant.name} via Bookwize</p>
+          </div>`;
+
+        await sendEmail({
+          to: ownerEmail,
+          subject: ownerSubject,
+          html: ownerHtml,
+          text: `${ownerSubject}\nClient: ${booking.customer_name}\nService: ${booking.service_name}\nStaff: ${booking.staff_name}\nDate: ${dateLabel}\nTime: ${timeLabel}`
+        });
+        console.log(`Owner email sent: ${type} -> ${ownerEmail}`);
+      }
+    } catch (ownerErr) {
+      console.error(`Owner email failed: ${ownerErr.message}`);
+    }
+
   } catch (err) {
     console.error(`Email failed: ${type} -> ${booking.customer_email}:`, err.message);
 

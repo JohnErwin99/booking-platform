@@ -53,17 +53,15 @@ router.post('/onboarding/business', upload.single('logo'), async (req, res, next
   }
 });
 
-// POST /admin/onboarding/staff — Step 2: Add a staff member
-router.post('/onboarding/staff', upload.single('photo'), async (req, res, next) => {
+// POST /admin/onboarding/staff — Step 3: Add a staff member
+router.post('/onboarding/staff', async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
-    const { first_name, last_name, email, title, role, password } = req.body;
+    const { first_name, last_name, email, title, role, password, service_ids } = req.body;
 
     if (!first_name || !last_name) {
       return res.status(400).json({ error: 'First and last name are required.' });
     }
-
-    const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
     const [staffId] = await db('staff').insert({
       tenant_id: tenantId,
@@ -71,16 +69,26 @@ router.post('/onboarding/staff', upload.single('photo'), async (req, res, next) 
       last_name,
       display_name: first_name,
       email: email || null,
-      photo_url: photoUrl,
       title: title || null,
       slot_duration: 30,
       is_active: true,
       is_bookable: true,
     });
 
+    // Assign selected services
+    if (service_ids && service_ids.length) {
+      const rows = service_ids.map(sid => ({
+        tenant_id: tenantId,
+        staff_id: staffId,
+        service_id: parseInt(sid),
+      }));
+      await db('staff_services').insert(rows);
+    }
+
     // Create user account if email and password provided
     if (email && password && password.length >= 6) {
-      const existing = await db('users').where('email', email.toLowerCase().trim()).first();
+      const existing = await db('users')
+        .where({ tenant_id: tenantId, email: email.toLowerCase().trim() }).first();
       if (!existing) {
         const hash = await bcrypt.hash(password, 12);
         await db('users').insert({

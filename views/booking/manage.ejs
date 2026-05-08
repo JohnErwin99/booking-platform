@@ -62,6 +62,7 @@
         .then(r => r.json())
         .then(data => {
           if (data.success) {
+            alert('Booking cancelled. A confirmation email has been sent. Please check your inbox or spam folder.');
             location.reload();
           } else {
             alert(data.message || 'Could not cancel booking.');

@@ -11,7 +11,7 @@ const errorHandler = require('./middleware/errorHandler');
 const requireAuth = require('./middleware/requireAuth');
 const { tenantResolver } = require('./middleware/tenantResolver');
 const cron = require('node-cron');
-const { verifyConnection } = require('./services/emailService');
+const { verifyConnection, processEmailQueue } = require('./services/emailService');
 const { processReminders, processFollowups, autoCompleteConfirmed } = require('./services/notificationService');
 
 const app = express();
@@ -221,6 +221,7 @@ app.listen(PORT, async () => {
   // Cron: check for follow-ups every hour
   cron.schedule('0 * * * *', processFollowups);
   cron.schedule('*/10 * * * *', autoCompleteConfirmed);
+  cron.schedule('*/15 * * * *', processEmailQueue);
   console.log('  Cron jobs:       reminders (15min), follow-ups (1hr)\n');
 });
 

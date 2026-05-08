@@ -67,7 +67,7 @@ router.post('/bookings/:id/cancel', async (req, res, next) => {
       sendBookingCancellation(id).catch(err =>
         console.error('Cancellation email error:', err.message)
       );
-      req.flash('success', 'Booking cancelled successfully.');
+      req.flash('success', 'Booking cancelled. A cancellation email has been sent to the customer and staff. Ask them to check their inbox or spam folder.');
     }
     res.redirect('/admin/bookings');
   } catch (err) {

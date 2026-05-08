@@ -189,6 +189,7 @@ router.post('/signup', async (req, res, next) => {
     const user = await db('users').where({ email: email.toLowerCase().trim() }).first();
     req.logIn(user, (err) => {
       if (err) return next(err);
+      req.flash('success', `Welcome! A confirmation email has been sent to ${email}. Please check your inbox or spam folder.`);
       res.redirect('/admin/onboarding');
     });
   } catch (err) {

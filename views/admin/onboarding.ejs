@@ -143,75 +143,17 @@
           </div>
         </div>
         <button type="submit" class="btn btn-primary" :disabled="saving">
-          <span x-show="!saving">Next — Add your team</span>
+          <span x-show="!saving">Next — Add your services</span>
           <span x-show="saving">Saving...</span>
         </button>
       </form>
     </div>
 
-    <!-- Step 2: Add Staff -->
+    <!-- Step 2: Add Services -->
     <div class="step" :class="{ active: step === 2 }">
-      <div class="step-emoji">&#128102;</div>
-      <h2>Who's on your team?</h2>
-      <p class="desc">Add the people who will take bookings. You can always add more later.</p>
-
-      <div class="added-list" x-show="staffList.length">
-        <template x-for="s in staffList" :key="s.id">
-          <div class="chip" x-text="s.first_name + ' ' + s.last_name"></div>
-        </template>
-      </div>
-
-      <form @submit.prevent="addStaff()">
-        <div class="field-row">
-          <div class="field">
-            <label>First Name</label>
-            <input type="text" x-model="newStaff.first_name" placeholder="Steve" required>
-          </div>
-          <div class="field">
-            <label>Last Name</label>
-            <input type="text" x-model="newStaff.last_name" placeholder="Martinez" required>
-          </div>
-        </div>
-        <div class="field">
-          <label>Email</label>
-          <input type="email" x-model="newStaff.email" placeholder="steve@business.com">
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Title (optional)</label>
-            <input type="text" x-model="newStaff.title" placeholder="e.g. Senior Barber">
-          </div>
-          <div class="field">
-            <label>Role</label>
-            <select x-model="newStaff.role">
-              <option value="staff">Staff</option>
-              <option value="manager">Manager</option>
-              <option value="owner">Owner</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label>Password (for their login)</label>
-          <input type="password" x-model="newStaff.password" placeholder="Min 6 characters" minlength="6">
-        </div>
-        <button type="submit" class="btn btn-secondary" :disabled="saving">
-          <span x-show="!saving">+ Add Staff Member</span>
-          <span x-show="saving">Adding...</span>
-        </button>
-      </form>
-      <div class="btn-row">
-        <button class="btn btn-ghost" @click="step = 1">&larr; Back</button>
-        <button class="btn btn-primary" @click="step = 3" style="flex:1">
-          Next — Add services
-        </button>
-      </div>
-    </div>
-
-    <!-- Step 3: Add Services -->
-    <div class="step" :class="{ active: step === 3 }">
       <div class="step-emoji">&#9986;&#65039;</div>
       <h2>What services do you offer?</h2>
-      <p class="desc">Add the services clients can book. Each service has a name, duration, and price.</p>
+      <p class="desc">Add at least one service your clients can book. You can always add more later in Settings.</p>
 
       <div class="added-list" x-show="serviceList.length">
         <template x-for="s in serviceList" :key="s.id">
@@ -219,34 +161,116 @@
         </template>
       </div>
 
-      <form @submit.prevent="addService()">
-        <div class="field">
-          <label>Service Name</label>
-          <input type="text" x-model="newService.name" placeholder="e.g. Haircut & Beard" required>
-        </div>
-        <div class="field-row">
+      <div style="background:#F9FAFB;border-radius:16px;padding:20px;margin-bottom:16px;border:1.5px solid #E8DFD0">
+        <form @submit.prevent="addService()">
           <div class="field">
-            <label>Duration (minutes)</label>
-            <input type="number" x-model="newService.duration_minutes" placeholder="30" min="5" step="5">
+            <label>Service Name</label>
+            <input type="text" x-model="newService.name" placeholder="e.g. Haircut & Beard" required>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Duration (minutes)</label>
+              <input type="number" x-model="newService.duration_minutes" placeholder="30" min="5" step="5">
+            </div>
+            <div class="field">
+              <label>Price ($)</label>
+              <input type="number" x-model="newService.price" placeholder="40.00" min="0" step="0.01" required>
+            </div>
           </div>
           <div class="field">
-            <label>Price ($)</label>
-            <input type="number" x-model="newService.price" placeholder="40.00" min="0" step="0.01" required>
+            <label>Category (optional)</label>
+            <input type="text" x-model="newService.category" placeholder="e.g. Haircuts">
           </div>
-        </div>
-        <div class="field">
-          <label>Category (optional)</label>
-          <input type="text" x-model="newService.category" placeholder="e.g. Haircuts">
-        </div>
-        <button type="submit" class="btn btn-secondary" :disabled="saving">
-          <span x-show="!saving">+ Add Service</span>
-          <span x-show="saving">Adding...</span>
+          <button type="submit" class="btn btn-secondary" :disabled="saving" style="width:100%">
+            <span x-show="!saving">Save Service</span>
+            <span x-show="saving">Saving...</span>
+          </button>
+        </form>
+      </div>
+
+      <p x-show="serviceList.length" style="font-size:.82rem;color:#22C55E;font-weight:600;margin-bottom:12px">&#10003; <span x-text="serviceList.length"></span> service(s) saved</p>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" @click="step = 1">&larr; Back</button>
+        <button class="btn btn-primary" @click="serviceList.length ? step = 3 : (errorMsg = 'Please add at least one service.')" style="flex:1">
+          Save & Continue
         </button>
-      </form>
+      </div>
+    </div>
+
+    <!-- Step 3: Add Staff -->
+    <div class="step" :class="{ active: step === 3 }">
+      <div class="step-emoji">&#128102;</div>
+      <h2>Who's on your team?</h2>
+      <p class="desc">Add at least one team member who will take bookings. Assign them the services they offer. You can add more later in Settings.</p>
+
+      <div class="added-list" x-show="staffList.length">
+        <template x-for="s in staffList" :key="s.id">
+          <div class="chip" x-text="s.first_name + ' ' + s.last_name"></div>
+        </template>
+      </div>
+
+      <div style="background:#F9FAFB;border-radius:16px;padding:20px;margin-bottom:16px;border:1.5px solid #E8DFD0">
+        <form @submit.prevent="addStaff()">
+          <div class="field-row">
+            <div class="field">
+              <label>First Name</label>
+              <input type="text" x-model="newStaff.first_name" placeholder="Steve" required>
+            </div>
+            <div class="field">
+              <label>Last Name</label>
+              <input type="text" x-model="newStaff.last_name" placeholder="Martinez" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" x-model="newStaff.email" placeholder="steve@business.com">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Title (optional)</label>
+              <input type="text" x-model="newStaff.title" placeholder="e.g. Senior Barber">
+            </div>
+            <div class="field">
+              <label>Role</label>
+              <select x-model="newStaff.role">
+                <option value="staff">Staff</option>
+                <option value="manager">Manager</option>
+                <option value="owner">Owner</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Password (for their login)</label>
+            <input type="password" x-model="newStaff.password" placeholder="Min 6 characters" minlength="6">
+          </div>
+
+          <!-- Assign services -->
+          <div class="field" x-show="serviceList.length">
+            <label>Assign Services</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+              <template x-for="svc in serviceList" :key="svc.id">
+                <label style="display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;border:1.5px solid #E8DFD0;font-size:.82rem;font-weight:500;cursor:pointer;background:#fff;transition:all .2s">
+                  <input type="checkbox" :value="svc.id" x-model="newStaff.service_ids" style="accent-color:#F28C38">
+                  <span x-text="svc.name"></span>
+                </label>
+              </template>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-secondary" :disabled="saving" style="width:100%">
+            <span x-show="!saving">Save Staff Member</span>
+            <span x-show="saving">Saving...</span>
+          </button>
+        </form>
+      </div>
+
+      <p x-show="staffList.length" style="font-size:.82rem;color:#22C55E;font-weight:600;margin-bottom:12px">&#10003; <span x-text="staffList.length"></span> staff member(s) saved</p>
+
       <div class="btn-row">
         <button class="btn btn-ghost" @click="step = 2">&larr; Back</button>
-        <button class="btn btn-primary" @click="step = 4" style="flex:1">
-          Next — Set your hours
+        <button class="btn btn-primary" @click="staffList.length ? step = 4 : (errorMsg = 'Please add at least one staff member.')" style="flex:1">
+          Save & Continue
         </button>
       </div>
     </div>
@@ -320,7 +344,7 @@
         logoFile: null,
 
         staffList: <%= JSON.stringify((staff || []).map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }))) %>,
-        newStaff: { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '' },
+        newStaff: { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '', service_ids: [] },
 
         serviceList: <%= JSON.stringify((services || []).map(s => ({ id: s.id, name: s.name, price_cents: s.price_cents }))) %>,
         newService: { name: '', duration_minutes: '30', price: '', category: '' },
@@ -357,14 +381,15 @@
           if (!this.newStaff.first_name || !this.newStaff.last_name) return;
           this.saving = true;
           try {
-            const form = new FormData();
-            Object.entries(this.newStaff).forEach(([k, v]) => form.append(k, v));
-
-            const res = await fetch('/admin/onboarding/staff', { method: 'POST', body: form });
+            const res = await fetch('/admin/onboarding/staff', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.newStaff)
+            });
             const data = await res.json();
             if (data.success) {
               this.staffList = data.staff.map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }));
-              this.newStaff = { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '' };
+              this.newStaff = { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '', service_ids: [] };
             } else { this.errorMsg = data.error || 'Failed to add.'; }
           } catch (e) { this.errorMsg = 'Connection error.'; }
           this.saving = false;
