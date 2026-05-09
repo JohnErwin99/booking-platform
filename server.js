@@ -83,9 +83,6 @@ app.get('/', (req, res) => {
   res.render('landing', { layout: false });
 });
 
-// French landing page
-app.get('/fr', (req, res) => res.render('landing-fr', { layout: false }));
-
 // Legal pages
 app.get('/privacy', (req, res) => res.render('legal/privacy', { layout: false }));
 app.get('/terms', (req, res) => res.render('legal/terms', { layout: false }));
@@ -96,6 +93,18 @@ app.get('/alternative/fresha', (req, res) => res.render('alternatives/fresha', {
 app.get('/alternative/vagaro', (req, res) => res.render('alternatives/vagaro', { layout: false }));
 app.get('/booking-software-canada', (req, res) => res.render('alternatives/booking-software-canada', { layout: false }));
 app.get('/salon-booking-montreal', (req, res) => res.render('alternatives/salon-booking-montreal', { layout: false }));
+
+// Blog
+app.get('/blog', (req, res) => res.render('blog/index', { layout: false }));
+app.get('/blog/how-to-sign-up', (req, res) => res.render('blog/how-to-sign-up', { layout: false }));
+app.get('/blog/setting-up-your-business', (req, res) => res.render('blog/setting-up-your-business', { layout: false }));
+app.get('/blog/adding-services', (req, res) => res.render('blog/adding-services', { layout: false }));
+app.get('/blog/managing-staff', (req, res) => res.render('blog/managing-staff', { layout: false }));
+app.get('/blog/how-clients-book', (req, res) => res.render('blog/how-clients-book', { layout: false }));
+app.get('/blog/reducing-no-shows', (req, res) => res.render('blog/reducing-no-shows', { layout: false }));
+app.get('/blog/embedding-widget', (req, res) => res.render('blog/embedding-widget', { layout: false }));
+app.get('/blog/dashboard-guide', (req, res) => res.render('blog/dashboard-guide', { layout: false }));
+app.get('/blog/upgrading-your-plan', (req, res) => res.render('blog/upgrading-your-plan', { layout: false }));
 
 // Superadmin routes (no tenant needed, no layout)
 app.use('/superadmin', require('./routes/superadmin/tenants'));

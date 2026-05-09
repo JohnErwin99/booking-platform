@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adding Services Your Clients Can Book — Bookwize Blog</title>
+  <meta name="description" content="Learn how to create, organize, and manage the services you offer in Bookwize so clients can book exactly what they need.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bookwizeapp.com/blog/adding-services">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Adding Services Your Clients Can Book">
+  <meta property="og:description" content="Learn how to create, organize, and manage the services you offer in Bookwize so clients can book exactly what they need.">
+  <meta property="og:url" content="https://bookwizeapp.com/blog/adding-services">
+  <meta property="og:locale" content="en_CA">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;color:#1A1A2E;background:#FAF7FF;line-height:1.8}
+    .blog-nav{
+      position:sticky;top:0;z-index:100;background:#fff;
+      border-bottom:1px solid rgba(232,223,208,.5);padding:14px 0;
+    }
+    .blog-nav-inner{max-width:760px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+    .blog-nav a.brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:#1A1A2E;font-weight:700;font-size:1rem}
+    .blog-nav a.brand img{width:28px;height:28px}
+    .blog-nav-links{display:flex;gap:16px;align-items:center}
+    .blog-nav-links a{font-size:.85rem;color:#737373;text-decoration:none;font-weight:500}
+    .blog-nav-links a:hover{color:#F28C38}
+    .blog-nav-links .btn-sm{background:#F28C38;color:#fff;padding:7px 16px;border-radius:10px;font-weight:600;font-size:.82rem}
+
+    .blog-hero{padding:64px 0 48px;text-align:center}
+    .blog-hero .tag{display:inline-block;font-size:.72rem;font-weight:600;color:#F28C38;background:rgba(242,140,56,.08);padding:5px 14px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
+    .blog-hero h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;line-height:1.2;letter-spacing:-.03em;margin-bottom:12px;max-width:640px;margin-left:auto;margin-right:auto}
+    .blog-hero p{color:#737373;font-size:1rem;max-width:520px;margin:0 auto}
+
+    .blog-content{max-width:760px;margin:0 auto;padding:0 24px 80px}
+    .blog-content h2{font-size:1.35rem;font-weight:700;margin:40px 0 12px;color:#1A1A2E}
+    .blog-content h3{font-size:1.1rem;font-weight:700;margin:28px 0 8px;color:#1A1A2E}
+    .blog-content p{font-size:.95rem;color:#525252;margin-bottom:16px}
+    .blog-content ul,.blog-content ol{padding-left:20px;margin-bottom:16px}
+    .blog-content li{font-size:.95rem;color:#525252;padding:4px 0}
+    .blog-content a{color:#F28C38;font-weight:600}
+    .blog-content strong{color:#1A1A2E}
+    .blog-content blockquote{
+      border-left:4px solid #F28C38;padding:16px 20px;margin:24px 0;
+      background:rgba(242,140,56,.04);border-radius:0 12px 12px 0;
+      font-size:.95rem;color:#525252;font-style:italic;
+    }
+    .blog-content img{
+      width:100%;border-radius:16px;margin:24px 0;
+      box-shadow:0 8px 32px rgba(26,26,46,.08);border:1px solid rgba(232,223,208,.5);
+    }
+    .blog-content .step-box{
+      background:#fff;border-radius:16px;padding:24px;margin:20px 0;
+      border:1.5px solid rgba(232,223,208,.5);
+    }
+    .blog-content .step-box h3{margin-top:0;color:#F28C38}
+    .blog-content .tip{
+      background:linear-gradient(135deg,#FFF3E6,#FEF3C7);border-radius:14px;
+      padding:16px 20px;margin:20px 0;font-size:.9rem;color:#92400E;
+    }
+    .blog-content .tip strong{color:#92400E}
+
+    .blog-cta{
+      background:#1A1A2E;border-radius:20px;padding:40px;text-align:center;margin:48px 0;
+    }
+    .blog-cta h3{color:#fff;font-size:1.2rem;font-weight:700;margin-bottom:8px}
+    .blog-cta p{color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:20px}
+    .blog-cta a{
+      display:inline-block;background:#F28C38;color:#fff;padding:12px 28px;
+      border-radius:12px;font-weight:600;font-size:.9rem;text-decoration:none;
+    }
+
+    .blog-footer{text-align:center;padding:32px 0;font-size:.8rem;color:#9CA3AF;border-top:1px solid rgba(232,223,208,.5)}
+    .blog-footer a{color:#F28C38;text-decoration:none}
+
+    @media(max-width:480px){
+      .blog-hero h1{font-size:1.5rem}
+      .blog-content{padding:0 16px 60px}
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Adding Services Your Clients Can Book",
+    "description": "Learn how to create, organize, and manage the services you offer in Bookwize so clients can book exactly what they need.",
+    "author": { "@type": "Organization", "name": "Bookwize", "url": "https://bookwizeapp.com" },
+    "publisher": { "@type": "Organization", "name": "Bookwize", "logo": { "@type": "ImageObject", "url": "https://bookwizeapp.com/img/logo.svg" } },
+    "datePublished": "2026-05-08",
+    "dateModified": "2026-05-08",
+    "mainEntityOfPage": "https://bookwizeapp.com/blog/adding-services"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Add Services on Bookwize",
+    "step": [
+      { "@type": "HowToStep", "name": "Go to Services", "text": "From your dashboard, click Services in the left sidebar to see your service list." },
+      { "@type": "HowToStep", "name": "Click Add", "text": "Click the Add Service button to open the new service form." },
+      { "@type": "HowToStep", "name": "Fill details", "text": "Enter the service name, description, duration, price, and category." },
+      { "@type": "HowToStep", "name": "Save", "text": "Save the service to make it appear on your public booking page." },
+      { "@type": "HowToStep", "name": "Assign to staff", "text": "Choose which staff members offer this service so clients see the right availability." }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav class="blog-nav">
+    <div class="blog-nav-inner">
+      <a href="/" class="brand"><img src="/img/logo.svg" alt="Bookwize"> Bookwize</a>
+      <div class="blog-nav-links">
+        <a href="/blog">Blog</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/admin/signup" class="btn-sm">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="blog-hero">
+    <span class="tag">Services</span>
+    <h1>Adding Services Your Clients Can Book</h1>
+    <p>Create, organize, and manage your service menu so clients always know what you offer.</p>
+  </div>
+
+  <div class="blog-content">
+    <p>Services are the foundation of your booking page. When clients visit your Bookwize link, they see your list of services with names, descriptions, durations, and prices. Getting this right means fewer questions from clients and more bookings with less back-and-forth.</p>
+
+    <h2>How to Add a New Service</h2>
+    <p>You can add services during the <a href="/blog/setting-up-your-business">onboarding wizard</a> or any time from your dashboard. Here is the process:</p>
+
+    <div class="step-box">
+      <h3>Step 1: Go to Services</h3>
+      <p>From your dashboard, click <strong>Services</strong> in the left sidebar. You will see a list of any services you have already created, plus an <strong>Add Service</strong> button.</p>
+    </div>
+
+    <div class="step-box">
+      <h3>Step 2: Fill In the Details</h3>
+      <p>For each service, you will enter:</p>
+      <ul>
+        <li><strong>Service name</strong> — what clients see when they browse your booking page (e.g., "Men's Haircut" or "60-Minute Deep Tissue Massage")</li>
+        <li><strong>Description</strong> — a short explanation of what the service includes. This helps clients choose the right option</li>
+        <li><strong>Duration</strong> — how long the appointment takes, in minutes. This controls the time slots shown to clients</li>
+        <li><strong>Price</strong> — the cost displayed on your booking page. Prices are shown in the currency you set during onboarding</li>
+        <li><strong>Category</strong> — group related services together (e.g., "Hair", "Nails", "Spa"). Categories help clients find what they need quickly</li>
+      </ul>
+    </div>
+
+    <div class="step-box">
+      <h3>Step 3: Assign to Staff</h3>
+      <p>Choose which staff members offer this service. If you have a team, you can assign a service to one person or to everyone. Clients will only see available staff for the service they select. For more on staff management, see our guide on <a href="/blog/managing-staff">managing your team and staff accounts</a>.</p>
+    </div>
+
+    <blockquote>Clear, well-named services with accurate durations are the single biggest factor in getting clients to complete a booking without calling you first.</blockquote>
+
+    <h2>Editing and Removing Services</h2>
+    <p>You can update any service at any time. Click on a service from the list to edit its name, description, duration, price, or category. Changes take effect immediately on your booking page.</p>
+    <p>If you no longer offer a service, you can delete it. Existing bookings for that service are not affected — they stay in your calendar and history. Only future bookings are impacted.</p>
+
+    <h2>How Pricing Works</h2>
+    <p>The price you set for each service is displayed on your public booking page so clients know what to expect before they book. Bookwize does not process payments — the price is for display purposes only. You handle payment at the time of the appointment, however you normally do (cash, card, e-transfer, etc.).</p>
+    <p>If you offer free consultations or services with variable pricing, you can set the price to zero or leave a note in the description explaining your pricing.</p>
+
+    <h2>Organizing Services by Category</h2>
+    <p>Categories keep your booking page tidy, especially if you offer many services. For example, a salon might have categories like "Haircuts", "Colour", "Treatments", and "Styling". A spa might use "Massage", "Facials", and "Body Treatments".</p>
+    <p>When clients visit your booking page, they can browse by category to quickly find what they are looking for.</p>
+
+    <div class="tip">
+      <strong>Pro Tip:</strong> Keep your service names short and clear. Instead of "Haircut Service for Men (Includes Wash)", try "Men's Haircut (with wash)". If you serve clients in both English and French (common in Montreal), consider adding the French name in the description.
+    </div>
+
+    <h3>Best Practices for Your Service Menu</h3>
+    <ul>
+      <li><strong>Be specific with durations</strong> — if a service takes 45 minutes, do not round up to 60. Accurate durations prevent gaps and overlapping appointments</li>
+      <li><strong>Use descriptions wisely</strong> — a sentence or two is enough. Mention what is included so clients do not need to call and ask</li>
+      <li><strong>Review regularly</strong> — remove services you no longer offer and update prices when they change. An outdated menu leads to confusion</li>
+      <li><strong>Start with your top sellers</strong> — you do not need to list every variation on day one. Add your most popular services first and expand later</li>
+    </ul>
+
+    <div class="blog-cta">
+      <h3>Ready to build your service menu?</h3>
+      <p>Sign up free and start adding the services your clients love to book.</p>
+      <a href="/admin/signup">Start Your Free 14-Day Trial</a>
+    </div>
+  </div>
+
+  <div class="blog-footer">
+    <p>&copy; 2026 Bookwize. <a href="/">Home</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/privacy">Privacy</a></p>
+  </div>
+</body>
+</html>

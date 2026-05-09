@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Managing Your Team and Staff Accounts — Bookwize Blog</title>
+  <meta name="description" content="Add team members, set roles and permissions, assign services, and let your staff manage their own schedules in Bookwize.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bookwizeapp.com/blog/managing-staff">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Managing Your Team and Staff Accounts">
+  <meta property="og:description" content="Add team members, set roles and permissions, assign services, and let your staff manage their own schedules in Bookwize.">
+  <meta property="og:url" content="https://bookwizeapp.com/blog/managing-staff">
+  <meta property="og:locale" content="en_CA">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;color:#1A1A2E;background:#FAF7FF;line-height:1.8}
+    .blog-nav{
+      position:sticky;top:0;z-index:100;background:#fff;
+      border-bottom:1px solid rgba(232,223,208,.5);padding:14px 0;
+    }
+    .blog-nav-inner{max-width:760px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+    .blog-nav a.brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:#1A1A2E;font-weight:700;font-size:1rem}
+    .blog-nav a.brand img{width:28px;height:28px}
+    .blog-nav-links{display:flex;gap:16px;align-items:center}
+    .blog-nav-links a{font-size:.85rem;color:#737373;text-decoration:none;font-weight:500}
+    .blog-nav-links a:hover{color:#F28C38}
+    .blog-nav-links .btn-sm{background:#F28C38;color:#fff;padding:7px 16px;border-radius:10px;font-weight:600;font-size:.82rem}
+
+    .blog-hero{padding:64px 0 48px;text-align:center}
+    .blog-hero .tag{display:inline-block;font-size:.72rem;font-weight:600;color:#F28C38;background:rgba(242,140,56,.08);padding:5px 14px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
+    .blog-hero h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;line-height:1.2;letter-spacing:-.03em;margin-bottom:12px;max-width:640px;margin-left:auto;margin-right:auto}
+    .blog-hero p{color:#737373;font-size:1rem;max-width:520px;margin:0 auto}
+
+    .blog-content{max-width:760px;margin:0 auto;padding:0 24px 80px}
+    .blog-content h2{font-size:1.35rem;font-weight:700;margin:40px 0 12px;color:#1A1A2E}
+    .blog-content h3{font-size:1.1rem;font-weight:700;margin:28px 0 8px;color:#1A1A2E}
+    .blog-content p{font-size:.95rem;color:#525252;margin-bottom:16px}
+    .blog-content ul,.blog-content ol{padding-left:20px;margin-bottom:16px}
+    .blog-content li{font-size:.95rem;color:#525252;padding:4px 0}
+    .blog-content a{color:#F28C38;font-weight:600}
+    .blog-content strong{color:#1A1A2E}
+    .blog-content blockquote{
+      border-left:4px solid #F28C38;padding:16px 20px;margin:24px 0;
+      background:rgba(242,140,56,.04);border-radius:0 12px 12px 0;
+      font-size:.95rem;color:#525252;font-style:italic;
+    }
+    .blog-content img{
+      width:100%;border-radius:16px;margin:24px 0;
+      box-shadow:0 8px 32px rgba(26,26,46,.08);border:1px solid rgba(232,223,208,.5);
+    }
+    .blog-content .step-box{
+      background:#fff;border-radius:16px;padding:24px;margin:20px 0;
+      border:1.5px solid rgba(232,223,208,.5);
+    }
+    .blog-content .step-box h3{margin-top:0;color:#F28C38}
+    .blog-content .tip{
+      background:linear-gradient(135deg,#FFF3E6,#FEF3C7);border-radius:14px;
+      padding:16px 20px;margin:20px 0;font-size:.9rem;color:#92400E;
+    }
+    .blog-content .tip strong{color:#92400E}
+
+    .blog-cta{
+      background:#1A1A2E;border-radius:20px;padding:40px;text-align:center;margin:48px 0;
+    }
+    .blog-cta h3{color:#fff;font-size:1.2rem;font-weight:700;margin-bottom:8px}
+    .blog-cta p{color:rgba(255,255,255,.6);font-size:.9rem;margin-bottom:20px}
+    .blog-cta a{
+      display:inline-block;background:#F28C38;color:#fff;padding:12px 28px;
+      border-radius:12px;font-weight:600;font-size:.9rem;text-decoration:none;
+    }
+
+    .blog-footer{text-align:center;padding:32px 0;font-size:.8rem;color:#9CA3AF;border-top:1px solid rgba(232,223,208,.5)}
+    .blog-footer a{color:#F28C38;text-decoration:none}
+
+    @media(max-width:480px){
+      .blog-hero h1{font-size:1.5rem}
+      .blog-content{padding:0 16px 60px}
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Managing Your Team and Staff Accounts",
+    "description": "Add team members, set roles and permissions, assign services, and let your staff manage their own schedules in Bookwize.",
+    "author": { "@type": "Organization", "name": "Bookwize", "url": "https://bookwizeapp.com" },
+    "publisher": { "@type": "Organization", "name": "Bookwize", "logo": { "@type": "ImageObject", "url": "https://bookwizeapp.com/img/logo.svg" } },
+    "datePublished": "2026-05-08",
+    "dateModified": "2026-05-08",
+    "mainEntityOfPage": "https://bookwizeapp.com/blog/managing-staff"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Add Staff to Bookwize",
+    "step": [
+      { "@type": "HowToStep", "name": "Go to Staff", "text": "Click Staff in the left sidebar of your dashboard." },
+      { "@type": "HowToStep", "name": "Click Add", "text": "Click the Add Staff button to open the new staff member form." },
+      { "@type": "HowToStep", "name": "Fill details", "text": "Enter the staff member's name and email address." },
+      { "@type": "HowToStep", "name": "Set role", "text": "Choose a role: Owner, Manager, or Staff, each with different permission levels." },
+      { "@type": "HowToStep", "name": "Assign services", "text": "Select which services this staff member offers so clients see the right availability." },
+      { "@type": "HowToStep", "name": "Save", "text": "Save the new staff member. A welcome email with login credentials is sent automatically." }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav class="blog-nav">
+    <div class="blog-nav-inner">
+      <a href="/" class="brand"><img src="/img/logo.svg" alt="Bookwize"> Bookwize</a>
+      <div class="blog-nav-links">
+        <a href="/blog">Blog</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/admin/signup" class="btn-sm">Start Free Trial</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="blog-hero">
+    <span class="tag">Team Management</span>
+    <h1>Managing Your Team and Staff Accounts</h1>
+    <p>Add team members, set permissions, and let each person manage their own schedule.</p>
+  </div>
+
+  <div class="blog-content">
+    <p>Whether you are a solo professional or run a team of ten, Bookwize makes it easy to manage your staff. Each team member gets their own schedule, assigned services, and availability — and clients can choose who they want to book with.</p>
+
+    <h2>Adding a Staff Member</h2>
+    <p>You can add staff during the <a href="/blog/setting-up-your-business">onboarding wizard</a> or at any time from the Staff section in your dashboard.</p>
+
+    <div class="step-box">
+      <h3>Step 1: Open the Staff Page</h3>
+      <p>Click <strong>Staff</strong> in the left sidebar, then click <strong>Add Staff</strong>. You will see a form to enter the new team member's details.</p>
+    </div>
+
+    <div class="step-box">
+      <h3>Step 2: Enter Their Details</h3>
+      <p>Fill in the staff member's <strong>name</strong>, <strong>email address</strong>, and <strong>role</strong>. The email is important — it is used for their login credentials and for receiving booking notifications.</p>
+    </div>
+
+    <div class="step-box">
+      <h3>Step 3: Assign Services</h3>
+      <p>Select which <a href="/blog/adding-services">services</a> this staff member offers. For example, one stylist might do haircuts and colour, while another only does blowouts and treatments. Clients will only see available staff for the service they choose.</p>
+    </div>
+
+    <div class="step-box">
+      <h3>Step 4: Save and Send Welcome Email</h3>
+      <p>When you save the new staff member, a <strong>welcome email</strong> is sent to their address with login credentials. They can then sign in and view their own bookings and schedule.</p>
+    </div>
+
+    <h2>Understanding Roles and Permissions</h2>
+    <p>Bookwize has three roles, each with different levels of access:</p>
+    <ul>
+      <li><strong>Owner</strong> — full access to everything: settings, billing, staff management, all bookings, and reports. This is your role as the business owner</li>
+      <li><strong>Manager</strong> — can manage bookings for all staff, view the full calendar, and add or edit services. Cannot access billing or account settings</li>
+      <li><strong>Staff</strong> — can view and manage only their own bookings and schedule. Cannot see other team members' appointments or change business settings</li>
+    </ul>
+
+    <blockquote>Give each team member only the access they need. Staff members see their own bookings, managers see everything, and only owners can change billing and account settings.</blockquote>
+
+    <h2>What Each Staff Member Gets</h2>
+    <p>Every staff member in Bookwize has their own:</p>
+    <ul>
+      <li><strong>Schedule</strong> — individual availability that can differ from other team members</li>
+      <li><strong>Services</strong> — only the services they are qualified to perform</li>
+      <li><strong>Availability</strong> — their own working hours, separate from the business hours if needed</li>
+      <li><strong>Profile photo</strong> — displayed on the booking page so clients can see who they are booking with</li>
+    </ul>
+
+    <h2>Buffer Times Between Appointments</h2>
+    <p>Need a few minutes between appointments for cleanup, setup, or a quick break? You can set buffer times for each staff member. For example, a 15-minute buffer after each appointment ensures your team is never rushed and clients are never kept waiting.</p>
+
+    <h2>How Clients See Your Staff</h2>
+    <p>On your public booking page, clients first choose a service, then see which staff members offer that service. They can pick their preferred person or choose "Any Available" to book the first open time slot. Each staff member's name and photo are displayed, making it easy for returning clients to book with the same person.</p>
+
+    <p>For a full walkthrough of the client booking experience, see our guide on <a href="/blog/how-clients-book">how clients book appointments on your page</a>.</p>
+
+    <div class="tip">
+      <strong>Pro Tip:</strong> Upload a professional photo for each staff member. Clients are more likely to book when they can see who they will be meeting. It builds trust and adds a personal touch to your booking page.
+    </div>
+
+    <h2>Managing Your Growing Team</h2>
+    <p>As your business grows, you can add more staff members at any time. If someone leaves your team, you can remove their account — their past booking history stays in your records. Keep in mind that the free trial includes one staff member. To add more, you will need to <a href="/blog/upgrading-your-plan">upgrade your plan</a>.</p>
+
+    <div class="blog-cta">
+      <h3>Ready to set up your team?</h3>
+      <p>Sign up free and add your staff members in minutes.</p>
+      <a href="/admin/signup">Start Your Free 14-Day Trial</a>
+    </div>
+  </div>
+
+  <div class="blog-footer">
+    <p>&copy; 2026 Bookwize. <a href="/">Home</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/privacy">Privacy</a></p>
+  </div>
+</body>
+</html>

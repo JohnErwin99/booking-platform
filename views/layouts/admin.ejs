@@ -62,7 +62,7 @@
       </header>
 
       <% if (typeof trialDaysLeft !== 'undefined') { %>
-        <div style="background:<%= trialExpired ? '#FEE2E2' : 'linear-gradient(135deg,#FFF3E6,#FEF3C7)' %>;padding:12px 20px;border-radius:14px;margin:16px 16px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="background:<%= trialExpired ? 'rgba(254,226,226,.9)' : 'linear-gradient(135deg,rgba(255,243,230,.85),rgba(254,243,199,.85))' %>;backdrop-filter:blur(8px);padding:14px 22px;border-radius:18px;margin:16px 16px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border:1px solid <%= trialExpired ? 'rgba(254,202,202,.5)' : 'rgba(242,140,56,.12)' %>">
           <span style="font-size:.85rem;font-weight:600;color:<%= trialExpired ? '#991B1B' : '#92400E' %>">
             <% if (trialExpired) { %>
               Your free trial has expired. Upgrade to keep your bookings active.
@@ -70,7 +70,7 @@
               Free trial — <%= trialDaysLeft %> day<%= trialDaysLeft !== 1 ? 's' : '' %> remaining
             <% } %>
           </span>
-          <a href="/#pricing" style="font-size:.82rem;font-weight:700;color:#fff;background:#F28C38;padding:6px 18px;border-radius:10px;text-decoration:none">Upgrade Now</a>
+          <a href="/#pricing" style="font-size:.82rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#F28C38,#e07b28);padding:7px 20px;border-radius:12px;text-decoration:none;box-shadow:0 2px 8px rgba(242,140,56,.2);transition:all .25s">Upgrade Now</a>
         </div>
       <% } %>
 

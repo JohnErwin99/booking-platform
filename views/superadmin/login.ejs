@@ -4,16 +4,16 @@
   <%- include('../partials/head') %>
   <link rel="stylesheet" href="/css/admin.css">
   <style>
-    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #1a1a2e; }
-    .login-card { background: #fff; border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
-    .login-card h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #1a1a2e; }
-    .login-card p { color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 500; font-size: 0.85rem; }
-    .form-group input { width: 100%; padding: 0.7rem 0.9rem; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box; }
-    .form-group input:focus { outline: none; border-color: #e74c3c; }
-    .btn-login { width: 100%; padding: 0.75rem; background: #e74c3c; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
-    .btn-login:hover { background: #c0392b; }
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #1A1A2E, #161628); -webkit-font-smoothing: antialiased; }
+    .login-card { background: rgba(255,255,255,.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 28px; padding: 2.75rem; width: 100%; max-width: 420px; box-shadow: 0 16px 48px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,.2); }
+    .login-card h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #1a1a2e; font-weight: 800; }
+    .login-card p { color: #737373; margin-bottom: 1.5rem; font-size: 0.9rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group label { display: block; margin-bottom: 0.35rem; font-weight: 600; font-size: 0.82rem; color: #6B7280; }
+    .form-group input { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid rgba(232,223,208,.6); border-radius: 14px; font-size: 0.95rem; box-sizing: border-box; background: rgba(245,243,250,.5); transition: all .25s cubic-bezier(.4,0,.2,1); }
+    .form-group input:focus { outline: none; border-color: #e74c3c; box-shadow: 0 0 0 4px rgba(231,76,60,.1); background: #fff; }
+    .btn-login { width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; border-radius: 14px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all .3s cubic-bezier(.4,0,.2,1); box-shadow: 0 4px 16px rgba(231,76,60,.25); }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(231,76,60,.3); }
   </style>
 </head>
 <body>
