@@ -275,7 +275,7 @@
   <div x-show="tab === 'billing'" class="tab-content">
     <h3 style="margin-bottom:8px">Your Plan</h3>
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
-      <span class="badge" style="font-size:.85rem;padding:6px 16px;text-transform:capitalize"><%= tenant.plan %></span>
+      <span class="badge" style="font-size:.85rem;padding:6px 16px;text-transform:capitalize"><%= tenant.plan === 'starter' ? 'Solo' : tenant.plan %></span>
       <% if (tenant.plan === 'trial' && tenant.trial_ends_at) { %>
         <span style="color:#92400E;font-size:.85rem">
           <% const trialEnd = new Date(tenant.trial_ends_at); const daysLeft = Math.max(0, Math.ceil((trialEnd - new Date()) / 86400000)); %>

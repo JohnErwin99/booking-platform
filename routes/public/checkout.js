@@ -67,7 +67,7 @@ router.post('/stripe/webhook', async (req, res) => {
 
         if (resolvedTenantId) {
           // Logged-in user — upgrade existing tenant
-          await db('tenants').where('id', resolvedTenantId).update({ plan, trial_ends_at: null });
+          await db('tenants').where('id', resolvedTenantId).update({ plan, status: 'active', trial_ends_at: null });
           console.log(`Tenant ${resolvedTenantId} upgraded to ${plan} plan`);
         } else if (customerEmail) {
           // Check if tenant exists by email
@@ -75,7 +75,7 @@ router.post('/stripe/webhook', async (req, res) => {
 
           if (existingTenant) {
             resolvedTenantId = existingTenant.id;
-            await db('tenants').where('id', resolvedTenantId).update({ plan, trial_ends_at: null });
+            await db('tenants').where('id', resolvedTenantId).update({ plan, status: 'active', trial_ends_at: null });
             console.log(`Tenant ${resolvedTenantId} (by email) upgraded to ${plan} plan`);
           } else {
             // Create new tenant + user

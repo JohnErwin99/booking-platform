@@ -64,13 +64,23 @@
       </div>
 
       <% if (editTenant) { %>
-        <div class="form-group">
-          <label>Status</label>
-          <select name="status">
-            <% ['active','trial','suspended'].forEach(s => { %>
-              <option value="<%= s %>" <%= editTenant.status === s ? 'selected' : '' %>><%= s %></option>
-            <% }) %>
-          </select>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Status</label>
+            <select name="status">
+              <% ['active','trial','suspended'].forEach(s => { %>
+                <option value="<%= s %>" <%= editTenant.status === s ? 'selected' : '' %>><%= s %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Plan</label>
+            <select name="plan">
+              <% ['trial','solo','team','starter'].forEach(p => { %>
+                <option value="<%= p %>" <%= editTenant.plan === p ? 'selected' : '' %>><%= p.charAt(0).toUpperCase() + p.slice(1) %></option>
+              <% }) %>
+            </select>
+          </div>
         </div>
       <% } %>
 

@@ -109,6 +109,9 @@ router.post('/tenants', requireSuperadmin, async (req, res, next) => {
     }
 
     // Create tenant
+    const trialEnds = new Date();
+    trialEnds.setDate(trialEnds.getDate() + 14);
+
     const [tenantId] = await db('tenants').insert({
       name: business_name,
       slug,
@@ -116,7 +119,9 @@ router.post('/tenants', requireSuperadmin, async (req, res, next) => {
       phone: phone || null,
       timezone: timezone || 'America/New_York',
       currency: currency || 'USD',
-      status: 'active'
+      status: 'trial',
+      plan: 'trial',
+      trial_ends_at: trialEnds,
     });
 
     // Create default location
@@ -239,15 +244,23 @@ router.get('/tenants/:id/edit', requireSuperadmin, async (req, res, next) => {
 // POST /superadmin/tenants/:id
 router.post('/tenants/:id', requireSuperadmin, async (req, res, next) => {
   try {
-    const { business_name, status, phone, timezone, currency } = req.body;
+    const { business_name, status, plan, phone, timezone, currency } = req.body;
 
-    await db('tenants').where('id', req.params.id).update({
+    const updateData = {
       name: business_name,
       status,
       phone: phone || null,
       timezone: timezone || 'America/New_York',
       currency: currency || 'USD'
-    });
+    };
+
+    // If setting to active with a paid plan, clear trial
+    if (plan) updateData.plan = plan;
+    if (status === 'active' && plan && plan !== 'trial') {
+      updateData.trial_ends_at = null;
+    }
+
+    await db('tenants').where('id', req.params.id).update(updateData);
 
     req.flash('success', 'Tenant updated.');
     res.redirect('/superadmin/tenants');

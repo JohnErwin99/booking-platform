@@ -2,12 +2,13 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Plan config
 const PLANS = {
-  starter_monthly:  { name: 'Solo / Starter — Monthly',  amount: 1900,  interval: 'month', plan: 'starter', billing: 'monthly' },
-  starter_onetime:  { name: 'Solo / Starter — One-Time',  amount: 29900, interval: null,    plan: 'starter', billing: 'onetime' },
-  team_monthly:     { name: 'Team — Monthly',             amount: 3900,  interval: 'month', plan: 'team',    billing: 'monthly' },
-  team_onetime:     { name: 'Team — One-Time',             amount: 59900, interval: null,    plan: 'team',    billing: 'onetime' },
-  business_monthly: { name: 'Business — Monthly',         amount: 6900,  interval: 'month', plan: 'business', billing: 'monthly' },
-  business_onetime: { name: 'Business — One-Time',         amount: 99900, interval: null,    plan: 'business', billing: 'onetime' },
+  solo_monthly:     { name: 'Solo — Monthly',   amount: 1900,  interval: 'month', plan: 'solo', billing: 'monthly' },
+  solo_onetime:     { name: 'Solo — One-Time',  amount: 29900, interval: null,    plan: 'solo', billing: 'onetime' },
+  team_monthly:     { name: 'Team — Monthly',   amount: 3900,  interval: 'month', plan: 'team', billing: 'monthly' },
+  team_onetime:     { name: 'Team — One-Time',  amount: 59900, interval: null,    plan: 'team', billing: 'onetime' },
+  // Legacy aliases (keep for existing Stripe products)
+  starter_monthly:  { name: 'Solo — Monthly',   amount: 1900,  interval: 'month', plan: 'solo', billing: 'monthly' },
+  starter_onetime:  { name: 'Solo — One-Time',  amount: 29900, interval: null,    plan: 'solo', billing: 'onetime' },
 };
 
 // Cache for Stripe price IDs — created once, reused
