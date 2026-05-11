@@ -15,7 +15,7 @@ async function tenantResolver(req, res, next) {
     if (host && host !== 'localhost' && !host.match(/^\d+\.\d+\.\d+\.\d+$/)) {
       tenant = await db('tenants')
         .where('custom_domain', host)
-        .where('status', 'active')
+        .whereIn('status', ['active', 'trial'])
         .first();
     }
 

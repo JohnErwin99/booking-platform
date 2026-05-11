@@ -100,7 +100,7 @@ router.post('/signup', async (req, res, next) => {
       name: business_name,
       slug,
       email: email.toLowerCase().trim(),
-      status: 'active',
+      status: 'trial',
       plan: 'trial',
       trial_ends_at: trialEnds,
       onboarding_completed: false,
