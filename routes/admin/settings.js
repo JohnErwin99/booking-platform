@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../../config/database');
 const upload = require('../../config/upload');
 const requireRole = require('../../middleware/requireRole');
+const gcal = require('../../services/googleCalendarService');
 const router = express.Router();
 
 // GET /admin/settings
@@ -21,12 +22,16 @@ router.get('/settings', requireRole('owner', 'manager'), async (req, res, next) 
         .orderBy('weekday');
     }
 
+    // Check Google Calendar connection
+    const calendarSync = await gcal.isConnected(tenantId);
+
     res.render('admin/settings', {
       title: 'Settings',
       user: req.user,
       tenant,
       locations,
       businessHours,
+      calendarSync,
       flash: {
         error: req.flash('error'),
         success: req.flash('success')

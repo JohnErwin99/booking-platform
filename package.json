@@ -29,6 +29,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-flash": "0.0.2",
     "express-session": "^1.19.0",
+    "googleapis": "^171.4.0",
     "jsonwebtoken": "^9.0.3",
     "knex": "^3.2.10",
     "multer": "^2.1.1",

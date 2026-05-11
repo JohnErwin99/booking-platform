@@ -170,6 +170,14 @@ router.post('/:slug/cancel/:token', async (req, res, next) => {
       console.error('Cancellation email error:', err.message)
     );
 
+    // Remove from Google Calendar (fire-and-forget)
+    try {
+      const gcal = require('../../services/googleCalendarService');
+      gcal.deleteEvent(booking, tenant).catch(err =>
+        console.error('Google Calendar delete error:', err.message)
+      );
+    } catch (e) {}
+
     res.json({ success: true, message: 'Booking cancelled successfully.' });
   } catch (err) {
     next(err);
@@ -235,6 +243,15 @@ router.get('/:slug/cancel-booking/:token', async (req, res, next) => {
       sendBookingCancellation(booking.id).catch(err =>
         console.error('Cancellation email error:', err.message)
       );
+
+      // Remove from Google Calendar (fire-and-forget)
+      try {
+        const tenant = await db('tenants').where('id', booking.tenant_id).first();
+        const gcal = require('../../services/googleCalendarService');
+        gcal.deleteEvent(booking, tenant).catch(err =>
+          console.error('Google Calendar delete error:', err.message)
+        );
+      } catch (e) {}
     }
 
     const tenant = await db('tenants').where('id', booking.tenant_id).first();

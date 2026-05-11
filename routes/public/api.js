@@ -251,6 +251,17 @@ router.post('/:slug/book', async (req, res, next) => {
         console.error('Confirmation email error:', err.message)
       );
 
+      // Sync to Google Calendar (fire-and-forget)
+      try {
+        const gcal = require('../../services/googleCalendarService');
+        const bookingForSync = await db('bookings').where('id', bookingId).first();
+        if (bookingForSync) {
+          gcal.createEvent(bookingForSync, tenant).catch(err =>
+            console.error('Google Calendar sync error:', err.message)
+          );
+        }
+      } catch (e) {}
+
       res.status(201).json({
         success: true,
         booking_id: bookingId,
