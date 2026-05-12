@@ -1,10 +1,38 @@
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
+const rateLimit = require('express-rate-limit');
 const db = require('../../config/database');
 const { slugify } = require('../../utils/helpers');
 const { sendEmail } = require('../../services/emailService');
 const router = express.Router();
+
+// Rate limiter: 5 login attempts per 15 minutes per IP
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  skipSuccessfulRequests: true,
+  message: 'Too many login attempts. Please try again in 15 minutes.',
+  handler: (req, res) => {
+    req.flash('error', 'Too many login attempts. Please try again in 15 minutes.');
+    res.redirect('/admin/login');
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiter: 3 signup attempts per hour per IP
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  message: 'Too many accounts created. Please try again later.',
+  handler: (req, res) => {
+    req.flash('error', 'Too many accounts created from this IP. Please try again later.');
+    res.redirect('/admin/signup');
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // GET /admin/login
 router.get('/login', (req, res) => {
@@ -24,7 +52,7 @@ router.get('/login', (req, res) => {
 });
 
 // POST /admin/login
-router.post('/login', (req, res, next) => {
+router.post('/login', loginLimiter, (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) return next(err);
     if (!user) {
@@ -62,7 +90,7 @@ router.get('/signup', (req, res) => {
 });
 
 // POST /admin/signup
-router.post('/signup', async (req, res, next) => {
+router.post('/signup', signupLimiter, async (req, res, next) => {
   try {
     const { business_name, first_name, last_name, email, password } = req.body;
 
