@@ -102,7 +102,8 @@ router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), a
       return res.redirect('/admin/staff/new');
     }
 
-    const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const { getUploadUrl } = require('../../config/upload');
+    const photoUrl = req.file ? getUploadUrl(req.file) : null;
 
     const [staffId] = await db('staff').insert({
       tenant_id: tenantId,
@@ -233,7 +234,8 @@ router.post('/staff/:id', requireRole('owner', 'manager'), upload.single('photo'
       buffer_after: buffer_after || 0,
       is_active: is_active === 'on' || is_active === '1' ? true : false
     };
-    if (req.file) staffUpdate.photo_url = `/uploads/${req.file.filename}`;
+    const { getUploadUrl: getUrl } = require('../../config/upload');
+    if (req.file) staffUpdate.photo_url = getUrl(req.file);
     await db('staff').where({ id, tenant_id: tenantId }).update(staffUpdate);
 
     // Reassign services

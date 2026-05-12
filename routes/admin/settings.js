@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../../config/database');
 const upload = require('../../config/upload');
+const { getUploadUrl } = require('../../config/upload');
 const requireRole = require('../../middleware/requireRole');
 const gcal = require('../../services/googleCalendarService');
 const router = express.Router();
@@ -204,10 +205,16 @@ router.post('/settings/photo', upload.single('photo'), async (req, res, next) =>
       req.flash('error', 'Please select an image.');
       return res.redirect('/admin/settings');
     }
-    const photoUrl = `/uploads/${req.file.filename}`;
+    const photoUrl = getUploadUrl(req.file);
     await db('users').where('id', req.user.id).update({ photo_url: photoUrl });
+
+    // Sync to staff record if owner/staff share the same email
+    await db('staff')
+      .where({ tenant_id: req.user.tenant_id, email: req.user.email })
+      .update({ photo_url: photoUrl });
+
     req.flash('success', 'Profile photo updated.');
-    res.redirect('/admin/settings');
+    res.redirect('/admin/settings#account');
   } catch (err) {
     next(err);
   }
@@ -220,7 +227,7 @@ router.post('/settings/logo', requireRole('owner'), upload.single('logo'), async
       req.flash('error', 'Please select an image.');
       return res.redirect('/admin/settings');
     }
-    const logoUrl = `/uploads/${req.file.filename}`;
+    const logoUrl = getUploadUrl(req.file);
     await db('tenants').where('id', req.user.tenant_id).update({ logo_url: logoUrl });
     req.flash('success', 'Business logo updated.');
     res.redirect('/admin/settings');

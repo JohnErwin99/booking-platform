@@ -36,7 +36,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1d',
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.png') || filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.svg') || filePath.endsWith('.webp')) {
+    if (filePath.includes('/uploads/')) {
+      // User-uploaded images — no cache so updates show immediately
+      res.setHeader('Cache-Control', 'no-cache');
+    } else if (filePath.endsWith('.png') || filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.svg') || filePath.endsWith('.webp')) {
       res.setHeader('Cache-Control', 'public, max-age=604800');
     }
   }

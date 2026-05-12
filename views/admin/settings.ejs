@@ -1,4 +1,4 @@
-<div class="settings-tabs" x-data="{ tab: 'branding' }">
+<div class="settings-tabs" x-data="{ tab: location.hash.replace('#','') || 'branding' }">
   <div class="tab-nav">
     <button @click="tab = 'branding'" :class="{ active: tab === 'branding' }" class="tab-btn">Branding</button>
     <button @click="tab = 'policies'" :class="{ active: tab === 'policies' }" class="tab-btn">Policies</button>

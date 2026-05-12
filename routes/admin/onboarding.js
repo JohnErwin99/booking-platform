@@ -44,7 +44,8 @@ router.post('/onboarding/business', upload.single('logo'), async (req, res, next
       timezone: timezone || 'America/Montreal',
       currency: currency || 'CAD',
     };
-    if (req.file) update.logo_url = `/uploads/${req.file.filename}`;
+    const { getUploadUrl } = require('../../config/upload');
+    if (req.file) update.logo_url = getUploadUrl(req.file);
 
     await db('tenants').where('id', tenantId).update(update);
     res.json({ success: true });

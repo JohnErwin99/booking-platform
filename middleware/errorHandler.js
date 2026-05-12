@@ -1,4 +1,16 @@
 function errorHandler(err, req, res, next) {
+  // Multer file upload errors — redirect back with flash message
+  const multer = require('multer');
+  if (err instanceof multer.MulterError || err.message === 'Only image files are allowed.') {
+    const msg = err.code === 'LIMIT_FILE_SIZE'
+      ? 'File is too large. Maximum size is 1MB.'
+      : err.message || 'File upload failed.';
+    if (req.flash) {
+      req.flash('error', msg);
+      return res.redirect('back');
+    }
+  }
+
   console.error('Error:', err.message);
   if (process.env.NODE_ENV !== 'production') {
     console.error(err.stack);
