@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../../config/database');
 const { formatTimeLabel, formatPrice } = require('../../utils/helpers');
 const { sendBookingCancellation } = require('../../services/notificationService');
+const gcal = require('../../services/googleCalendarService');
 const router = express.Router();
 
 // GET /admin/bookings
@@ -25,12 +26,15 @@ router.get('/bookings', async (req, res, next) => {
       .where({ tenant_id: tenantId, is_active: true })
       .orderBy('first_name');
 
+    const calendarSync = await gcal.isConnected(tenantId);
+
     res.render('admin/bookings', {
       title: 'Bookings',
       user: req.user,
       tenant: req.tenant,
       bookings,
       staffList,
+      calendarConnected: calendarSync.connected,
       filters: { from, to, staff_id, status },
       viewMode: view || 'list',
       helpers: { formatTimeLabel, formatPrice },

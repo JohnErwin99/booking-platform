@@ -36,12 +36,13 @@
           <th>Service</th>
           <th>Staff</th>
           <th>Status</th>
+          <% if (calendarConnected) { %><th>Sync</th><% } %>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <% if (bookings.length === 0) { %>
-          <tr><td colspan="7" class="text-center">No bookings found.</td></tr>
+          <tr><td colspan="<%= calendarConnected ? 8 : 7 %>" class="text-center">No bookings found.</td></tr>
         <% } %>
         <% bookings.forEach(b => { %>
           <tr>
@@ -54,6 +55,17 @@
             <td><%= b.service_name %></td>
             <td><%= b.staff_name %></td>
             <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
+            <% if (calendarConnected) { %>
+            <td>
+              <% if (b.status === 'cancelled') { %>
+                <span class="sync-badge sync-na" title="Cancelled">—</span>
+              <% } else if (b.google_event_id) { %>
+                <span class="sync-badge sync-yes" title="Synced to Google Calendar">&#10003;</span>
+              <% } else { %>
+                <span class="sync-badge sync-no" title="Not synced">&#10005;</span>
+              <% } %>
+            </td>
+            <% } %>
             <td class="actions">
               <% if (b.status === 'confirmed') { %>
                 <form method="POST" action="/admin/bookings/<%= b.id %>/complete" style="display:inline">
@@ -122,6 +134,11 @@
   .modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F3F4F6;font-size:.9rem}
   .modal-row span:first-child{color:#9CA3AF;font-weight:500}
   .modal-row span:last-child{color:#1A1A2E;font-weight:600}
+
+  .sync-badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:.8rem;font-weight:700}
+  .sync-yes{background:#D1FAE5;color:#059669}
+  .sync-no{background:#FEE2E2;color:#DC2626}
+  .sync-na{background:#F3F4F6;color:#9CA3AF}
 </style>
 
 <script>
