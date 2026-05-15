@@ -109,6 +109,9 @@ app.get('/blog/embedding-widget', (req, res) => res.render('blog/embedding-widge
 app.get('/blog/dashboard-guide', (req, res) => res.render('blog/dashboard-guide', { layout: false }));
 app.get('/blog/upgrading-your-plan', (req, res) => res.render('blog/upgrading-your-plan', { layout: false }));
 
+// Resource pages
+app.get('/resources/community', (req, res) => res.render('resources/community', { layout: false }));
+
 // Superadmin routes (no tenant needed, no layout)
 app.use('/superadmin', require('./routes/superadmin/tenants'));
 
