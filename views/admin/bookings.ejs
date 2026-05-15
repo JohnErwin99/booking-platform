@@ -3,24 +3,24 @@
     <input type="date" name="from" value="<%= filters.from || '' %>" placeholder="From">
     <input type="date" name="to" value="<%= filters.to || '' %>" placeholder="To">
     <select name="staff_id">
-      <option value="">All Staff</option>
+      <option value="" data-en="All Staff" data-fr="Tout le personnel">All Staff</option>
       <% staffList.forEach(s => { %>
         <option value="<%= s.id %>" <%= filters.staff_id == s.id ? 'selected' : '' %>><%= s.first_name %> <%= s.last_name %></option>
       <% }) %>
     </select>
     <select name="status">
-      <option value="">All Status</option>
-      <option value="confirmed" <%= filters.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
-      <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>Completed</option>
-      <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-      <option value="no_show" <%= filters.status === 'no_show' ? 'selected' : '' %>>No Show</option>
+      <option value="" data-en="All Status" data-fr="Tous les statuts">All Status</option>
+      <option value="confirmed" <%= filters.status === 'confirmed' ? 'selected' : '' %> data-en="Confirmed" data-fr="Confirmé">Confirmed</option>
+      <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %> data-en="Completed" data-fr="Terminé">Completed</option>
+      <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %> data-en="Cancelled" data-fr="Annulé">Cancelled</option>
+      <option value="no_show" <%= filters.status === 'no_show' ? 'selected' : '' %> data-en="No Show" data-fr="Absence">No Show</option>
     </select>
-    <button type="submit" class="btn btn-secondary">Filter</button>
-    <a href="/admin/bookings" class="btn btn-ghost">Clear</a>
+    <button type="submit" class="btn btn-secondary" data-en="Filter" data-fr="Filtrer">Filter</button>
+    <a href="/admin/bookings" class="btn btn-ghost" data-en="Clear" data-fr="Effacer">Clear</a>
   </form>
   <div class="view-toggle">
-    <button class="btn btn-sm" id="listViewBtn" onclick="switchView('list')">List</button>
-    <button class="btn btn-sm" id="calendarViewBtn" onclick="switchView('calendar')">Calendar</button>
+    <button class="btn btn-sm" id="listViewBtn" onclick="switchView('list')" data-en="List" data-fr="Liste">List</button>
+    <button class="btn btn-sm" id="calendarViewBtn" onclick="switchView('calendar')" data-en="Calendar" data-fr="Calendrier">Calendar</button>
   </div>
 </div>
 
@@ -30,19 +30,19 @@
     <table class="data-table">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Customer</th>
-          <th>Service</th>
-          <th>Staff</th>
-          <th>Status</th>
-          <% if (calendarConnected) { %><th>Sync</th><% } %>
-          <th>Actions</th>
+          <th data-en="Date" data-fr="Date">Date</th>
+          <th data-en="Time" data-fr="Heure">Time</th>
+          <th data-en="Customer" data-fr="Client">Customer</th>
+          <th data-en="Service" data-fr="Service">Service</th>
+          <th data-en="Staff" data-fr="Personnel">Staff</th>
+          <th data-en="Status" data-fr="Statut">Status</th>
+          <% if (calendarConnected) { %><th data-en="Sync" data-fr="Sync">Sync</th><% } %>
+          <th data-en="Actions" data-fr="Actions">Actions</th>
         </tr>
       </thead>
       <tbody>
         <% if (bookings.length === 0) { %>
-          <tr><td colspan="<%= calendarConnected ? 8 : 7 %>" class="text-center">No bookings found.</td></tr>
+          <tr><td colspan="<%= calendarConnected ? 8 : 7 %>" class="text-center" data-en="No bookings found." data-fr="Aucune réservation trouvée.">No bookings found.</td></tr>
         <% } %>
         <% bookings.forEach(b => { %>
           <tr>
@@ -69,13 +69,13 @@
             <td class="actions">
               <% if (b.status === 'confirmed') { %>
                 <form method="POST" action="/admin/bookings/<%= b.id %>/complete" style="display:inline">
-                  <button type="submit" class="btn btn-sm btn-success" title="Mark complete">Done</button>
+                  <button type="submit" class="btn btn-sm btn-success" title="Mark complete" data-en="Done" data-fr="Terminé">Done</button>
                 </form>
                 <form method="POST" action="/admin/bookings/<%= b.id %>/cancel" style="display:inline">
-                  <button type="submit" class="btn btn-sm btn-danger" title="Cancel" onclick="return confirm('Cancel this booking?')">Cancel</button>
+                  <button type="submit" class="btn btn-sm btn-danger" title="Cancel" onclick="return confirm(adminLang==='fr'?'Annuler cette réservation?':'Cancel this booking?')" data-en="Cancel" data-fr="Annuler">Cancel</button>
                 </form>
                 <form method="POST" action="/admin/bookings/<%= b.id %>/no-show" style="display:inline">
-                  <button type="submit" class="btn btn-sm btn-warning" title="No show">No Show</button>
+                  <button type="submit" class="btn btn-sm btn-warning" title="No show" data-en="No Show" data-fr="Absence">No Show</button>
                 </form>
               <% } %>
             </td>
@@ -98,11 +98,11 @@
       <button class="modal-close" onclick="closeModal()">&times;</button>
       <h3 id="modalTitle"></h3>
       <div class="modal-body">
-        <div class="modal-row"><span>Customer</span><span id="modalCustomer"></span></div>
-        <div class="modal-row"><span>Service</span><span id="modalService"></span></div>
-        <div class="modal-row"><span>Staff</span><span id="modalStaff"></span></div>
-        <div class="modal-row"><span>Time</span><span id="modalTime"></span></div>
-        <div class="modal-row"><span>Status</span><span id="modalStatus"></span></div>
+        <div class="modal-row"><span data-en="Customer" data-fr="Client">Customer</span><span id="modalCustomer"></span></div>
+        <div class="modal-row"><span data-en="Service" data-fr="Service">Service</span><span id="modalService"></span></div>
+        <div class="modal-row"><span data-en="Staff" data-fr="Personnel">Staff</span><span id="modalStaff"></span></div>
+        <div class="modal-row"><span data-en="Time" data-fr="Heure">Time</span><span id="modalTime"></span></div>
+        <div class="modal-row"><span data-en="Status" data-fr="Statut">Status</span><span id="modalStatus"></span></div>
       </div>
     </div>
   </div>
@@ -162,6 +162,7 @@
     const calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'timeGridWeek',
+      locale: adminLang === 'fr' ? 'fr' : 'en',
       headerToolbar: {
         left: 'prev,next today',
         center: 'title',

@@ -13,6 +13,7 @@ const { tenantResolver } = require('./middleware/tenantResolver');
 const cron = require('node-cron');
 const { verifyConnection, processEmailQueue } = require('./services/emailService');
 const { processReminders, processFollowups, autoCompleteConfirmed } = require('./services/notificationService');
+const { t } = require('./locales');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -70,9 +71,11 @@ app.set('layout', 'layouts/admin'); // default layout for all pages
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
   res.locals.tenant = null;
+  const lang = (req.user && req.user.language) || 'en';
+  res.locals.lang = lang;
   res.locals.flash = {
-    error: req.flash('error'),
-    success: req.flash('success')
+    error: req.flash('error').map(msg => t(msg, lang)),
+    success: req.flash('success').map(msg => t(msg, lang))
   };
   next();
 });

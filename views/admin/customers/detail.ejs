@@ -1,5 +1,5 @@
 <div class="form-page">
-  <a href="/admin/customers" class="back-link">Back to Customers</a>
+  <a href="/admin/customers" class="back-link" data-en="Back to Customers" data-fr="Retour aux clients">Back to Customers</a>
 
   <div class="customer-header">
     <div>
@@ -7,9 +7,9 @@
       <p class="text-muted"><%= customer.email %> | <%= customer.phone || 'No phone' %></p>
     </div>
     <div class="customer-stats">
-      <div class="mini-stat"><strong><%= customer.total_bookings %></strong> bookings</div>
-      <div class="mini-stat"><strong><%= helpers.formatPrice(customer.total_spent_cents) %></strong> spent</div>
-      <div class="mini-stat"><strong><%= customer.total_no_shows %></strong> no-shows</div>
+      <div class="mini-stat"><strong><%= customer.total_bookings %></strong> <span data-en="bookings" data-fr="réservations">bookings</span></div>
+      <div class="mini-stat"><strong><%= helpers.formatPrice(customer.total_spent_cents) %></strong> <span data-en="spent" data-fr="dépensé">spent</span></div>
+      <div class="mini-stat"><strong><%= customer.total_no_shows %></strong> <span data-en="no-shows" data-fr="absences">no-shows</span></div>
     </div>
   </div>
 
@@ -23,17 +23,17 @@
 
   <% if (customer.preferences) { %>
     <div class="section">
-      <h3 class="section-title">Preferences</h3>
+      <h3 class="section-title" data-en="Preferences" data-fr="Préférences">Preferences</h3>
       <p><%= customer.preferences %></p>
     </div>
   <% } %>
 
   <!-- Notes -->
   <div class="section">
-    <h3 class="section-title">Notes</h3>
+    <h3 class="section-title" data-en="Notes" data-fr="Notes">Notes</h3>
     <form method="POST" action="/admin/customers/<%= customer.id %>/notes" class="note-form">
-      <textarea name="note" rows="2" placeholder="Add a note..." required></textarea>
-      <button type="submit" class="btn btn-sm btn-primary">Add Note</button>
+      <textarea name="note" rows="2" placeholder="Add a note..." data-en-placeholder="Add a note..." data-fr-placeholder="Ajouter une note..." required></textarea>
+      <button type="submit" class="btn btn-sm btn-primary" data-en="Add Note" data-fr="Ajouter une note">Add Note</button>
     </form>
     <% if (notes.length) { %>
       <div class="notes-list">
@@ -52,11 +52,17 @@
 
   <!-- Booking History -->
   <div class="section">
-    <h3 class="section-title">Booking History</h3>
+    <h3 class="section-title" data-en="Booking History" data-fr="Historique des réservations">Booking History</h3>
     <div class="table-responsive">
       <table class="data-table">
         <thead>
-          <tr><th>Date</th><th>Time</th><th>Service</th><th>Staff</th><th>Status</th></tr>
+          <tr>
+            <th data-en="Date" data-fr="Date">Date</th>
+            <th data-en="Time" data-fr="Heure">Time</th>
+            <th data-en="Service" data-fr="Service">Service</th>
+            <th data-en="Staff" data-fr="Personnel">Staff</th>
+            <th data-en="Status" data-fr="Statut">Status</th>
+          </tr>
         </thead>
         <tbody>
           <% bookings.forEach(b => { %>
@@ -69,7 +75,7 @@
             </tr>
           <% }) %>
           <% if (bookings.length === 0) { %>
-            <tr><td colspan="5" class="text-center">No bookings yet.</td></tr>
+            <tr><td colspan="5" class="text-center" data-en="No bookings yet." data-fr="Aucune réservation pour l'instant.">No bookings yet.</td></tr>
           <% } %>
         </tbody>
       </table>

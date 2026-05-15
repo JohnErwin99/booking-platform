@@ -56,11 +56,7 @@ router.get('/dashboard', async (req, res, next) => {
         staffCount: staffCount.count,
         customerCount: customerCount.count
       },
-      recentBookings,
-      flash: {
-        error: req.flash('error'),
-        success: req.flash('success')
-      }
+      recentBookings
     });
   } catch (err) {
     next(err);

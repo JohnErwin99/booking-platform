@@ -1,11 +1,11 @@
 <div class="toolbar">
-  <a href="/admin/services/new" class="btn btn-primary">+ Add Service</a>
+  <a href="/admin/services/new" class="btn btn-primary" data-en="+ Add Service" data-fr="+ Ajouter un service">+ Add Service</a>
   <span class="text-muted"><%= serviceCount %> service<%= serviceCount !== 1 ? 's' : '' %></span>
 </div>
 
 <% if (serviceCount === 0) { %>
   <div class="empty-state">
-    <p>No services yet. Add your first service to start accepting bookings.</p>
+    <p data-en="No services yet. Add your first service to start accepting bookings." data-fr="Aucun service. Ajoutez votre premier service pour commencer à accepter des réservations.">No services yet. Add your first service to start accepting bookings.</p>
   </div>
 <% } %>
 
@@ -16,11 +16,11 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th>Service</th>
-            <th>Duration</th>
-            <th>Price</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th data-en="Service" data-fr="Service">Service</th>
+            <th data-en="Duration" data-fr="Durée">Duration</th>
+            <th data-en="Price" data-fr="Prix">Price</th>
+            <th data-en="Status" data-fr="Statut">Status</th>
+            <th data-en="Actions" data-fr="Actions">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -32,11 +32,11 @@
               </td>
               <td><%= s.duration_minutes %> min</td>
               <td><%= helpers.formatPrice(s.price_cents) %></td>
-              <td><span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span></td>
+              <td><span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>" data-en="<%= s.is_active ? 'Active' : 'Inactive' %>" data-fr="<%= s.is_active ? 'Actif' : 'Inactif' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span></td>
               <td>
-                <a href="/admin/services/<%= s.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="/admin/services/<%= s.id %>/edit" class="btn btn-sm btn-secondary" data-en="Edit" data-fr="Modifier">Edit</a>
                 <form method="POST" action="/admin/services/<%= s.id %>/delete" style="display:inline">
-                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this service?')">Delete</button>
+                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(adminLang==='fr'?'Supprimer ce service?':'Delete this service?')" data-en="Delete" data-fr="Supprimer">Delete</button>
                 </form>
               </td>
             </tr>

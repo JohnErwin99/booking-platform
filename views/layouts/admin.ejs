@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= (typeof lang !== 'undefined' && lang === 'fr') ? 'fr-CA' : 'en-CA' %>">
 <head>
   <%- include('../partials/head') %>
   <link rel="stylesheet" href="/css/admin.css">
@@ -18,31 +18,31 @@
       </div>
       <nav class="sidebar-nav">
         <a href="/admin/dashboard" class="nav-item <%= title === 'Dashboard' ? 'active' : '' %>">
-          <span class="nav-icon">&#9632;</span> Dashboard
+          <span class="nav-icon">&#9632;</span> <span data-en="Dashboard" data-fr="Tableau de bord">Dashboard</span>
         </a>
         <a href="/admin/bookings" class="nav-item <%= title === 'Bookings' ? 'active' : '' %>">
-          <span class="nav-icon">&#128197;</span> Bookings
+          <span class="nav-icon">&#128197;</span> <span data-en="Bookings" data-fr="Réservations">Bookings</span>
         </a>
         <a href="/admin/customers" class="nav-item <%= title === 'Customers' ? 'active' : '' %>">
-          <span class="nav-icon">&#128101;</span> Customers
+          <span class="nav-icon">&#128101;</span> <span data-en="Customers" data-fr="Clients">Customers</span>
         </a>
         <a href="/admin/services" class="nav-item <%= title === 'Services' ? 'active' : '' %>">
-          <span class="nav-icon">&#9986;</span> Services
+          <span class="nav-icon">&#9986;</span> <span data-en="Services" data-fr="Services">Services</span>
         </a>
         <a href="/admin/staff" class="nav-item <%= title === 'Staff' ? 'active' : '' %>">
-          <span class="nav-icon">&#128100;</span> Staff
+          <span class="nav-icon">&#128100;</span> <span data-en="Staff" data-fr="Personnel">Staff</span>
         </a>
         <% if (user && (user.role === 'owner' || user.role === 'manager')) { %>
           <a href="/admin/settings" class="nav-item <%= title === 'Settings' ? 'active' : '' %>">
-            <span class="nav-icon">&#9881;</span> Settings
+            <span class="nav-icon">&#9881;</span> <span data-en="Settings" data-fr="Paramètres">Settings</span>
           </a>
         <% } %>
         <hr class="nav-divider">
         <a href="/book/<%= user ? (tenant ? tenant.slug : user.tenant_slug) : '#' %>" target="_blank" class="nav-item">
-          <span class="nav-icon">&#128279;</span> View Booking Page
+          <span class="nav-icon">&#128279;</span> <span data-en="View Booking Page" data-fr="Voir la page de réservation">View Booking Page</span>
         </a>
         <a href="/admin/logout" class="nav-item nav-logout">
-          <span class="nav-icon">&#10140;</span> Logout
+          <span class="nav-icon">&#10140;</span> <span data-en="Logout" data-fr="Déconnexion">Logout</span>
         </a>
       </nav>
     </aside>
@@ -54,8 +54,13 @@
         <% if (title !== 'Dashboard') { %>
           <a href="/admin/dashboard" class="back-btn" aria-label="Back to dashboard">&larr;</a>
         <% } %>
-        <h1 class="page-title"><%= title %></h1>
+        <h1 class="page-title" id="pageTitle"><%= title %></h1>
         <div class="topbar-right">
+          <div class="lang-toggle" onclick="toggleAdminLang()">
+            <span class="lang-label lang-en">EN</span>
+            <div class="lang-switch"><div class="lang-knob"></div></div>
+            <span class="lang-label lang-fr">FR</span>
+          </div>
           <span class="user-name"><%= user ? user.first_name : '' %></span>
           <span class="user-role badge"><%= user ? user.role : '' %></span>
         </div>
@@ -65,12 +70,12 @@
         <div style="background:<%= trialExpired ? 'rgba(254,226,226,.9)' : 'linear-gradient(135deg,rgba(255,243,230,.85),rgba(254,243,199,.85))' %>;backdrop-filter:blur(8px);padding:14px 22px;border-radius:18px;margin:16px 16px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border:1px solid <%= trialExpired ? 'rgba(254,202,202,.5)' : 'rgba(242,140,56,.12)' %>">
           <span style="font-size:.85rem;font-weight:600;color:<%= trialExpired ? '#991B1B' : '#92400E' %>">
             <% if (trialExpired) { %>
-              Your free trial has expired. Upgrade to keep your bookings active.
+              <span data-en="Your free trial has expired. Upgrade to keep your bookings active." data-fr="Votre essai gratuit a expiré. Passez à un forfait pour garder vos réservations actives.">Your free trial has expired. Upgrade to keep your bookings active.</span>
             <% } else { %>
-              Free trial — <%= trialDaysLeft %> day<%= trialDaysLeft !== 1 ? 's' : '' %> remaining
+              <span data-en="Free trial — <%= trialDaysLeft %> day<%= trialDaysLeft !== 1 ? 's' : '' %> remaining" data-fr="Essai gratuit — <%= trialDaysLeft %> jour<%= trialDaysLeft !== 1 ? 's' : '' %> restant<%= trialDaysLeft !== 1 ? 's' : '' %>">Free trial — <%= trialDaysLeft %> day<%= trialDaysLeft !== 1 ? 's' : '' %> remaining</span>
             <% } %>
           </span>
-          <a href="/#pricing" style="font-size:.82rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#F28C38,#e07b28);padding:7px 20px;border-radius:12px;text-decoration:none;box-shadow:0 2px 8px rgba(242,140,56,.2);transition:all .25s">Upgrade Now</a>
+          <a href="/#pricing" style="font-size:.82rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#F28C38,#e07b28);padding:7px 20px;border-radius:12px;text-decoration:none;box-shadow:0 2px 8px rgba(242,140,56,.2);transition:all .25s" data-en="Upgrade Now" data-fr="Mettre à niveau">Upgrade Now</a>
         </div>
       <% } %>
 
@@ -84,19 +89,19 @@
   <!-- Mobile Bottom Tab Bar -->
   <nav class="mobile-tabs">
     <a href="/admin/dashboard" class="<%= title === 'Dashboard' ? 'active' : '' %>">
-      <span class="tab-icon">&#9632;</span>Home
+      <span class="tab-icon">&#9632;</span><span data-en="Home" data-fr="Accueil">Home</span>
     </a>
     <a href="/admin/bookings" class="<%= title === 'Bookings' ? 'active' : '' %>">
-      <span class="tab-icon">&#128197;</span>Bookings
+      <span class="tab-icon">&#128197;</span><span data-en="Bookings" data-fr="Réserv.">Bookings</span>
     </a>
     <a href="/admin/customers" class="<%= title === 'Customers' ? 'active' : '' %>">
-      <span class="tab-icon">&#128101;</span>Clients
+      <span class="tab-icon">&#128101;</span><span data-en="Clients" data-fr="Clients">Clients</span>
     </a>
     <a href="/admin/staff" class="<%= title === 'Staff' ? 'active' : '' %>">
-      <span class="tab-icon">&#128100;</span>Staff
+      <span class="tab-icon">&#128100;</span><span data-en="Staff" data-fr="Équipe">Staff</span>
     </a>
     <a href="/admin/settings" class="<%= title === 'Settings' ? 'active' : '' %>">
-      <span class="tab-icon">&#9881;</span>Settings
+      <span class="tab-icon">&#9881;</span><span data-en="Settings" data-fr="Réglages">Settings</span>
     </a>
   </nav>
 
@@ -110,6 +115,63 @@
       item.addEventListener('click', () => {
         document.getElementById('sidebar').classList.remove('open');
       });
+    });
+
+    // Admin language toggle
+    const pageTitles = {
+      'Dashboard': 'Tableau de bord',
+      'Bookings': 'Réservations',
+      'Customers': 'Clients',
+      'Services': 'Services',
+      'Staff': 'Personnel',
+      'Settings': 'Paramètres',
+      'Customer Detail': 'Détails du client',
+      'Add Service': 'Ajouter un service',
+      'Edit Service': 'Modifier le service',
+      'Add Staff': 'Ajouter un membre',
+      'Edit Staff': 'Modifier le membre',
+      'Tableau de bord': 'Dashboard',
+      'Réservations': 'Bookings',
+      'Clients': 'Customers',
+      'Personnel': 'Staff',
+      'Paramètres': 'Settings',
+      'Détails du client': 'Customer Detail',
+      'Ajouter un service': 'Add Service',
+      'Modifier le service': 'Edit Service',
+      'Ajouter un membre': 'Add Staff',
+      'Modifier le membre': 'Edit Staff',
+    };
+
+    let adminLang = '<%= typeof lang !== "undefined" ? lang : "en" %>';
+
+    function applyAdminLang() {
+      document.querySelectorAll('[data-en][data-fr]').forEach(el => {
+        if (el.tagName === 'OPTION') el.textContent = el.getAttribute('data-' + adminLang);
+        else el.innerHTML = el.getAttribute('data-' + adminLang);
+      });
+      document.querySelectorAll('[data-en-placeholder][data-fr-placeholder]').forEach(el => {
+        el.placeholder = el.getAttribute('data-' + adminLang + '-placeholder');
+      });
+      const pt = document.getElementById('pageTitle');
+      if (pt && pageTitles[pt.textContent.trim()]) {
+        pt.textContent = pageTitles[pt.textContent.trim()];
+      }
+      document.querySelector('.lang-toggle').classList.toggle('fr', adminLang === 'fr');
+      document.documentElement.lang = adminLang === 'fr' ? 'fr-CA' : 'en-CA';
+    }
+
+    async function toggleAdminLang() {
+      adminLang = adminLang === 'en' ? 'fr' : 'en';
+      applyAdminLang();
+      await fetch('/admin/settings/language', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ language: adminLang })
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (adminLang === 'fr') applyAdminLang();
     });
   </script>
   <%- typeof extraScripts !== 'undefined' ? extraScripts : '' %>

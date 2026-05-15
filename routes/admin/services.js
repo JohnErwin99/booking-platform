@@ -28,11 +28,7 @@ router.get('/services', async (req, res, next) => {
       tenant: req.tenant,
       categories,
       serviceCount: services.length,
-      helpers: { formatPrice },
-      flash: {
-        error: req.flash('error'),
-        success: req.flash('success')
-      }
+      helpers: { formatPrice }
     });
   } catch (err) {
     next(err);
@@ -45,8 +41,7 @@ router.get('/services/new', requireRole('owner', 'manager'), (req, res) => {
     title: 'Add Service',
     user: req.user,
     tenant: req.tenant,
-    service: null,
-    flash: { error: req.flash('error'), success: req.flash('success') }
+    service: null
   });
 });
 
@@ -89,8 +84,7 @@ router.get('/services/:id/edit', requireRole('owner', 'manager'), async (req, re
       title: 'Edit Service',
       user: req.user,
       tenant: req.tenant,
-      service,
-      flash: { error: req.flash('error'), success: req.flash('success') }
+      service
     });
   } catch (err) {
     next(err);

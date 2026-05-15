@@ -41,11 +41,7 @@ router.get('/customers', async (req, res, next) => {
         total: Math.ceil(total / perPage),
         count: total
       },
-      helpers: { formatPrice, formatDate },
-      flash: {
-        error: req.flash('error'),
-        success: req.flash('success')
-      }
+      helpers: { formatPrice, formatDate }
     });
   } catch (err) {
     next(err);
@@ -198,11 +194,7 @@ router.get('/customers/:id', async (req, res, next) => {
       customer,
       bookings,
       notes,
-      helpers: { formatPrice, formatDate, formatTimeLabel },
-      flash: {
-        error: req.flash('error'),
-        success: req.flash('success')
-      }
+      helpers: { formatPrice, formatDate, formatTimeLabel }
     });
   } catch (err) {
     next(err);

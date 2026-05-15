@@ -1,44 +1,44 @@
 <div class="stats-grid">
   <div class="stat-card">
     <div class="stat-number"><%= stats.today %></div>
-    <div class="stat-label">Today's Bookings</div>
+    <div class="stat-label" data-en="Today's Bookings" data-fr="Réservations aujourd'hui">Today's Bookings</div>
   </div>
   <div class="stat-card">
     <div class="stat-number"><%= stats.thisWeek %></div>
-    <div class="stat-label">This Week</div>
+    <div class="stat-label" data-en="This Week" data-fr="Cette semaine">This Week</div>
   </div>
   <div class="stat-card">
     <div class="stat-number"><%= stats.total %></div>
-    <div class="stat-label">Total Bookings</div>
+    <div class="stat-label" data-en="Total Bookings" data-fr="Total des réservations">Total Bookings</div>
   </div>
   <div class="stat-card">
     <div class="stat-number"><%= stats.staffCount %></div>
-    <div class="stat-label">Active Staff</div>
+    <div class="stat-label" data-en="Active Staff" data-fr="Personnel actif">Active Staff</div>
   </div>
   <div class="stat-card">
     <div class="stat-number"><%= stats.customerCount %></div>
-    <div class="stat-label">Total Customers</div>
+    <div class="stat-label" data-en="Total Customers" data-fr="Total des clients">Total Customers</div>
   </div>
 </div>
 
 <div class="section">
-  <h2 class="section-title">Upcoming Bookings</h2>
+  <h2 class="section-title" data-en="Upcoming Bookings" data-fr="Réservations à venir">Upcoming Bookings</h2>
   <% if (recentBookings.length === 0) { %>
     <div class="empty-state">
-      <p>No upcoming bookings. Share your booking page to get started!</p>
-      <a href="/book/<%= tenant ? tenant.slug : user.tenant_slug %>" target="_blank" class="btn btn-primary">View Booking Page</a>
+      <p data-en="No upcoming bookings. Share your booking page to get started!" data-fr="Aucune réservation à venir. Partagez votre page de réservation pour commencer!">No upcoming bookings. Share your booking page to get started!</p>
+      <a href="/book/<%= tenant ? tenant.slug : user.tenant_slug %>" target="_blank" class="btn btn-primary" data-en="View Booking Page" data-fr="Voir la page de réservation">View Booking Page</a>
     </div>
   <% } else { %>
     <div class="table-responsive">
       <table class="data-table">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Customer</th>
-            <th>Service</th>
-            <th>Staff</th>
-            <th>Status</th>
+            <th data-en="Date" data-fr="Date">Date</th>
+            <th data-en="Time" data-fr="Heure">Time</th>
+            <th data-en="Customer" data-fr="Client">Customer</th>
+            <th data-en="Service" data-fr="Service">Service</th>
+            <th data-en="Staff" data-fr="Personnel">Staff</th>
+            <th data-en="Status" data-fr="Statut">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -59,11 +59,11 @@
 </div>
 
 <div class="quick-actions">
-  <h2 class="section-title">Quick Actions</h2>
+  <h2 class="section-title" data-en="Quick Actions" data-fr="Actions rapides">Quick Actions</h2>
   <div class="actions-grid">
-    <a href="/admin/bookings" class="action-card">View All Bookings</a>
-    <a href="/admin/staff/new" class="action-card">Add Staff Member</a>
-    <a href="/admin/services/new" class="action-card">Add Service</a>
-    <a href="/admin/settings" class="action-card">Settings</a>
+    <a href="/admin/bookings" class="action-card" data-en="View All Bookings" data-fr="Voir toutes les réservations">View All Bookings</a>
+    <a href="/admin/staff/new" class="action-card" data-en="Add Staff Member" data-fr="Ajouter un membre">Add Staff Member</a>
+    <a href="/admin/services/new" class="action-card" data-en="Add Service" data-fr="Ajouter un service">Add Service</a>
+    <a href="/admin/settings" class="action-card" data-en="Settings" data-fr="Paramètres">Settings</a>
   </div>
 </div>

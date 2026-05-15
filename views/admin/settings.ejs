@@ -1,12 +1,12 @@
 <div class="settings-tabs" x-data="{ tab: location.hash.replace('#','') || 'branding' }">
   <div class="tab-nav">
-    <button @click="tab = 'branding'" :class="{ active: tab === 'branding' }" class="tab-btn">Branding</button>
-    <button @click="tab = 'policies'" :class="{ active: tab === 'policies' }" class="tab-btn">Policies</button>
-    <button @click="tab = 'hours'" :class="{ active: tab === 'hours' }" class="tab-btn">Business Hours</button>
+    <button @click="tab = 'branding'" :class="{ active: tab === 'branding' }" class="tab-btn" data-en="Branding" data-fr="Image de marque">Branding</button>
+    <button @click="tab = 'policies'" :class="{ active: tab === 'policies' }" class="tab-btn" data-en="Policies" data-fr="Politiques">Policies</button>
+    <button @click="tab = 'hours'" :class="{ active: tab === 'hours' }" class="tab-btn" data-en="Business Hours" data-fr="Heures d'ouverture">Business Hours</button>
     <button @click="tab = 'widget'" :class="{ active: tab === 'widget' }" class="tab-btn">Widget</button>
-    <button @click="tab = 'account'" :class="{ active: tab === 'account' }" class="tab-btn">Account</button>
-    <button @click="tab = 'integrations'" :class="{ active: tab === 'integrations' }" class="tab-btn">Integrations</button>
-    <button @click="tab = 'billing'" :class="{ active: tab === 'billing' }" class="tab-btn">Billing</button>
+    <button @click="tab = 'account'" :class="{ active: tab === 'account' }" class="tab-btn" data-en="Account" data-fr="Compte">Account</button>
+    <button @click="tab = 'integrations'" :class="{ active: tab === 'integrations' }" class="tab-btn" data-en="Integrations" data-fr="Intégrations">Integrations</button>
+    <button @click="tab = 'billing'" :class="{ active: tab === 'billing' }" class="tab-btn" data-en="Billing" data-fr="Facturation">Billing</button>
   </div>
 
   <!-- Branding Tab -->
@@ -14,7 +14,7 @@
     <!-- Logo Upload -->
     <form method="POST" action="/admin/settings/logo" enctype="multipart/form-data" class="settings-form" style="margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid #eee">
       <div class="form-group">
-        <label>Business Logo</label>
+        <label data-en="Business Logo" data-fr="Logo d'entreprise">Business Logo</label>
         <% if (tenant.logo_url) { %>
           <div style="margin-bottom:8px">
             <img src="<%= tenant.logo_url %>" alt="Current logo" style="width:80px;height:80px;border-radius:12px;object-fit:contain;background:#f8f8f8;padding:8px">
@@ -22,45 +22,45 @@
         <% } %>
         <input type="file" name="logo" accept="image/*">
       </div>
-      <button type="submit" class="btn btn-secondary">Upload Logo</button>
+      <button type="submit" class="btn btn-secondary" data-en="Upload Logo" data-fr="Téléverser le logo">Upload Logo</button>
     </form>
 
     <form method="POST" action="/admin/settings/branding" class="settings-form">
       <div class="form-group">
-        <label>Business Name</label>
+        <label data-en="Business Name" data-fr="Nom de l'entreprise">Business Name</label>
         <input type="text" name="name" value="<%= tenant.name %>" required>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Primary Color</label>
+          <label data-en="Primary Color" data-fr="Couleur principale">Primary Color</label>
           <input type="color" name="primary_color" value="<%= tenant.primary_color %>">
         </div>
         <div class="form-group">
-          <label>Secondary Color</label>
+          <label data-en="Secondary Color" data-fr="Couleur secondaire">Secondary Color</label>
           <input type="color" name="secondary_color" value="<%= tenant.secondary_color %>">
         </div>
         <div class="form-group">
-          <label>Accent Color</label>
+          <label data-en="Accent Color" data-fr="Couleur d'accent">Accent Color</label>
           <input type="color" name="accent_color" value="<%= tenant.accent_color %>">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Heading Font</label>
+          <label data-en="Heading Font" data-fr="Police des titres">Heading Font</label>
           <input type="text" name="font_heading" value="<%= tenant.font_heading %>">
         </div>
         <div class="form-group">
-          <label>Body Font</label>
+          <label data-en="Body Font" data-fr="Police du texte">Body Font</label>
           <input type="text" name="font_body" value="<%= tenant.font_body %>">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Timezone</label>
+          <label data-en="Timezone" data-fr="Fuseau horaire">Timezone</label>
           <input type="text" name="timezone" value="<%= tenant.timezone %>" placeholder="America/New_York">
         </div>
         <div class="form-group">
-          <label>Currency</label>
+          <label data-en="Currency" data-fr="Devise">Currency</label>
           <select name="currency">
             <option value="USD" <%= tenant.currency === 'USD' ? 'selected' : '' %>>USD</option>
             <option value="EUR" <%= tenant.currency === 'EUR' ? 'selected' : '' %>>EUR</option>
@@ -70,7 +70,7 @@
           </select>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Save Branding</button>
+      <button type="submit" class="btn btn-primary" data-en="Save Branding" data-fr="Enregistrer l'image de marque">Save Branding</button>
     </form>
   </div>
 
@@ -79,113 +79,114 @@
     <form method="POST" action="/admin/settings/policies" class="settings-form">
       <div class="form-row">
         <div class="form-group">
-          <label>Cancellation Window (hours before appointment)</label>
+          <label data-en="Cancellation Window (hours before appointment)" data-fr="Délai d'annulation (heures avant le rendez-vous)">Cancellation Window (hours before appointment)</label>
           <input type="number" name="cancellation_hours" value="<%= tenant.cancellation_hours %>" min="0">
         </div>
         <div class="form-group">
-          <label>Reschedule Window (hours before)</label>
+          <label data-en="Reschedule Window (hours before)" data-fr="Délai de report (heures avant)">Reschedule Window (hours before)</label>
           <input type="number" name="reschedule_hours" value="<%= tenant.reschedule_hours %>" min="0">
         </div>
       </div>
       <div class="form-group">
-        <label>No-Show Fee ($)</label>
+        <label data-en="No-Show Fee ($)" data-fr="Frais d'absence ($)">No-Show Fee ($)</label>
         <input type="number" name="no_show_fee" value="<%= (tenant.no_show_fee_cents / 100).toFixed(2) %>" min="0" step="0.01">
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Deposit Type</label>
+          <label data-en="Deposit Type" data-fr="Type de dépôt">Deposit Type</label>
           <select name="deposit_type">
-            <option value="none" <%= tenant.deposit_type === 'none' ? 'selected' : '' %>>No Deposit</option>
-            <option value="percentage" <%= tenant.deposit_type === 'percentage' ? 'selected' : '' %>>Percentage</option>
-            <option value="fixed" <%= tenant.deposit_type === 'fixed' ? 'selected' : '' %>>Fixed Amount</option>
+            <option value="none" <%= tenant.deposit_type === 'none' ? 'selected' : '' %> data-en="No Deposit" data-fr="Aucun dépôt">No Deposit</option>
+            <option value="percentage" <%= tenant.deposit_type === 'percentage' ? 'selected' : '' %> data-en="Percentage" data-fr="Pourcentage">Percentage</option>
+            <option value="fixed" <%= tenant.deposit_type === 'fixed' ? 'selected' : '' %> data-en="Fixed Amount" data-fr="Montant fixe">Fixed Amount</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Deposit Value</label>
+          <label data-en="Deposit Value" data-fr="Valeur du dépôt">Deposit Value</label>
           <input type="number" name="deposit_value" value="<%= tenant.deposit_value %>" min="0" step="0.01">
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Save Policies</button>
+      <button type="submit" class="btn btn-primary" data-en="Save Policies" data-fr="Enregistrer les politiques">Save Policies</button>
     </form>
   </div>
 
   <!-- Hours Tab -->
   <div x-show="tab === 'hours'" class="tab-content">
-    <p class="text-muted">Set business hours for your default location. Staff-specific overrides can be set on each staff member's page.</p>
+    <p class="text-muted" data-en="Set business hours for your default location. Staff-specific overrides can be set on each staff member's page." data-fr="Définissez les heures d'ouverture pour votre emplacement par défaut. Des horaires spécifiques peuvent être définis sur la page de chaque membre.">Set business hours for your default location. Staff-specific overrides can be set on each staff member's page.</p>
     <form method="POST" action="/admin/settings/hours" class="settings-form" x-data="hoursEditor()">
       <input type="hidden" name="location_id" value="<%= locations.length ? locations.find(l => l.is_default)?.id || locations[0].id : '' %>">
       <input type="hidden" name="hours" :value="JSON.stringify(hours)">
 
       <% const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; %>
+      <% const dayNamesFr = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi']; %>
       <% for (let d = 0; d < 7; d++) { %>
         <% const existing = businessHours.find(h => h.weekday === d); %>
         <div class="hours-row">
-          <label class="day-label"><%= dayNames[d] %></label>
+          <label class="day-label" data-en="<%= dayNames[d] %>" data-fr="<%= dayNamesFr[d] %>"><%= dayNames[d] %></label>
           <label class="toggle-label">
             <input type="checkbox"
               :checked="!hours[<%= d %>].closed"
               @change="hours[<%= d %>].closed = !$event.target.checked">
-            Open
+            <span data-en="Open" data-fr="Ouvert">Open</span>
           </label>
           <template x-if="!hours[<%= d %>].closed">
             <div class="time-inputs">
               <input type="time" x-model="hours[<%= d %>].open_at">
-              <span>to</span>
+              <span data-en="to" data-fr="à">to</span>
               <input type="time" x-model="hours[<%= d %>].close_at">
-              <span class="break-label">Break:</span>
-              <input type="time" x-model="hours[<%= d %>].break_start" placeholder="Break start">
-              <span>to</span>
-              <input type="time" x-model="hours[<%= d %>].break_end" placeholder="Break end">
+              <span class="break-label" data-en="Break:" data-fr="Pause :">Break:</span>
+              <input type="time" x-model="hours[<%= d %>].break_start">
+              <span data-en="to" data-fr="à">to</span>
+              <input type="time" x-model="hours[<%= d %>].break_end">
             </div>
           </template>
         </div>
       <% } %>
-      <button type="submit" class="btn btn-primary">Save Hours</button>
+      <button type="submit" class="btn btn-primary" data-en="Save Hours" data-fr="Enregistrer les heures">Save Hours</button>
     </form>
   </div>
 
   <!-- Widget Tab -->
   <div x-show="tab === 'widget'" class="tab-content">
-    <h3 style="margin-bottom:8px">Embed Booking Widget</h3>
-    <p class="text-muted" style="margin-bottom:24px">Add the Bookwize booking widget to any website. Choose a mode below and copy the code snippet.</p>
+    <h3 style="margin-bottom:8px" data-en="Embed Booking Widget" data-fr="Intégrer le widget de réservation">Embed Booking Widget</h3>
+    <p class="text-muted" style="margin-bottom:24px" data-en="Add the Bookwize booking widget to any website. Choose a mode below and copy the code snippet." data-fr="Ajoutez le widget de réservation Bookwize à n'importe quel site web. Choisissez un mode et copiez le code.">Add the Bookwize booking widget to any website. Choose a mode below and copy the code snippet.</p>
 
     <div class="form-group">
-      <label>Your Booking Page Link</label>
+      <label data-en="Your Booking Page Link" data-fr="Lien de votre page de réservation">Your Booking Page Link</label>
       <div style="display:flex;gap:8px;align-items:center">
         <input type="text" readonly value="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/book/<%= tenant.slug %>" id="bookingLink" style="flex:1">
-        <button type="button" class="btn btn-outline" onclick="copySnippet('bookingLink')">Copy</button>
+        <button type="button" class="btn btn-outline" onclick="copySnippet('bookingLink')" data-en="Copy" data-fr="Copier">Copy</button>
       </div>
     </div>
 
     <hr style="margin:28px 0;border:none;border-top:1px solid #eee">
 
-    <h4 style="margin-bottom:12px">Option 1: Popup Button</h4>
-    <p class="text-muted" style="margin-bottom:12px">Adds a "Book Now" button that opens the booking wizard in a popup modal. Best for headers, nav bars, or call-to-action sections.</p>
+    <h4 style="margin-bottom:12px" data-en="Option 1: Popup Button" data-fr="Option 1 : Bouton popup">Option 1: Popup Button</h4>
+    <p class="text-muted" style="margin-bottom:12px" data-en='Adds a "Book Now" button that opens the booking wizard in a popup modal. Best for headers, nav bars, or call-to-action sections.' data-fr='Ajoute un bouton « Réserver » qui ouvre l&apos;assistant de réservation dans une fenêtre modale.'>Adds a "Book Now" button that opens the booking wizard in a popup modal. Best for headers, nav bars, or call-to-action sections.</p>
     <div class="form-group">
       <label>Snippet</label>
       <textarea readonly rows="4" id="popupSnippet" class="code-snippet" style="font-family:monospace;font-size:.82rem;background:#f8f8f8;border-radius:8px;padding:12px"><script src="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/js/bookwize-widget.js" data-slug="<%= tenant.slug %>" data-mode="popup" data-button-text="Book Now" data-button-color="<%= tenant.primary_color %>"><%= '' %></script></textarea>
-      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('popupSnippet')">Copy Snippet</button>
+      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('popupSnippet')" data-en="Copy Snippet" data-fr="Copier le code">Copy Snippet</button>
     </div>
 
     <hr style="margin:28px 0;border:none;border-top:1px solid #eee">
 
-    <h4 style="margin-bottom:12px">Option 2: Inline Widget</h4>
-    <p class="text-muted" style="margin-bottom:12px">Embeds the full booking flow directly into your page. Best for dedicated booking pages.</p>
+    <h4 style="margin-bottom:12px" data-en="Option 2: Inline Widget" data-fr="Option 2 : Widget en ligne">Option 2: Inline Widget</h4>
+    <p class="text-muted" style="margin-bottom:12px" data-en="Embeds the full booking flow directly into your page. Best for dedicated booking pages." data-fr="Intègre le processus de réservation complet directement dans votre page.">Embeds the full booking flow directly into your page. Best for dedicated booking pages.</p>
     <div class="form-group">
       <label>Snippet</label>
       <textarea readonly rows="5" id="inlineSnippet" class="code-snippet" style="font-family:monospace;font-size:.82rem;background:#f8f8f8;border-radius:8px;padding:12px"><div id="bookwize-widget"></div>
 <script src="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/js/bookwize-widget.js" data-slug="<%= tenant.slug %>" data-mode="inline" data-container="bookwize-widget"><%= '' %></script></textarea>
-      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('inlineSnippet')">Copy Snippet</button>
+      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('inlineSnippet')" data-en="Copy Snippet" data-fr="Copier le code">Copy Snippet</button>
     </div>
 
     <hr style="margin:28px 0;border:none;border-top:1px solid #eee">
 
-    <h4 style="margin-bottom:12px">Option 3: Direct iFrame</h4>
-    <p class="text-muted" style="margin-bottom:12px">For maximum control, embed the booking page directly as an iframe.</p>
+    <h4 style="margin-bottom:12px" data-en="Option 3: Direct iFrame" data-fr="Option 3 : iFrame direct">Option 3: Direct iFrame</h4>
+    <p class="text-muted" style="margin-bottom:12px" data-en="For maximum control, embed the booking page directly as an iframe." data-fr="Pour un contrôle maximal, intégrez la page de réservation directement en iframe.">For maximum control, embed the booking page directly as an iframe.</p>
     <div class="form-group">
       <label>Snippet</label>
       <textarea readonly rows="3" id="iframeSnippet" class="code-snippet" style="font-family:monospace;font-size:.82rem;background:#f8f8f8;border-radius:8px;padding:12px"><iframe src="<%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/book/<%= tenant.slug %>/embed" width="100%" height="700" style="border:none;border-radius:12px" title="Book with <%= tenant.name %>"></iframe></textarea>
-      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('iframeSnippet')">Copy Snippet</button>
+      <button type="button" class="btn btn-outline" style="margin-top:8px" onclick="copySnippet('iframeSnippet')" data-en="Copy Snippet" data-fr="Copier le code">Copy Snippet</button>
     </div>
 
     <script>
@@ -195,7 +196,7 @@
         document.execCommand('copy');
         const btn = el.parentElement.querySelector('.btn');
         const orig = btn.textContent;
-        btn.textContent = 'Copied!';
+        btn.textContent = adminLang === 'fr' ? 'Copié!' : 'Copied!';
         setTimeout(() => btn.textContent = orig, 2000);
       }
     </script>
@@ -204,7 +205,7 @@
   <!-- Account Tab -->
   <div x-show="tab === 'account'" class="tab-content">
     <!-- Profile Photo -->
-    <h3 style="margin-bottom:16px">Profile Photo</h3>
+    <h3 style="margin-bottom:16px" data-en="Profile Photo" data-fr="Photo de profil">Profile Photo</h3>
     <form method="POST" action="/admin/settings/photo" enctype="multipart/form-data" class="settings-form" style="margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid #eee">
       <div class="form-group">
         <% if (user.photo_url) { %>
@@ -214,24 +215,24 @@
         <% } %>
         <input type="file" name="photo" accept="image/*">
       </div>
-      <button type="submit" class="btn btn-secondary">Upload Photo</button>
+      <button type="submit" class="btn btn-secondary" data-en="Upload Photo" data-fr="Téléverser la photo">Upload Photo</button>
     </form>
 
-    <h3 style="margin-bottom:24px">Change Password</h3>
+    <h3 style="margin-bottom:24px" data-en="Change Password" data-fr="Changer le mot de passe">Change Password</h3>
     <form method="POST" action="/admin/settings/password" class="settings-form">
       <div class="form-group">
-        <label>Current Password</label>
+        <label data-en="Current Password" data-fr="Mot de passe actuel">Current Password</label>
         <input type="password" name="current_password" required>
       </div>
       <div class="form-group">
-        <label>New Password</label>
+        <label data-en="New Password" data-fr="Nouveau mot de passe">New Password</label>
         <input type="password" name="new_password" required minlength="6">
       </div>
       <div class="form-group">
-        <label>Confirm New Password</label>
+        <label data-en="Confirm New Password" data-fr="Confirmer le nouveau mot de passe">Confirm New Password</label>
         <input type="password" name="confirm_password" required minlength="6">
       </div>
-      <button type="submit" class="btn btn-primary">Change Password</button>
+      <button type="submit" class="btn btn-primary" data-en="Change Password" data-fr="Changer le mot de passe">Change Password</button>
     </form>
   </div>
 
@@ -239,31 +240,31 @@
   <div x-show="tab === 'integrations'" class="tab-content">
     <div class="settings-form">
       <h3 style="margin-bottom:4px">Google Calendar</h3>
-      <p style="color:var(--gray-500);font-size:.85rem;margin-bottom:20px">Automatically sync new bookings to your Google Calendar. Cancelled bookings are removed automatically.</p>
+      <p style="color:var(--gray-500);font-size:.85rem;margin-bottom:20px" data-en="Automatically sync new bookings to your Google Calendar. Cancelled bookings are removed automatically." data-fr="Synchronisez automatiquement les nouvelles réservations avec votre Google Agenda. Les annulations sont supprimées automatiquement.">Automatically sync new bookings to your Google Calendar. Cancelled bookings are removed automatically.</p>
 
       <% if (typeof calendarSync !== 'undefined' && calendarSync && calendarSync.connected) { %>
         <div style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--success-light);border-radius:14px;margin-bottom:16px;border:1px solid #A7F3D0">
           <span style="font-size:1.4rem">&#9989;</span>
           <div>
-            <strong style="color:#065F46;font-size:.9rem">Connected</strong>
+            <strong style="color:#065F46;font-size:.9rem" data-en="Connected" data-fr="Connecté">Connected</strong>
             <p style="color:#065F46;font-size:.8rem;margin:2px 0 0">Calendar: <%= calendarSync.calendarId %></p>
             <% if (calendarSync.lastSynced) { %>
-              <p style="color:#065F46;font-size:.75rem;margin:2px 0 0;opacity:.7">Last synced: <%= new Date(calendarSync.lastSynced).toLocaleString() %></p>
+              <p style="color:#065F46;font-size:.75rem;margin:2px 0 0;opacity:.7"><span data-en="Last synced:" data-fr="Dernière synchro :">Last synced:</span> <%= new Date(calendarSync.lastSynced).toLocaleString() %></p>
             <% } %>
           </div>
         </div>
         <form method="POST" action="/admin/calendar/disconnect">
-          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Disconnect Google Calendar?')">Disconnect</button>
+          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(adminLang==='fr'?'Déconnecter Google Agenda?':'Disconnect Google Calendar?')" data-en="Disconnect" data-fr="Déconnecter">Disconnect</button>
         </form>
       <% } else { %>
         <div style="display:flex;align-items:center;gap:12px;padding:16px;background:var(--gray-100);border-radius:14px;margin-bottom:16px">
           <span style="font-size:1.4rem">&#128197;</span>
           <div>
-            <strong style="font-size:.9rem">Not connected</strong>
-            <p style="color:var(--gray-500);font-size:.8rem;margin:2px 0 0">Connect your Google Calendar to auto-sync bookings.</p>
+            <strong style="font-size:.9rem" data-en="Not connected" data-fr="Non connecté">Not connected</strong>
+            <p style="color:var(--gray-500);font-size:.8rem;margin:2px 0 0" data-en="Connect your Google Calendar to auto-sync bookings." data-fr="Connectez votre Google Agenda pour synchroniser automatiquement les réservations.">Connect your Google Calendar to auto-sync bookings.</p>
           </div>
         </div>
-        <a href="/admin/calendar/connect" class="btn btn-primary">
+        <a href="/admin/calendar/connect" class="btn btn-primary" data-en="Connect Google Calendar" data-fr="Connecter Google Agenda">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
           Connect Google Calendar
         </a>
@@ -273,50 +274,50 @@
 
   <!-- Billing Tab -->
   <div x-show="tab === 'billing'" class="tab-content">
-    <h3 style="margin-bottom:8px">Your Plan</h3>
+    <h3 style="margin-bottom:8px" data-en="Your Plan" data-fr="Votre forfait">Your Plan</h3>
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
       <span class="badge" style="font-size:.85rem;padding:6px 16px;text-transform:capitalize"><%= tenant.plan === 'starter' ? 'Solo' : tenant.plan %></span>
       <% if (tenant.plan === 'trial' && tenant.trial_ends_at) { %>
         <span style="color:#92400E;font-size:.85rem">
           <% const trialEnd = new Date(tenant.trial_ends_at); const daysLeft = Math.max(0, Math.ceil((trialEnd - new Date()) / 86400000)); %>
-          <%= daysLeft %> day<%= daysLeft !== 1 ? 's' : '' %> remaining
+          <%= daysLeft %> <span data-en="day<%= daysLeft !== 1 ? 's' : '' %> remaining" data-fr="jour<%= daysLeft !== 1 ? 's' : '' %> restant<%= daysLeft !== 1 ? 's' : '' %>">day<%= daysLeft !== 1 ? 's' : '' %> remaining</span>
         </span>
       <% } %>
     </div>
 
     <% if (tenant.plan === 'trial') { %>
       <div style="background:linear-gradient(135deg,#FFF3E6,#FEF3C7);border-radius:16px;padding:24px;margin-bottom:24px">
-        <p style="font-size:.9rem;color:#92400E;font-weight:600;margin-bottom:12px">Upgrade to remove trial limits</p>
-        <p style="font-size:.85rem;color:#92400E;margin-bottom:16px">Get unlimited bookings, full white-label branding, and priority support.</p>
-        <a href="/#pricing" class="btn btn-primary">View Plans & Upgrade</a>
+        <p style="font-size:.9rem;color:#92400E;font-weight:600;margin-bottom:12px" data-en="Upgrade to remove trial limits" data-fr="Passez à un forfait pour supprimer les limites">Upgrade to remove trial limits</p>
+        <p style="font-size:.85rem;color:#92400E;margin-bottom:16px" data-en="Get unlimited bookings, full white-label branding, and priority support." data-fr="Obtenez des réservations illimitées, la marque blanche complète et le support prioritaire.">Get unlimited bookings, full white-label branding, and priority support.</p>
+        <a href="/#pricing" class="btn btn-primary" data-en="View Plans & Upgrade" data-fr="Voir les forfaits et passer à un forfait">View Plans & Upgrade</a>
       </div>
     <% } else { %>
       <div style="background:#F9FAFB;border-radius:16px;padding:24px;margin-bottom:24px">
-        <p style="font-size:.9rem;font-weight:600;margin-bottom:12px">Manage your subscription</p>
-        <p style="font-size:.85rem;color:#737373;margin-bottom:16px">Upgrade, downgrade, update payment method, or cancel your subscription through the Stripe Customer Portal.</p>
+        <p style="font-size:.9rem;font-weight:600;margin-bottom:12px" data-en="Manage your subscription" data-fr="Gérer votre abonnement">Manage your subscription</p>
+        <p style="font-size:.85rem;color:#737373;margin-bottom:16px" data-en="Upgrade, downgrade, update payment method, or cancel your subscription through the Stripe Customer Portal." data-fr="Améliorez, réduisez, mettez à jour votre mode de paiement ou annulez votre abonnement via le portail client Stripe.">Upgrade, downgrade, update payment method, or cancel your subscription through the Stripe Customer Portal.</p>
         <form method="POST" action="/admin/settings/billing-portal">
-          <button type="submit" class="btn btn-primary">Manage Subscription</button>
+          <button type="submit" class="btn btn-primary" data-en="Manage Subscription" data-fr="Gérer l'abonnement">Manage Subscription</button>
         </form>
       </div>
     <% } %>
 
     <div style="border-top:1px solid #eee;padding-top:20px">
-      <h4 style="margin-bottom:12px;font-size:.9rem">Plan Comparison</h4>
+      <h4 style="margin-bottom:12px;font-size:.9rem" data-en="Plan Comparison" data-fr="Comparaison des forfaits">Plan Comparison</h4>
       <table style="width:100%;border-collapse:collapse;font-size:.85rem">
         <thead>
           <tr style="border-bottom:2px solid #E8DFD0">
-            <th style="text-align:left;padding:8px 0;color:#9CA3AF">Feature</th>
-            <th style="text-align:center;padding:8px;color:#9CA3AF">Solo $19/mo</th>
-            <th style="text-align:center;padding:8px;color:#F28C38;font-weight:700">Team $39/mo</th>
+            <th style="text-align:left;padding:8px 0;color:#9CA3AF" data-en="Feature" data-fr="Fonctionnalité">Feature</th>
+            <th style="text-align:center;padding:8px;color:#9CA3AF">Solo $19/<span data-en="mo" data-fr="mois">mo</span></th>
+            <th style="text-align:center;padding:8px;color:#F28C38;font-weight:700"><span data-en="Team" data-fr="Équipe">Team</span> $39/<span data-en="mo" data-fr="mois">mo</span></th>
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Staff members</td><td style="text-align:center">1</td><td style="text-align:center">Up to 5</td></tr>
-          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Bookings</td><td style="text-align:center">Unlimited</td><td style="text-align:center">Unlimited</td></tr>
-          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">White-label branding</td><td style="text-align:center">Basic</td><td style="text-align:center">Full</td></tr>
-          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Email reminders</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0">Embeddable widget</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr><td style="padding:8px 0">Priority support</td><td style="text-align:center">—</td><td style="text-align:center">&#10003;</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0" data-en="Staff members" data-fr="Membres du personnel">Staff members</td><td style="text-align:center">1</td><td style="text-align:center" data-en="Up to 5" data-fr="Jusqu'à 5">Up to 5</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0" data-en="Bookings" data-fr="Réservations">Bookings</td><td style="text-align:center" data-en="Unlimited" data-fr="Illimité">Unlimited</td><td style="text-align:center" data-en="Unlimited" data-fr="Illimité">Unlimited</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0" data-en="White-label branding" data-fr="Marque blanche">White-label branding</td><td style="text-align:center" data-en="Basic" data-fr="De base">Basic</td><td style="text-align:center" data-en="Full" data-fr="Complète">Full</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0" data-en="Email reminders" data-fr="Rappels par courriel">Email reminders</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
+          <tr style="border-bottom:1px solid #F3F4F6"><td style="padding:8px 0" data-en="Embeddable widget" data-fr="Widget intégrable">Embeddable widget</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
+          <tr><td style="padding:8px 0" data-en="Priority support" data-fr="Support prioritaire">Priority support</td><td style="text-align:center">—</td><td style="text-align:center">&#10003;</td></tr>
         </tbody>
       </table>
     </div>

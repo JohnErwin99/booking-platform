@@ -41,11 +41,7 @@ router.get('/staff', async (req, res, next) => {
       tenant: req.tenant,
       staffList,
       serviceCountMap,
-      userMap,
-      flash: {
-        error: req.flash('error'),
-        success: req.flash('success')
-      }
+      userMap
     });
   } catch (err) {
     next(err);
@@ -67,8 +63,7 @@ router.get('/staff/new', requireRole('owner', 'manager'), async (req, res, next)
       staffUser: null,
       locations,
       services,
-      assignedServices: [],
-      flash: { error: req.flash('error'), success: req.flash('success') }
+      assignedServices: []
     });
   } catch (err) {
     next(err);
@@ -203,8 +198,7 @@ router.get('/staff/:id/edit', requireRole('owner', 'manager'), async (req, res, 
       staffUser,
       locations,
       services,
-      assignedServices,
-      flash: { error: req.flash('error'), success: req.flash('success') }
+      assignedServices
     });
   } catch (err) {
     next(err);

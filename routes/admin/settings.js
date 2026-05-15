@@ -32,11 +32,7 @@ router.get('/settings', requireRole('owner', 'manager'), async (req, res, next) 
       tenant,
       locations,
       businessHours,
-      calendarSync,
-      flash: {
-        error: req.flash('error'),
-        success: req.flash('success')
-      }
+      calendarSync
     });
   } catch (err) {
     next(err);
@@ -231,6 +227,18 @@ router.post('/settings/logo', requireRole('owner'), upload.single('logo'), async
     await db('tenants').where('id', req.user.tenant_id).update({ logo_url: logoUrl });
     req.flash('success', 'Business logo updated.');
     res.redirect('/admin/settings');
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /admin/settings/language
+router.post('/settings/language', async (req, res, next) => {
+  try {
+    const lang = req.body.language === 'fr' ? 'fr' : 'en';
+    await db('users').where('id', req.user.id).update({ language: lang });
+    req.user.language = lang;
+    res.json({ success: true, language: lang });
   } catch (err) {
     next(err);
   }

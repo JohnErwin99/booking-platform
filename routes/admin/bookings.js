@@ -37,11 +37,7 @@ router.get('/bookings', async (req, res, next) => {
       calendarConnected: calendarSync.connected,
       filters: { from, to, staff_id, status },
       viewMode: view || 'list',
-      helpers: { formatTimeLabel, formatPrice },
-      flash: {
-        error: req.flash('error'),
-        success: req.flash('success')
-      }
+      helpers: { formatTimeLabel, formatPrice }
     });
   } catch (err) {
     next(err);

@@ -1,14 +1,14 @@
 <div class="form-page">
-  <a href="/admin/staff" class="back-link">Back to Staff</a>
+  <a href="/admin/staff" class="back-link" data-en="Back to Staff" data-fr="Retour au personnel">Back to Staff</a>
 
   <form method="POST" action="/admin/staff<%= staffMember ? '/' + staffMember.id : '' %>" class="settings-form" enctype="multipart/form-data">
     <div class="form-row">
       <div class="form-group">
-        <label>First Name *</label>
+        <label data-en="First Name *" data-fr="Prénom *">First Name *</label>
         <input type="text" name="first_name" value="<%= staffMember ? staffMember.first_name : '' %>" required>
       </div>
       <div class="form-group">
-        <label>Last Name *</label>
+        <label data-en="Last Name *" data-fr="Nom *">Last Name *</label>
         <input type="text" name="last_name" value="<%= staffMember ? staffMember.last_name : '' %>" required>
       </div>
     </div>
@@ -24,24 +24,24 @@
     </div>
 
     <div class="form-group">
-      <label>Display Name (shown to customers)</label>
+      <label data-en="Display Name (shown to customers)" data-fr="Nom affiché (visible par les clients)">Display Name (shown to customers)</label>
       <input type="text" name="display_name" value="<%= staffMember ? staffMember.display_name || '' : '' %>" placeholder="e.g., Steve">
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Email *</label>
+        <label data-en="Email *" data-fr="Courriel *">Email *</label>
         <input type="email" name="email" value="<%= staffMember ? staffMember.email || '' : '' %>" required>
       </div>
       <div class="form-group">
-        <label>Phone</label>
+        <label data-en="Phone" data-fr="Téléphone">Phone</label>
         <input type="text" name="phone" value="<%= staffMember ? staffMember.phone || '' : '' %>">
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <label>Role *</label>
+        <label data-en="Role *" data-fr="Rôle *">Role *</label>
         <select name="role">
           <option value="staff" <%= staffUser && staffUser.role === 'staff' ? 'selected' : '' %>>Staff</option>
           <option value="manager" <%= staffUser && staffUser.role === 'manager' ? 'selected' : '' %>>Manager</option>
@@ -49,13 +49,13 @@
         </select>
       </div>
       <div class="form-group">
-        <label><%= staffMember ? 'New Password (leave blank to keep current)' : 'Password *' %></label>
-        <input type="password" name="password" <%= staffMember ? '' : 'required' %> minlength="6" placeholder="<%= staffMember ? 'Leave blank to keep current' : 'Min 6 characters' %>">
+        <label data-en="<%= staffMember ? 'New Password (leave blank to keep current)' : 'Password *' %>" data-fr="<%= staffMember ? 'Nouveau mot de passe (laisser vide pour garder l\'actuel)' : 'Mot de passe *' %>"><%= staffMember ? 'New Password (leave blank to keep current)' : 'Password *' %></label>
+        <input type="password" name="password" <%= staffMember ? '' : 'required' %> minlength="6">
       </div>
     </div>
 
     <div class="form-group">
-      <label>Title</label>
+      <label data-en="Title" data-fr="Titre">Title</label>
       <input type="text" name="title" value="<%= staffMember ? staffMember.title || '' : '' %>" placeholder="e.g., Senior Barber">
     </div>
 
@@ -65,9 +65,9 @@
     </div>
 
     <div class="form-group">
-      <label>Location</label>
+      <label data-en="Location" data-fr="Emplacement">Location</label>
       <select name="location_id">
-        <option value="">All Locations</option>
+        <option value="" data-en="All Locations" data-fr="Tous les emplacements">All Locations</option>
         <% locations.forEach(l => { %>
           <option value="<%= l.id %>" <%= staffMember && staffMember.location_id == l.id ? 'selected' : '' %>><%= l.name %></option>
         <% }) %>
@@ -76,27 +76,27 @@
 
     <div class="form-row">
       <div class="form-group">
-        <label>Slot Duration (minutes)</label>
+        <label data-en="Slot Duration (minutes)" data-fr="Durée du créneau (minutes)">Slot Duration (minutes)</label>
         <input type="number" name="slot_duration" value="<%= staffMember ? staffMember.slot_duration : 30 %>" min="5" step="5">
       </div>
       <div class="form-group">
-        <label>Buffer Before (min)</label>
+        <label data-en="Buffer Before (min)" data-fr="Tampon avant (min)">Buffer Before (min)</label>
         <input type="number" name="buffer_before" value="<%= staffMember ? staffMember.buffer_before : 0 %>" min="0" step="5">
       </div>
       <div class="form-group">
-        <label>Buffer After (min)</label>
+        <label data-en="Buffer After (min)" data-fr="Tampon après (min)">Buffer After (min)</label>
         <input type="number" name="buffer_after" value="<%= staffMember ? staffMember.buffer_after : 0 %>" min="0" step="5">
       </div>
     </div>
 
     <div class="form-group">
-      <label>Commission Rate (%)</label>
+      <label data-en="Commission Rate (%)" data-fr="Taux de commission (%)">Commission Rate (%)</label>
       <input type="number" name="commission_rate" value="<%= staffMember ? staffMember.commission_rate || '' : '' %>" min="0" max="100" step="0.5">
     </div>
 
     <% if (services.length) { %>
       <div class="form-group">
-        <label>Assigned Services</label>
+        <label data-en="Assigned Services" data-fr="Services assignés">Assigned Services</label>
         <div class="checkbox-grid">
           <% services.forEach(svc => { %>
             <label class="checkbox-label">
@@ -113,14 +113,14 @@
       <div class="form-group">
         <label class="checkbox-label">
           <input type="checkbox" name="is_active" value="1" <%= staffMember.is_active ? 'checked' : '' %>>
-          Active (accepting bookings)
+          <span data-en="Active (accepting bookings)" data-fr="Actif (accepte les réservations)">Active (accepting bookings)</span>
         </label>
       </div>
     <% } %>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary"><%= staffMember ? 'Update' : 'Add' %> Staff Member</button>
-      <a href="/admin/staff" class="btn btn-ghost">Cancel</a>
+      <button type="submit" class="btn btn-primary" data-en="<%= staffMember ? 'Update' : 'Add' %> Staff Member" data-fr="<%= staffMember ? 'Mettre à jour' : 'Ajouter' %> le membre"><%= staffMember ? 'Update' : 'Add' %> Staff Member</button>
+      <a href="/admin/staff" class="btn btn-ghost" data-en="Cancel" data-fr="Annuler">Cancel</a>
     </div>
   </form>
 </div>

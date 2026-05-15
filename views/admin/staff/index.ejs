@@ -1,11 +1,11 @@
 <div class="toolbar">
-  <a href="/admin/staff/new" class="btn btn-primary">+ Add Staff</a>
+  <a href="/admin/staff/new" class="btn btn-primary" data-en="+ Add Staff" data-fr="+ Ajouter un membre">+ Add Staff</a>
 </div>
 
 <div class="cards-grid">
   <% if (staffList.length === 0) { %>
     <div class="empty-state">
-      <p>No staff members yet. Add your first staff member to get started.</p>
+      <p data-en="No staff members yet. Add your first staff member to get started." data-fr="Aucun membre du personnel. Ajoutez votre premier membre pour commencer.">No staff members yet. Add your first staff member to get started.</p>
     </div>
   <% } %>
   <% staffList.forEach(s => { %>
@@ -27,11 +27,11 @@
         <div class="staff-meta">
           <span><%= serviceCountMap[s.id] || 0 %> services</span>
           <% if (s.location_name) { %><span><%= s.location_name %></span><% } %>
-          <span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span>
+          <span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>" data-en="<%= s.is_active ? 'Active' : 'Inactive' %>" data-fr="<%= s.is_active ? 'Actif' : 'Inactif' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span>
         </div>
       </div>
       <div class="staff-card-footer">
-        <a href="/admin/staff/<%= s.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+        <a href="/admin/staff/<%= s.id %>/edit" class="btn btn-sm btn-secondary" data-en="Edit" data-fr="Modifier">Edit</a>
       </div>
     </div>
   <% }) %>
