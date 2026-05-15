@@ -22,9 +22,14 @@
     <div class="blog-nav-inner">
       <a href="/" class="brand"><img src="/img/logo.svg" alt="Bookwize"> Bookwize</a>
       <div class="blog-nav-links">
-        <a href="/blog">Blog</a>
-        <a href="/#pricing">Pricing</a>
-        <a href="/admin/signup" class="btn-sm">Start Free Trial</a>
+        <a href="/blog" data-en="Blog" data-fr="Blogue">Blog</a>
+        <a href="/#pricing" data-en="Pricing" data-fr="Tarifs">Pricing</a>
+        <div class="lang-toggle" onclick="toggleLang()">
+          <span class="lang-label lang-en">EN</span>
+          <div class="lang-switch"><div class="lang-knob"></div></div>
+          <span class="lang-label lang-fr">FR</span>
+        </div>
+        <a href="/admin/signup" class="btn-sm" data-en="Start Free Trial" data-fr="Essai gratuit">Start Free Trial</a>
       </div>
     </div>
   </nav>
@@ -88,5 +93,14 @@
   <div class="blog-footer">
     <p>&copy; 2026 Bookwize. <a href="/">Home</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/privacy">Privacy</a></p>
   </div>
+<script>
+let currentLang="en";
+function toggleLang(){
+  currentLang=currentLang==="en"?"fr":"en";
+  document.querySelector(".lang-toggle").classList.toggle("fr",currentLang==="fr");
+  document.querySelectorAll("[data-en][data-fr]").forEach(function(el){el.innerHTML=el.getAttribute("data-"+currentLang)});
+  document.documentElement.lang=currentLang==="fr"?"fr-CA":"en-CA";
+}
+</script>
 </body>
 </html>
