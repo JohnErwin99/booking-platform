@@ -184,12 +184,13 @@ router.post('/settings/billing-portal', requireRole('owner'), async (req, res, n
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
       return_url: `${baseUrl}/admin/settings`,
+      configuration: 'bpc_1TXlJkBJNJfnvde81ym0fPde',
     });
 
     res.redirect(portalSession.url);
   } catch (err) {
-    console.error('Billing portal error:', err.message);
-    req.flash('error', 'Could not open billing portal. Please try again.');
+    console.error('Billing portal error:', err.message, err.type, err.code);
+    req.flash('error', 'Could not open billing portal: ' + err.message);
     res.redirect('/admin/settings');
   }
 });

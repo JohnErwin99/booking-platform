@@ -638,14 +638,14 @@
       </div>
       <div class="pricing-toggle">
         <button class="toggle-btn active" data-billing="monthly" data-en="Monthly" data-fr="Mensuel">Monthly</button>
-        <button class="toggle-btn" data-billing="onetime" data-en="One-Time" data-fr="Paiement unique">One-Time</button>
+        <button class="toggle-btn" data-billing="yearly" data-en="One-Time" data-fr="Paiement unique">One-Time</button>
       </div>
       <div class="pricing-grid">
-        <!-- Solo / Starter -->
-        <div class="price-card" data-plan="starter">
-          <div class="price-name" data-en="Solo / Starter" data-fr="Solo / Débutant">Solo / Starter</div>
+        <!-- Solo -->
+        <div class="price-card" data-plan="solo">
+          <div class="price-name" data-en="Solo" data-fr="Solo">Solo</div>
           <div class="price-amount monthly-price"><span class="price-currency">$</span>19<span class="price-period" data-en="/mo" data-fr="/mois">/mo</span></div>
-          <div class="price-amount onetime-price" style="display:none"><span class="price-currency">$</span>299<span class="price-period" data-en="one-time" data-fr="unique">one-time</span></div>
+          <div class="price-amount yearly-price" style="display:none"><span class="price-currency">$</span>299<span class="price-period" data-en="one-time" data-fr="unique">one-time</span></div>
           <p class="price-desc" data-en="Perfect for solo professionals just getting started." data-fr="Parfait pour les professionnels solo qui débutent.">Perfect for solo professionals just getting started.</p>
           <ul class="price-features">
             <li data-en="1 staff member" data-fr="1 membre du personnel">1 staff member</li>
@@ -654,7 +654,7 @@
             <li data-en="Email notifications" data-fr="Notifications par courriel">Email notifications</li>
             <li data-en="Mobile-friendly" data-fr="Compatible mobile">Mobile-friendly</li>
           </ul>
-          <a href="#" class="btn btn-outline btn-block btn-checkout" data-stripe-monthly="solo_monthly" data-stripe-onetime="solo_onetime" data-en="Get Started" data-fr="Commencer">Get Started</a>
+          <a href="#" class="btn btn-outline btn-block btn-checkout" data-stripe-monthly="solo_monthly" data-stripe-yearly="solo_yearly" data-en="Get Started" data-fr="Commencer">Get Started</a>
         </div>
         <!-- Team -->
         <div class="price-card popular" data-plan="team">
@@ -662,7 +662,7 @@
           <div class="price-name" data-en="Team" data-fr="Équipe">Team</div>
           <div class="price-subtitle" data-en="Up to 5 staff" data-fr="Jusqu'à 5 employés">Up to 5 staff</div>
           <div class="price-amount monthly-price"><span class="price-currency">$</span>39<span class="price-period" data-en="/mo" data-fr="/mois">/mo</span></div>
-          <div class="price-amount onetime-price" style="display:none"><span class="price-currency">$</span>599<span class="price-period" data-en="one-time" data-fr="unique">one-time</span></div>
+          <div class="price-amount yearly-price" style="display:none"><span class="price-currency">$</span>599<span class="price-period" data-en="one-time" data-fr="unique">one-time</span></div>
           <p class="price-desc" data-en="For growing teams that need more power." data-fr="Pour les équipes en croissance qui ont besoin de plus.">For growing teams that need more power.</p>
           <ul class="price-features">
             <li data-en="Up to 5 staff members" data-fr="Jusqu'à 5 membres du personnel">Up to 5 staff members</li>
@@ -673,7 +673,7 @@
             <li data-en="Customer management" data-fr="Gestion des clients">Customer management</li>
             <li data-en="Priority support" data-fr="Support prioritaire">Priority support</li>
           </ul>
-          <a href="#" class="btn btn-primary btn-block btn-checkout" data-stripe-monthly="team_monthly" data-stripe-onetime="team_onetime" data-en="Get Started" data-fr="Commencer">Get Started</a>
+          <a href="#" class="btn btn-primary btn-block btn-checkout" data-stripe-monthly="team_monthly" data-stripe-yearly="team_yearly" data-en="Get Started" data-fr="Commencer">Get Started</a>
         </div>
       </div>
       <div style="text-align:center;margin-top:32px">
@@ -1224,7 +1224,7 @@
         btn.classList.add('active');
         billingMode = btn.dataset.billing;
         document.querySelectorAll('.monthly-price').forEach(el => el.style.display = billingMode === 'monthly' ? '' : 'none');
-        document.querySelectorAll('.onetime-price').forEach(el => el.style.display = billingMode === 'onetime' ? '' : 'none');
+        document.querySelectorAll('.yearly-price').forEach(el => el.style.display = billingMode === 'yearly' ? '' : 'none');
       });
     });
 
@@ -1232,7 +1232,7 @@
     document.querySelectorAll('.btn-checkout').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.preventDefault();
-        const plan = billingMode === 'monthly' ? btn.dataset.stripeMonthly : btn.dataset.stripeOnetime;
+        const plan = billingMode === 'monthly' ? btn.dataset.stripeMonthly : btn.dataset.stripeYearly;
         try {
           btn.textContent = 'Redirecting...';
           btn.style.pointerEvents = 'none';

@@ -233,13 +233,13 @@
       </div>
       <div class="pricing-toggle">
         <button class="toggle-btn active" data-billing="monthly">Mensuel</button>
-        <button class="toggle-btn" data-billing="onetime">Paiement unique</button>
+        <button class="toggle-btn" data-billing="yearly">Paiement unique</button>
       </div>
       <div class="pricing-grid">
-        <div class="price-card" data-plan="starter">
-          <div class="price-name">Solo / Débutant</div>
+        <div class="price-card" data-plan="solo">
+          <div class="price-name">Solo</div>
           <div class="price-amount monthly-price"><span class="price-currency">$</span>19<span class="price-period">/mois</span></div>
-          <div class="price-amount onetime-price" style="display:none"><span class="price-currency">$</span>299<span class="price-period">unique</span></div>
+          <div class="price-amount yearly-price" style="display:none"><span class="price-currency">$</span>299<span class="price-period">unique</span></div>
           <p class="price-desc">Parfait pour les professionnels solo qui débutent.</p>
           <ul class="price-features">
             <li>1 membre du personnel</li>
@@ -248,14 +248,14 @@
             <li>Notifications par courriel</li>
             <li>Compatible mobile</li>
           </ul>
-          <a href="/admin/signup" class="btn btn-outline btn-block">Commencer</a>
+          <a href="#" class="btn btn-outline btn-block btn-checkout" data-stripe-monthly="solo_monthly" data-stripe-yearly="solo_yearly">Commencer</a>
         </div>
         <div class="price-card popular" data-plan="team">
           <div class="price-badge">Le plus populaire</div>
           <div class="price-name">Équipe</div>
           <div class="price-subtitle">Jusqu'à 5 employés</div>
           <div class="price-amount monthly-price"><span class="price-currency">$</span>39<span class="price-period">/mois</span></div>
-          <div class="price-amount onetime-price" style="display:none"><span class="price-currency">$</span>599<span class="price-period">unique</span></div>
+          <div class="price-amount yearly-price" style="display:none"><span class="price-currency">$</span>599<span class="price-period">unique</span></div>
           <p class="price-desc">Pour les équipes en croissance qui ont besoin de plus de puissance.</p>
           <ul class="price-features">
             <li>Jusqu'à 5 employés</li>
@@ -266,7 +266,7 @@
             <li>Gestion des clients</li>
             <li>Support prioritaire</li>
           </ul>
-          <a href="/admin/signup" class="btn btn-primary btn-block">Commencer</a>
+          <a href="#" class="btn btn-primary btn-block btn-checkout" data-stripe-monthly="team_monthly" data-stripe-yearly="team_yearly">Commencer</a>
         </div>
       </div>
       <div style="text-align:center;margin-top:32px">
@@ -390,7 +390,7 @@
         btn.classList.add('active');
         billingMode = btn.dataset.billing;
         document.querySelectorAll('.monthly-price').forEach(el => el.style.display = billingMode === 'monthly' ? '' : 'none');
-        document.querySelectorAll('.onetime-price').forEach(el => el.style.display = billingMode === 'onetime' ? '' : 'none');
+        document.querySelectorAll('.yearly-price').forEach(el => el.style.display = billingMode === 'yearly' ? '' : 'none');
       });
     });
   </script>

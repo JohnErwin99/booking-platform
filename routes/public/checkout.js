@@ -158,7 +158,9 @@ router.post('/stripe/webhook', async (req, res) => {
           current_period_start: new Date(),
           current_period_end: billing === 'monthly'
             ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-            : null,
+            : billing === 'yearly'
+              ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+              : null,
         });
 
         console.log(`Subscription created: ${plan} (${billing}) — tenant ${resolvedTenantId} — session ${session.id}`);
