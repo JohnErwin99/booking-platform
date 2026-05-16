@@ -1,0 +1,117 @@
+<div class="toolbar">
+  <a href="/admin/locations" class="btn btn-ghost" data-en="&larr; Back to Locations" data-fr="&larr; Retour aux emplacements">&larr; Back to Locations</a>
+</div>
+
+<div class="form-card">
+  <h2><%= location ? 'Edit Location' : 'Add New Location' %></h2>
+
+  <form method="POST" action="<%= location ? '/admin/locations/' + location.id : '/admin/locations' %>">
+    <div class="form-group">
+      <label for="name" data-en="Location Name *" data-fr="Nom de l'emplacement *">Location Name *</label>
+      <input type="text" id="name" name="name" required
+             value="<%= location ? location.name : '' %>"
+             placeholder="e.g. Downtown Branch, Main Studio">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="address_line1" data-en="Address Line 1" data-fr="Adresse ligne 1">Address Line 1</label>
+        <input type="text" id="address_line1" name="address_line1"
+               value="<%= location ? (location.address_line1 || '') : '' %>"
+               placeholder="123 Main Street">
+      </div>
+      <div class="form-group">
+        <label for="address_line2" data-en="Address Line 2" data-fr="Adresse ligne 2">Address Line 2</label>
+        <input type="text" id="address_line2" name="address_line2"
+               value="<%= location ? (location.address_line2 || '') : '' %>"
+               placeholder="Suite 200">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="city" data-en="City" data-fr="Ville">City</label>
+        <input type="text" id="city" name="city"
+               value="<%= location ? (location.city || '') : '' %>"
+               placeholder="Toronto">
+      </div>
+      <div class="form-group">
+        <label for="state_province" data-en="Province" data-fr="Province">Province</label>
+        <select id="state_province" name="state_province">
+          <option value="">Select...</option>
+          <option value="AB" <%= location && location.state_province === 'AB' ? 'selected' : '' %>>Alberta</option>
+          <option value="BC" <%= location && location.state_province === 'BC' ? 'selected' : '' %>>British Columbia</option>
+          <option value="MB" <%= location && location.state_province === 'MB' ? 'selected' : '' %>>Manitoba</option>
+          <option value="NB" <%= location && location.state_province === 'NB' ? 'selected' : '' %>>New Brunswick</option>
+          <option value="NL" <%= location && location.state_province === 'NL' ? 'selected' : '' %>>Newfoundland</option>
+          <option value="NS" <%= location && location.state_province === 'NS' ? 'selected' : '' %>>Nova Scotia</option>
+          <option value="ON" <%= location && location.state_province === 'ON' ? 'selected' : '' %>>Ontario</option>
+          <option value="PE" <%= location && location.state_province === 'PE' ? 'selected' : '' %>>Prince Edward Island</option>
+          <option value="QC" <%= location && location.state_province === 'QC' ? 'selected' : '' %>>Quebec</option>
+          <option value="SK" <%= location && location.state_province === 'SK' ? 'selected' : '' %>>Saskatchewan</option>
+          <option value="NT" <%= location && location.state_province === 'NT' ? 'selected' : '' %>>Northwest Territories</option>
+          <option value="NU" <%= location && location.state_province === 'NU' ? 'selected' : '' %>>Nunavut</option>
+          <option value="YT" <%= location && location.state_province === 'YT' ? 'selected' : '' %>>Yukon</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="postal_code" data-en="Postal Code" data-fr="Code postal">Postal Code</label>
+        <input type="text" id="postal_code" name="postal_code"
+               value="<%= location ? (location.postal_code || '') : '' %>"
+               placeholder="M5V 1A1">
+      </div>
+      <div class="form-group">
+        <label for="country" data-en="Country" data-fr="Pays">Country</label>
+        <select id="country" name="country">
+          <option value="CA" <%= !location || location.country === 'CA' ? 'selected' : '' %>>Canada</option>
+          <option value="US" <%= location && location.country === 'US' ? 'selected' : '' %>>United States</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="phone" data-en="Phone" data-fr="Téléphone">Phone</label>
+        <input type="tel" id="phone" name="phone"
+               value="<%= location ? (location.phone || '') : '' %>"
+               placeholder="(514) 555-0123">
+      </div>
+      <div class="form-group">
+        <label for="timezone" data-en="Timezone" data-fr="Fuseau horaire">Timezone</label>
+        <select id="timezone" name="timezone">
+          <option value="America/Toronto" <%= (!location || location.timezone === 'America/Toronto') ? 'selected' : '' %>>Eastern (Toronto/Montreal)</option>
+          <option value="America/Winnipeg" <%= location && location.timezone === 'America/Winnipeg' ? 'selected' : '' %>>Central (Winnipeg)</option>
+          <option value="America/Edmonton" <%= location && location.timezone === 'America/Edmonton' ? 'selected' : '' %>>Mountain (Calgary/Edmonton)</option>
+          <option value="America/Vancouver" <%= location && location.timezone === 'America/Vancouver' ? 'selected' : '' %>>Pacific (Vancouver)</option>
+          <option value="America/Halifax" <%= location && location.timezone === 'America/Halifax' ? 'selected' : '' %>>Atlantic (Halifax)</option>
+          <option value="America/St_Johns" <%= location && location.timezone === 'America/St_Johns' ? 'selected' : '' %>>Newfoundland</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" name="is_default" value="1" <%= location && location.is_default ? 'checked' : '' %>>
+          <span data-en="Default location" data-fr="Emplacement par défaut">Default location</span>
+        </label>
+      </div>
+      <% if (location) { %>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" name="is_active" value="1" <%= !location || location.is_active ? 'checked' : '' %>>
+          <span data-en="Active (visible to customers)" data-fr="Actif (visible pour les clients)">Active (visible to customers)</span>
+        </label>
+      </div>
+      <% } %>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" data-en="<%= location ? 'Save Changes' : 'Add Location' %>" data-fr="<%= location ? 'Enregistrer' : 'Ajouter' %>"><%= location ? 'Save Changes' : 'Add Location' %></button>
+      <a href="/admin/locations" class="btn btn-ghost" data-en="Cancel" data-fr="Annuler">Cancel</a>
+    </div>
+  </form>
+</div>

@@ -15,6 +15,14 @@
       <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %> data-en="Cancelled" data-fr="Annulé">Cancelled</option>
       <option value="no_show" <%= filters.status === 'no_show' ? 'selected' : '' %> data-en="No Show" data-fr="Absence">No Show</option>
     </select>
+    <% if (locations && locations.length > 1) { %>
+    <select name="location_id">
+      <option value="" data-en="All Locations" data-fr="Tous les emplacements">All Locations</option>
+      <% locations.forEach(loc => { %>
+        <option value="<%= loc.id %>" <%= filters.location_id == loc.id ? 'selected' : '' %>><%= loc.name %></option>
+      <% }) %>
+    </select>
+    <% } %>
     <button type="submit" class="btn btn-secondary" data-en="Filter" data-fr="Filtrer">Filter</button>
     <a href="/admin/bookings" class="btn btn-ghost" data-en="Clear" data-fr="Effacer">Clear</a>
   </form>

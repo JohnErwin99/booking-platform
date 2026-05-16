@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/bookings', async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
-    const { from, to, staff_id, status, view } = req.query;
+    const { from, to, staff_id, status, location_id, view } = req.query;
 
     let query = db('bookings').where('bookings.tenant_id', tenantId);
 
@@ -17,6 +17,7 @@ router.get('/bookings', async (req, res, next) => {
     if (to) query = query.where('booking_date', '<=', to);
     if (staff_id) query = query.where('staff_id', staff_id);
     if (status) query = query.where('status', status);
+    if (location_id) query = query.where('location_id', location_id);
 
     const bookings = await query
       .orderBy('booking_date', 'desc')
@@ -26,6 +27,10 @@ router.get('/bookings', async (req, res, next) => {
       .where({ tenant_id: tenantId, is_active: true })
       .orderBy('first_name');
 
+    const locations = await db('locations')
+      .where({ tenant_id: tenantId, is_active: true })
+      .orderBy('sort_order');
+
     const calendarSync = await gcal.isConnected(tenantId);
 
     res.render('admin/bookings', {
@@ -34,8 +39,9 @@ router.get('/bookings', async (req, res, next) => {
       tenant: req.tenant,
       bookings,
       staffList,
+      locations,
       calendarConnected: calendarSync.connected,
-      filters: { from, to, staff_id, status },
+      filters: { from, to, staff_id, status, location_id },
       viewMode: view || 'list',
       helpers: { formatTimeLabel, formatPrice }
     });

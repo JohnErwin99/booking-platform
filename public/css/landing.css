@@ -190,6 +190,10 @@ ul{list-style:none}
   font-size:.95rem;font-weight:600;color:#fff!important;
   margin-bottom:16px;letter-spacing:.02em;
 }
+.hero-subtitle{
+  font-size:1.25rem;color:rgba(255,255,255,.7);line-height:1.6;
+  margin-bottom:16px;max-width:560px;font-weight:500;
+}
 .hero-sub{
   font-size:1.15rem;color:rgba(255,255,255,.55);line-height:1.75;
   margin-bottom:36px;max-width:520px;
@@ -637,6 +641,21 @@ ul{list-style:none}
 .faq-item[open] summary::after{transform:rotate(45deg);color:#F28C38;background:rgba(242,140,56,.08)}
 .faq-item summary::-webkit-details-marker{display:none}
 .faq-item p{padding:0 0 24px;color:#737373;font-size:.925rem;line-height:1.75}
+
+/* ====== CITIES ====== */
+.cities{padding:100px 0;background:rgba(255,255,255,.3)}
+.cities .section-desc{color:#737373;font-size:1rem;max-width:600px;margin:0 auto 40px;line-height:1.7}
+.cities-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:900px;margin:0 auto}
+.city-card{
+  background:rgba(255,255,255,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-radius:20px;padding:28px 24px;text-decoration:none;color:inherit;
+  border:1px solid rgba(232,223,208,.4);
+  transition:all .35s cubic-bezier(.4,0,.2,1);display:block;
+}
+.city-card:hover{box-shadow:0 12px 40px rgba(26,26,46,.06);border-color:rgba(242,140,56,.25);transform:translateY(-3px)}
+.city-card .city-icon{font-size:1.5rem;display:block;margin-bottom:10px}
+.city-card h3{font-size:1.05rem;font-weight:700;margin-bottom:6px;color:#1A1A2E}
+.city-card p{font-size:.85rem;color:#737373;line-height:1.6}
 
 /* ====== CTA ====== */
 .cta{

@@ -38,8 +38,29 @@
       </template>
     </div>
 
-    <!-- Step 1: Staff Selection -->
-    <div x-show="step === 1" class="step">
+    <% if (locations.length > 1) { %>
+    <!-- Step: Location Selection (only shown when multiple locations) -->
+    <div x-show="step === 1 && hasMultipleLocations" class="step">
+      <h2 class="step-title">Choose a location</h2>
+      <div class="staff-grid">
+        <% locations.forEach(loc => { %>
+          <div class="staff-card" @click="selectLocation(<%= loc.id %>, '<%= loc.name.replace(/'/g, "\\'") %>')"
+               :class="{ selected: locationId === <%= loc.id %> }">
+            <div class="staff-avatar-lg">
+              <span style="font-size:1.4rem">&#128205;</span>
+            </div>
+            <h3><%= loc.name %></h3>
+            <% if (loc.address_line1) { %>
+              <p class="staff-title"><%= loc.address_line1 %><% if (loc.city) { %>, <%= loc.city %><% } %></p>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- Step: Staff Selection -->
+    <div x-show="step === staffStep" class="step">
       <h2 class="step-title">Choose your professional</h2>
       <div class="staff-grid">
         <% staff.forEach(s => { %>
@@ -59,8 +80,8 @@
       </div>
     </div>
 
-    <!-- Step 2: Service Selection -->
-    <div x-show="step === 2" class="step">
+    <!-- Step: Service Selection -->
+    <div x-show="step === staffStep + 1" class="step">
       <h2 class="step-title">Select a service</h2>
       <div class="service-list">
         <% services.forEach(s => { %>
@@ -83,7 +104,7 @@
     </div>
 
     <!-- Step 3: Date & Time -->
-    <div x-show="step === 3" class="step">
+    <div x-show="step === staffStep + 2" class="step">
       <h2 class="step-title">Pick a date & time</h2>
       <div class="datetime-picker">
         <div class="calendar-section">
@@ -128,7 +149,7 @@
     </div>
 
     <!-- Step 4: Customer Details -->
-    <div x-show="step === 4" class="step">
+    <div x-show="step === staffStep + 3" class="step">
       <h2 class="step-title">Your details</h2>
       <form @submit.prevent="submitBooking()" class="booking-form">
         <div class="form-row">
@@ -174,7 +195,7 @@
     </div>
 
     <!-- Step 5: Success -->
-    <div x-show="step === 5" class="step success-step">
+    <div x-show="step === staffStep + 4" class="step success-step">
       <div class="success-icon">&#10003;</div>
       <h2>Booking Confirmed!</h2>
       <p>A confirmation email will be sent to <strong x-text="email"></strong>.</p>
@@ -199,11 +220,15 @@
     const SLUG = '<%= tenant.slug %>';
 
     function bookingWizard() {
+      const multiLoc = <%= locations.length > 1 ? 'true' : 'false' %>;
       return {
         step: 1,
-        stepLabels: ['Staff', 'Service', 'Date & Time', 'Details'],
+        hasMultipleLocations: multiLoc,
+        staffStep: multiLoc ? 2 : 1,
+        stepLabels: multiLoc ? ['Location', 'Staff', 'Service', 'Date & Time', 'Details'] : ['Staff', 'Service', 'Date & Time', 'Details'],
 
         // Selections
+        locationId: null, locationName: '',
         staffId: null, staffName: '',
         serviceId: null, serviceName: '', serviceDuration: 0, servicePrice: 0,
         selectedDate: '', selectedTime: '', selectedTimeLabel: '',
@@ -246,10 +271,16 @@
           return cells;
         },
 
+        selectLocation(id, name) {
+          this.locationId = id;
+          this.locationName = name;
+          this.step = this.staffStep;
+        },
+
         selectStaff(id, name) {
           this.staffId = id;
           this.staffName = name;
-          this.step = 2;
+          this.step = this.staffStep + 1;
         },
 
         selectService(id, name, duration, price) {
@@ -257,7 +288,7 @@
           this.serviceName = name;
           this.serviceDuration = duration;
           this.servicePrice = price;
-          this.step = 3;
+          this.step = this.staffStep + 2;
         },
 
         async selectDate(date) {
@@ -288,7 +319,7 @@
         selectTime(time, label) {
           this.selectedTime = time;
           this.selectedTimeLabel = label;
-          this.step = 4;
+          this.step = this.staffStep + 3;
         },
 
         changeMonth(dir) {
@@ -312,6 +343,7 @@
               body: JSON.stringify({
                 staff_id: this.staffId,
                 service_id: this.serviceId,
+                location_id: this.locationId,
                 date: this.selectedDate,
                 time: this.selectedTime,
                 first_name: this.firstName,
@@ -325,7 +357,7 @@
 
             if (resp.ok && data.success) {
               this.bookingId = data.booking_id;
-              this.step = 5;
+              this.step = this.staffStep + 4;
             } else {
               this.errorMsg = data.error || 'Booking failed. Please try again.';
             }

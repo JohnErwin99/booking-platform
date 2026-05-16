@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://bookwizeapp.com/</loc>
-    <lastmod>2026-05-07</lastmod>
+    <lastmod>2026-05-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -36,41 +36,83 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- Comparison / Alternative pages (high priority - purchase intent) -->
   <url>
-    <loc>https://bookwizeapp.com/alternative/booksy</loc>
-    <lastmod>2026-05-07</lastmod>
+    <loc>https://bookwizeapp.com/vs-booksy</loc>
+    <lastmod>2026-05-16</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bookwizeapp.com/alternative/fresha</loc>
-    <lastmod>2026-05-07</lastmod>
+    <loc>https://bookwizeapp.com/vs-fresha</loc>
+    <lastmod>2026-05-16</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bookwizeapp.com/alternative/vagaro</loc>
-    <lastmod>2026-05-07</lastmod>
+    <loc>https://bookwizeapp.com/vs-vagaro</loc>
+    <lastmod>2026-05-16</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://bookwizeapp.com/booking-software-canada</loc>
-    <lastmod>2026-05-07</lastmod>
+    <lastmod>2026-05-16</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
+
+  <!-- City-specific landing pages (high priority - local SEO) -->
   <url>
     <loc>https://bookwizeapp.com/salon-booking-montreal</loc>
-    <lastmod>2026-05-07</lastmod>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bookwizeapp.com/salon-booking-toronto</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bookwizeapp.com/salon-booking-vancouver</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bookwizeapp.com/salon-booking-calgary</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bookwizeapp.com/salon-booking-ottawa</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://bookwizeapp.com/blog</loc>
+    <lastmod>2026-05-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://bookwizeapp.com/blog/commission-free-salon-booking</loc>
+    <lastmod>2026-05-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bookwizeapp.com/blog</loc>
-    <lastmod>2026-05-08</lastmod>
+    <loc>https://bookwizeapp.com/blog/best-barber-booking-apps-canada</loc>
+    <lastmod>2026-05-16</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://bookwizeapp.com/blog/how-to-sign-up</loc>

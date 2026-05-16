@@ -93,12 +93,23 @@ app.get('/', (req, res) => {
 app.get('/privacy', (req, res) => res.render('legal/privacy', { layout: false }));
 app.get('/terms', (req, res) => res.render('legal/terms', { layout: false }));
 
-// Comparison / alternatives pages
-app.get('/alternative/booksy', (req, res) => res.render('alternatives/booksy', { layout: false }));
-app.get('/alternative/fresha', (req, res) => res.render('alternatives/fresha', { layout: false }));
-app.get('/alternative/vagaro', (req, res) => res.render('alternatives/vagaro', { layout: false }));
+// Comparison / alternatives pages (new SEO-friendly URLs)
+app.get('/vs-booksy', (req, res) => res.render('alternatives/booksy', { layout: false }));
+app.get('/vs-fresha', (req, res) => res.render('alternatives/fresha', { layout: false }));
+app.get('/vs-vagaro', (req, res) => res.render('alternatives/vagaro', { layout: false }));
 app.get('/booking-software-canada', (req, res) => res.render('alternatives/booking-software-canada', { layout: false }));
 app.get('/salon-booking-montreal', (req, res) => res.render('alternatives/salon-booking-montreal', { layout: false }));
+
+// City-specific landing pages
+app.get('/salon-booking-toronto', (req, res) => res.render('alternatives/salon-booking-toronto', { layout: false }));
+app.get('/salon-booking-vancouver', (req, res) => res.render('alternatives/salon-booking-vancouver', { layout: false }));
+app.get('/salon-booking-calgary', (req, res) => res.render('alternatives/salon-booking-calgary', { layout: false }));
+app.get('/salon-booking-ottawa', (req, res) => res.render('alternatives/salon-booking-ottawa', { layout: false }));
+
+// 301 redirects from old comparison URLs
+app.get('/alternative/booksy', (req, res) => res.redirect(301, '/vs-booksy'));
+app.get('/alternative/fresha', (req, res) => res.redirect(301, '/vs-fresha'));
+app.get('/alternative/vagaro', (req, res) => res.redirect(301, '/vs-vagaro'));
 
 // Blog
 app.get('/blog', (req, res) => res.render('blog/index', { layout: false }));
@@ -111,6 +122,8 @@ app.get('/blog/reducing-no-shows', (req, res) => res.render('blog/reducing-no-sh
 app.get('/blog/embedding-widget', (req, res) => res.render('blog/embedding-widget', { layout: false }));
 app.get('/blog/dashboard-guide', (req, res) => res.render('blog/dashboard-guide', { layout: false }));
 app.get('/blog/upgrading-your-plan', (req, res) => res.render('blog/upgrading-your-plan', { layout: false }));
+app.get('/blog/commission-free-salon-booking', (req, res) => res.render('blog/commission-free-salon-booking', { layout: false }));
+app.get('/blog/best-barber-booking-apps-canada', (req, res) => res.render('blog/best-barber-booking-apps-canada', { layout: false }));
 
 // Resource pages
 app.get('/resources/community', (req, res) => res.render('resources/community', { layout: false }));
@@ -173,6 +186,7 @@ app.use('/admin', requireAuth, require('./routes/admin/staff'));
 app.use('/admin', requireAuth, require('./routes/admin/services'));
 app.use('/admin', requireAuth, require('./routes/admin/customers'));
 app.use('/admin', requireAuth, require('./routes/admin/settings'));
+app.use('/admin', requireAuth, require('./routes/admin/locations'));
 app.use('/admin', requireAuth, require('./routes/admin/calendar'));
 
 // Mobile API routes (JWT auth)

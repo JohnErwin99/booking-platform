@@ -1,0 +1,61 @@
+<div class="toolbar">
+  <a href="/admin/locations/new" class="btn btn-primary" data-en="+ Add Location" data-fr="+ Ajouter un emplacement">+ Add Location</a>
+  <span class="text-muted"><%= locations.length %> location<%= locations.length !== 1 ? 's' : '' %></span>
+</div>
+
+<% if (locations.length === 0) { %>
+  <div class="empty-state">
+    <p data-en="No locations yet. Add your first location to manage multiple branches." data-fr="Aucun emplacement. Ajoutez votre premier emplacement pour gérer plusieurs succursales.">No locations yet. Add your first location to manage multiple branches.</p>
+  </div>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th data-en="Location" data-fr="Emplacement">Location</th>
+          <th data-en="Address" data-fr="Adresse">Address</th>
+          <th data-en="Phone" data-fr="Téléphone">Phone</th>
+          <th data-en="Staff" data-fr="Personnel">Staff</th>
+          <th data-en="Status" data-fr="Statut">Status</th>
+          <th data-en="Actions" data-fr="Actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% locations.forEach(loc => { %>
+          <tr>
+            <td>
+              <strong><%= loc.name %></strong>
+              <% if (loc.is_default) { %>
+                <span class="badge badge-confirmed" data-en="Default" data-fr="Par défaut">Default</span>
+              <% } %>
+            </td>
+            <td>
+              <% if (loc.address_line1) { %>
+                <%= loc.address_line1 %><% if (loc.city) { %>, <%= loc.city %><% } %><% if (loc.state_province) { %> <%= loc.state_province %><% } %>
+              <% } else { %>
+                <span class="text-muted" data-en="No address" data-fr="Aucune adresse">No address</span>
+              <% } %>
+            </td>
+            <td><%= loc.phone || '—' %></td>
+            <td><%= staffCountMap[loc.id] || 0 %></td>
+            <td>
+              <span class="badge badge-<%= loc.is_active ? 'confirmed' : 'cancelled' %>" data-en="<%= loc.is_active ? 'Active' : 'Inactive' %>" data-fr="<%= loc.is_active ? 'Actif' : 'Inactif' %>"><%= loc.is_active ? 'Active' : 'Inactive' %></span>
+            </td>
+            <td>
+              <a href="/admin/locations/<%= loc.id %>/edit" class="btn btn-sm btn-secondary" data-en="Edit" data-fr="Modifier">Edit</a>
+              <% if (locations.length > 1) { %>
+                <form method="POST" action="/admin/locations/<%= loc.id %>/delete" style="display:inline">
+                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(adminLang==='fr'?'Supprimer cet emplacement?':'Delete this location?')" data-en="Delete" data-fr="Supprimer">Delete</button>
+                </form>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<div class="info-box" style="margin-top:24px;padding:16px 20px;background:rgba(242,140,56,.05);border-radius:12px;border:1px solid rgba(242,140,56,.1)">
+  <p style="font-size:.9rem;color:#525252;margin:0" data-en="Manage multiple locations from this page. Each location can have its own address, phone, business hours, and assigned staff. Customers will choose a location when booking if you have more than one active location." data-fr="Gérez plusieurs emplacements depuis cette page. Chaque emplacement peut avoir sa propre adresse, téléphone, heures d'ouverture et personnel assigné. Les clients choisiront un emplacement lors de la réservation si vous en avez plus d'un actif.">Manage multiple locations from this page. Each location can have its own address, phone, business hours, and assigned staff. Customers will choose a location when booking if you have more than one active location.</p>
+</div>
