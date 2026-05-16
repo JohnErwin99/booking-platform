@@ -184,7 +184,7 @@ router.post('/settings/billing-portal', requireRole('owner'), async (req, res, n
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
       return_url: `${baseUrl}/admin/settings`,
-      configuration: 'bpc_1TXlJkBJNJfnvde81ym0fPde',
+      configuration: process.env.STRIPE_PORTAL_CONFIG_ID || undefined,
     });
 
     res.redirect(portalSession.url);
