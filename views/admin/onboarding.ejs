@@ -170,6 +170,30 @@
           <span x-show="saving">Saving...</span>
         </button>
       </form>
+
+      <!-- Locations Section -->
+      <div style="margin-top:32px;border-top:1px solid rgba(232,223,208,.4);padding-top:24px">
+        <h3 style="font-size:1rem;font-weight:700;margin-bottom:4px">Multiple Locations?</h3>
+        <p style="font-size:.85rem;color:#9CA3AF;margin-bottom:16px">Add additional branches or studios. Your first location was created automatically. You can always add more later from Settings.</p>
+
+        <template x-for="loc in locationList" :key="loc.id">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(242,140,56,.04);border-radius:10px;margin-bottom:8px;border:1px solid rgba(232,223,208,.3)">
+            <span>&#128205;</span>
+            <span style="flex:1;font-weight:500;font-size:.9rem" x-text="loc.name"></span>
+            <template x-if="!loc.is_default">
+              <button type="button" class="btn btn-sm btn-danger" @click="removeLocation(loc.id)" style="font-size:.75rem;padding:4px 10px">Remove</button>
+            </template>
+            <template x-if="loc.is_default">
+              <span style="font-size:.7rem;color:#9CA3AF;font-weight:500">Default</span>
+            </template>
+          </div>
+        </template>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <input type="text" x-model="newLocationName" placeholder="New location name (e.g. West End Branch)" style="flex:1;font-size:.85rem">
+          <button type="button" class="btn btn-ghost" @click="addLocation()" :disabled="!newLocationName.trim()" style="font-size:.85rem;white-space:nowrap">+ Add</button>
+        </div>
+      </div>
     </div>
 
     <!-- Step 2: Add Services -->
@@ -366,6 +390,9 @@
         },
         logoFile: null,
 
+        locationList: <%= JSON.stringify((locations || []).map(l => ({ id: l.id, name: l.name, is_default: l.is_default }))) %>,
+        newLocationName: '',
+
         staffList: <%= JSON.stringify((staff || []).map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }))) %>,
         newStaff: { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '', service_ids: [] },
 
@@ -380,6 +407,32 @@
           4: { open_at: '09:00', close_at: '18:00', closed: false },
           5: { open_at: '09:00', close_at: '18:00', closed: false },
           6: { open_at: '09:00', close_at: '17:00', closed: false },
+        },
+
+        async addLocation() {
+          if (!this.newLocationName.trim()) return;
+          try {
+            const res = await fetch('/admin/onboarding/location', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: this.newLocationName.trim() })
+            });
+            const data = await res.json();
+            if (data.success) {
+              this.locationList = data.locations.map(l => ({ id: l.id, name: l.name, is_default: l.is_default }));
+              this.newLocationName = '';
+            } else { this.errorMsg = data.error || 'Failed to add location.'; }
+          } catch (e) { this.errorMsg = 'Connection error.'; }
+        },
+
+        async removeLocation(id) {
+          try {
+            const res = await fetch('/admin/onboarding/location/' + id + '/delete', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+              this.locationList = data.locations.map(l => ({ id: l.id, name: l.name, is_default: l.is_default }));
+            } else { this.errorMsg = data.error || 'Cannot remove.'; }
+          } catch (e) { this.errorMsg = 'Connection error.'; }
         },
 
         async saveBusiness() {

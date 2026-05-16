@@ -41,6 +41,7 @@
     "nodemailer": "^8.0.7",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "puppeteer-core": "^24.43.1",
     "stripe": "^22.1.0"
   }
 }

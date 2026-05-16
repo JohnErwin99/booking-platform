@@ -185,6 +185,60 @@ router.post('/onboarding/hours', async (req, res, next) => {
   }
 });
 
+// POST /admin/onboarding/location — Add additional location
+router.post('/onboarding/location', async (req, res, next) => {
+  try {
+    const tenantId = req.user.tenant_id;
+    const { name, address_line1, city, state_province, postal_code, phone } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: 'Location name is required.' });
+    }
+
+    const maxSort = await db('locations').where('tenant_id', tenantId).max('sort_order as max').first();
+
+    await db('locations').insert({
+      tenant_id: tenantId,
+      name: name.trim(),
+      address_line1: address_line1 || null,
+      city: city || null,
+      state_province: state_province || null,
+      postal_code: postal_code || null,
+      country: 'CA',
+      phone: phone || null,
+      timezone: 'America/Toronto',
+      is_default: false,
+      is_active: true,
+      sort_order: (maxSort?.max || 0) + 1
+    });
+
+    const locations = await db('locations').where('tenant_id', tenantId).orderBy('sort_order');
+    res.json({ success: true, locations });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /admin/onboarding/location/:id — Remove location during onboarding
+router.post('/onboarding/location/:id/delete', async (req, res, next) => {
+  try {
+    const tenantId = req.user.tenant_id;
+    const { id } = req.params;
+
+    const count = await db('locations').where('tenant_id', tenantId).count('id as count').first();
+    if (count.count <= 1) {
+      return res.status(400).json({ error: 'You must have at least one location.' });
+    }
+
+    await db('locations').where({ id, tenant_id: tenantId, is_default: false }).delete();
+
+    const locations = await db('locations').where('tenant_id', tenantId).orderBy('sort_order');
+    res.json({ success: true, locations });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // POST /admin/onboarding/complete — Mark onboarding done
 router.post('/onboarding/complete', async (req, res, next) => {
   try {
