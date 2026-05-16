@@ -111,7 +111,7 @@ body{font-family:'Inter',system-ui,sans-serif;color:#1A1A2E;background:#F5F3FA;l
 .lang-label{font-size:.7rem;font-weight:700;letter-spacing:.04em;transition:color .25s}
 .lang-en{color:#F28C38}.lang-fr{color:#A3A3A3}
 .lang-toggle.fr .lang-en{color:#A3A3A3}.lang-toggle.fr .lang-fr{color:#F28C38}
-.lang-switch{width:28px;min-width:28px;height:16px;background:#E5E5E5;border-radius:100px;position:relative;transition:background .25s;flex-shrink:0}
+.lang-switch{width:28px;height:16px;background:#E5E5E5;border-radius:100px;position:relative;transition:background .25s}
 .lang-toggle.fr .lang-switch{background:#F28C38}
 .lang-knob{width:12px;height:12px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .lang-toggle.fr .lang-knob{transform:translateX(12px)}
