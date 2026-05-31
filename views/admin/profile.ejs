@@ -1,0 +1,113 @@
+<div class="settings-tabs" x-data="{ tab: location.hash.replace('#','') || 'info' }">
+  <div class="tab-nav">
+    <button @click="tab = 'info'" :class="{ active: tab === 'info' }" class="tab-btn" data-en="Personal Info" data-fr="Informations personnelles">Personal Info</button>
+    <button @click="tab = 'account'" :class="{ active: tab === 'account' }" class="tab-btn" data-en="Account" data-fr="Compte">Account</button>
+  </div>
+
+  <!-- Personal Info Tab -->
+  <div x-show="tab === 'info'" class="tab-content">
+    <% if (!staffMember) { %>
+      <div class="empty-state">
+        <p data-en="No staff profile is linked to your account. Ask your admin to link one." data-fr="Aucun profil de personnel n'est lié à votre compte. Demandez à votre administrateur d'en lier un.">No staff profile is linked to your account. Ask your admin to link one.</p>
+      </div>
+    <% } else { %>
+      <form method="POST" action="/admin/profile/info" class="settings-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-en="First Name" data-fr="Prénom">First Name</label>
+            <input type="text" value="<%= staffMember.first_name %>" disabled style="background:#f3f4f6;cursor:not-allowed">
+          </div>
+          <div class="form-group">
+            <label data-en="Last Name" data-fr="Nom">Last Name</label>
+            <input type="text" value="<%= staffMember.last_name %>" disabled style="background:#f3f4f6;cursor:not-allowed">
+          </div>
+        </div>
+        <p class="text-muted" style="font-size:.8rem;margin-top:-8px;margin-bottom:16px" data-en="Name changes must be done by an admin." data-fr="Les changements de nom doivent être effectués par un administrateur.">Name changes must be done by an admin.</p>
+
+        <div class="form-group">
+          <label data-en="Display Name (shown to customers)" data-fr="Nom affiché (visible par les clients)">Display Name (shown to customers)</label>
+          <input type="text" name="display_name" value="<%= staffMember.display_name || '' %>" placeholder="e.g., Steve">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label data-en="Phone" data-fr="Téléphone">Phone</label>
+            <input type="text" name="phone" value="<%= staffMember.phone || '' %>">
+          </div>
+          <div class="form-group">
+            <label data-en="Title" data-fr="Titre">Title</label>
+            <input type="text" name="title" value="<%= staffMember.title || '' %>" placeholder="e.g., Senior Barber">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea name="bio" rows="3"><%= staffMember.bio || '' %></textarea>
+        </div>
+
+        <h3 style="margin:24px 0 16px" data-en="Scheduling" data-fr="Planification">Scheduling</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-en="Slot Duration (minutes)" data-fr="Durée du créneau (minutes)">Slot Duration (minutes)</label>
+            <input type="number" name="slot_duration" value="<%= staffMember.slot_duration || 30 %>" min="5" step="5">
+          </div>
+          <div class="form-group">
+            <label data-en="Buffer Before (min)" data-fr="Tampon avant (min)">Buffer Before (min)</label>
+            <input type="number" name="buffer_before" value="<%= staffMember.buffer_before || 0 %>" min="0" step="5">
+          </div>
+          <div class="form-group">
+            <label data-en="Buffer After (min)" data-fr="Tampon après (min)">Buffer After (min)</label>
+            <input type="number" name="buffer_after" value="<%= staffMember.buffer_after || 0 %>" min="0" step="5">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" data-en="Save Profile" data-fr="Enregistrer le profil">Save Profile</button>
+      </form>
+    <% } %>
+  </div>
+
+  <!-- Account Tab -->
+  <div x-show="tab === 'account'" class="tab-content">
+    <!-- Profile Photo -->
+    <h3 style="margin-bottom:16px" data-en="Profile Photo" data-fr="Photo de profil">Profile Photo</h3>
+    <form method="POST" action="/admin/profile/photo" enctype="multipart/form-data" class="settings-form" style="margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid #eee">
+      <div class="form-group">
+        <% const photoUrl = (staffMember && staffMember.photo_url) || user.photo_url; %>
+        <% if (photoUrl) { %>
+          <div style="margin-bottom:8px">
+            <img src="<%= photoUrl %>" alt="Profile photo" style="width:80px;height:80px;border-radius:50%;object-fit:cover">
+          </div>
+        <% } %>
+        <input type="file" name="photo" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-secondary" data-en="Upload Photo" data-fr="Téléverser la photo">Upload Photo</button>
+    </form>
+
+    <h3 style="margin-bottom:16px" data-en="Email" data-fr="Courriel">Email</h3>
+    <div class="settings-form" style="margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid #eee">
+      <div class="form-group">
+        <input type="email" value="<%= user.email %>" disabled style="background:#f3f4f6;cursor:not-allowed">
+      </div>
+      <p class="text-muted" style="font-size:.8rem" data-en="Email changes must be done by an admin." data-fr="Les changements de courriel doivent être effectués par un administrateur.">Email changes must be done by an admin.</p>
+    </div>
+
+    <h3 style="margin-bottom:16px" data-en="Change Password" data-fr="Changer le mot de passe">Change Password</h3>
+    <form method="POST" action="/admin/profile/password" class="settings-form">
+      <div class="form-group">
+        <label data-en="Current Password" data-fr="Mot de passe actuel">Current Password</label>
+        <input type="password" name="current_password" required>
+      </div>
+      <div class="form-group">
+        <label data-en="New Password" data-fr="Nouveau mot de passe">New Password</label>
+        <input type="password" name="new_password" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label data-en="Confirm New Password" data-fr="Confirmer le nouveau mot de passe">Confirm New Password</label>
+        <input type="password" name="confirm_password" required minlength="6">
+      </div>
+      <button type="submit" class="btn btn-primary" data-en="Change Password" data-fr="Changer le mot de passe">Change Password</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
