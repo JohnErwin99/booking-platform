@@ -63,7 +63,8 @@ router.get('/staff/new', requireRole('owner', 'manager'), async (req, res, next)
       staffUser: null,
       locations,
       services,
-      assignedServices: []
+      assignedServices: [],
+      assignedServiceOverrides: []
     });
   } catch (err) {
     next(err);
@@ -128,14 +129,20 @@ router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), a
       role: role || 'staff'
     });
 
-    // Assign services
+    // Assign services with optional price/duration overrides
     if (serviceIds && serviceIds.length) {
       const ids = Array.isArray(serviceIds) ? serviceIds : [serviceIds];
-      const rows = ids.map(sid => ({
-        tenant_id: tenantId,
-        staff_id: staffId,
-        service_id: parseInt(sid)
-      }));
+      const rows = ids.map(sid => {
+        const priceVal = req.body[`price_override_${sid}`];
+        const durationVal = req.body[`duration_override_${sid}`];
+        return {
+          tenant_id: tenantId,
+          staff_id: staffId,
+          service_id: parseInt(sid),
+          price_override_cents: priceVal ? Math.round(parseFloat(priceVal) * 100) : null,
+          duration_override: durationVal ? parseInt(durationVal) : null
+        };
+      });
       await db('staff_services').insert(rows);
     }
 
@@ -183,9 +190,9 @@ router.get('/staff/:id/edit', requireRole('owner', 'manager'), async (req, res, 
 
     const locations = await db('locations').where({ tenant_id: tenantId, is_active: true });
     const services = await db('services').where({ tenant_id: tenantId, is_active: true });
-    const assignedServices = await db('staff_services')
-      .where({ tenant_id: tenantId, staff_id: staffMember.id })
-      .pluck('service_id');
+    const assignedServiceOverrides = await db('staff_services')
+      .where({ tenant_id: tenantId, staff_id: staffMember.id });
+    const assignedServices = assignedServiceOverrides.map(s => s.service_id);
     const staffUser = await db('users')
       .where({ tenant_id: tenantId, staff_id: staffMember.id })
       .first();
@@ -198,7 +205,8 @@ router.get('/staff/:id/edit', requireRole('owner', 'manager'), async (req, res, 
       staffUser,
       locations,
       services,
-      assignedServices
+      assignedServices,
+      assignedServiceOverrides
     });
   } catch (err) {
     next(err);
@@ -232,15 +240,21 @@ router.post('/staff/:id', requireRole('owner', 'manager'), upload.single('photo'
     if (req.file) staffUpdate.photo_url = getUrl(req.file);
     await db('staff').where({ id, tenant_id: tenantId }).update(staffUpdate);
 
-    // Reassign services
+    // Reassign services with optional price/duration overrides
     await db('staff_services').where({ staff_id: id, tenant_id: tenantId }).del();
     if (serviceIds && serviceIds.length) {
       const ids = Array.isArray(serviceIds) ? serviceIds : [serviceIds];
-      const rows = ids.map(sid => ({
-        tenant_id: tenantId,
-        staff_id: parseInt(id),
-        service_id: parseInt(sid)
-      }));
+      const rows = ids.map(sid => {
+        const priceVal = req.body[`price_override_${sid}`];
+        const durationVal = req.body[`duration_override_${sid}`];
+        return {
+          tenant_id: tenantId,
+          staff_id: parseInt(id),
+          service_id: parseInt(sid),
+          price_override_cents: priceVal ? Math.round(parseFloat(priceVal) * 100) : null,
+          duration_override: durationVal ? parseInt(durationVal) : null
+        };
+      });
       await db('staff_services').insert(rows);
     }
 

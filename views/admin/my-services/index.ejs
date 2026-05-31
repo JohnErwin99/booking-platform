@@ -1,0 +1,126 @@
+<div class="toolbar">
+  <span class="text-muted"><%= myServices.length %> service<%= myServices.length !== 1 ? 's' : '' %> assigned</span>
+</div>
+
+<!-- Current Services -->
+<% if (myServices.length === 0) { %>
+  <div class="empty-state">
+    <p data-en="You have no services yet. Add an existing service or create a new one below." data-fr="Vous n'avez aucun service. Ajoutez un service existant ou créez-en un nouveau ci-dessous.">You have no services yet. Add an existing service or create a new one below.</p>
+  </div>
+<% } else { %>
+  <div class="section">
+    <h2 class="section-title" data-en="Your Services" data-fr="Vos services">Your Services</h2>
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th data-en="Service" data-fr="Service">Service</th>
+            <th data-en="Base Price" data-fr="Prix de base">Base Price</th>
+            <th data-en="Your Price" data-fr="Votre prix">Your Price</th>
+            <th data-en="Base Duration" data-fr="Durée de base">Base Duration</th>
+            <th data-en="Your Duration" data-fr="Votre durée">Your Duration</th>
+            <th data-en="Actions" data-fr="Actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% myServices.forEach(s => { %>
+            <tr>
+              <td>
+                <strong><%= s.name %></strong>
+                <% if (s.category) { %><br><small class="text-muted"><%= s.category %></small><% } %>
+              </td>
+              <td class="text-muted"><%= helpers.formatPrice(s.price_cents) %></td>
+              <td>
+                <form method="POST" action="/admin/my-services/<%= s.id %>/update" style="display:inline" class="inline-override-form">
+                  <input type="number" name="price_override" step="0.01" min="0"
+                    value="<%= s.price_override_cents ? (s.price_override_cents / 100).toFixed(2) : '' %>"
+                    placeholder="<%= (s.price_cents / 100).toFixed(2) %>"
+                    style="width:85px;padding:5px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:.85rem">
+              </td>
+              <td class="text-muted"><%= s.duration_minutes %> min</td>
+              <td>
+                  <div style="display:flex;align-items:center;gap:4px">
+                    <input type="number" name="duration_override" min="5" step="5"
+                      value="<%= s.duration_override || '' %>"
+                      placeholder="<%= s.duration_minutes %>"
+                      style="width:65px;padding:5px 7px;border:1px solid #d1d5db;border-radius:6px;font-size:.85rem">
+                    <span class="text-muted" style="font-size:.8rem">min</span>
+                  </div>
+              </td>
+              <td style="white-space:nowrap">
+                  <button type="submit" class="btn btn-sm btn-secondary" data-en="Save" data-fr="Enregistrer">Save</button>
+                </form>
+                <form method="POST" action="/admin/my-services/<%= s.id %>/remove" style="display:inline">
+                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(adminLang==='fr'?'Retirer ce service?':'Remove this service?')" data-en="Remove" data-fr="Retirer">Remove</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% } %>
+
+<!-- Add Existing Service -->
+<% if (availableServices.length > 0) { %>
+  <div class="section" style="margin-top:32px">
+    <h2 class="section-title" data-en="Add Existing Service" data-fr="Ajouter un service existant">Add Existing Service</h2>
+    <p class="text-muted" style="font-size:.85rem;margin-bottom:12px" data-en="Pick a service already offered by the business and set your own price if needed." data-fr="Choisissez un service déjà offert par l'entreprise et définissez votre propre prix si nécessaire.">Pick a service already offered by the business and set your own price if needed.</p>
+    <form method="POST" action="/admin/my-services/add" class="settings-form">
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label data-en="Service" data-fr="Service">Service</label>
+          <select name="service_id" required style="width:100%">
+            <option value="" data-en="— Select a service —" data-fr="— Sélectionnez un service —">— Select a service —</option>
+            <% availableServices.forEach(s => { %>
+              <option value="<%= s.id %>"><%= s.name %> (<%= s.duration_minutes %>min &bull; $<%= (s.price_cents / 100).toFixed(2) %>)</option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-en="Your Price ($)" data-fr="Votre prix ($)">Your Price ($)</label>
+          <input type="number" name="price_override" step="0.01" min="0" placeholder="Same as base">
+        </div>
+        <div class="form-group">
+          <label data-en="Your Duration (min)" data-fr="Votre durée (min)">Your Duration (min)</label>
+          <input type="number" name="duration_override" min="5" step="5" placeholder="Same as base">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" data-en="Add to My Services" data-fr="Ajouter à mes services">Add to My Services</button>
+    </form>
+  </div>
+<% } %>
+
+<!-- Create New Service -->
+<div class="section" style="margin-top:32px">
+  <h2 class="section-title" data-en="Create New Service" data-fr="Créer un nouveau service">Create New Service</h2>
+  <p class="text-muted" style="font-size:.85rem;margin-bottom:12px" data-en="Create a service that doesn't exist yet. It will be automatically assigned to you." data-fr="Créez un service qui n'existe pas encore. Il sera automatiquement assigné à vous.">Create a service that doesn't exist yet. It will be automatically assigned to you.</p>
+  <form method="POST" action="/admin/my-services/create" class="settings-form">
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label data-en="Service Name *" data-fr="Nom du service *">Service Name *</label>
+        <input type="text" name="name" required placeholder="e.g., Deep Tissue Massage">
+      </div>
+      <div class="form-group">
+        <label data-en="Category" data-fr="Catégorie">Category</label>
+        <input type="text" name="category" placeholder="e.g., Massage">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description" rows="2" placeholder="Optional description..."></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label data-en="Duration (minutes) *" data-fr="Durée (minutes) *">Duration (minutes) *</label>
+        <input type="number" name="duration_minutes" required min="5" step="5" value="30">
+      </div>
+      <div class="form-group">
+        <label data-en="Price ($) *" data-fr="Prix ($) *">Price ($) *</label>
+        <input type="number" name="price" required min="0" step="0.01">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary" data-en="Create & Assign to Me" data-fr="Créer et m'assigner">Create & Assign to Me</button>
+  </form>
+</div>

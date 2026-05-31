@@ -97,13 +97,42 @@
     <% if (services.length) { %>
       <div class="form-group">
         <label data-en="Assigned Services" data-fr="Services assignés">Assigned Services</label>
-        <div class="checkbox-grid">
-          <% services.forEach(svc => { %>
-            <label class="checkbox-label">
-              <input type="checkbox" name="services" value="<%= svc.id %>"
-                <%= assignedServices.includes(svc.id) ? 'checked' : '' %>>
-              <%= svc.name %> (<%= svc.duration_minutes %>min)
-            </label>
+        <p style="font-size:.85rem;color:#64748b;margin:0 0 12px" data-en="Check a service to assign it. Override price or duration to customize per staff member." data-fr="Cochez un service pour l'assigner. Modifiez le prix ou la durée pour personnaliser par membre.">Check a service to assign it. Override price or duration to customize per staff member.</p>
+        <div class="staff-services-list">
+          <% services.forEach(svc => {
+            const ss = (typeof assignedServiceOverrides !== 'undefined' && assignedServiceOverrides)
+              ? assignedServiceOverrides.find(a => a.service_id === svc.id)
+              : (assignedServices.includes(svc.id) ? { service_id: svc.id } : null);
+            const isAssigned = !!ss;
+          %>
+            <div class="staff-service-row" style="border:1px solid #e2e8f0;border-radius:10px;padding:12px 16px;margin-bottom:8px;background:<%= isAssigned ? '#f0fdf4' : '#fff' %>;transition:background .2s">
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <label class="checkbox-label" style="flex:1;min-width:180px;margin:0">
+                  <input type="checkbox" name="services" value="<%= svc.id %>"
+                    <%= isAssigned ? 'checked' : '' %>
+                    onchange="this.closest('.staff-service-row').style.background = this.checked ? '#f0fdf4' : '#fff'; this.closest('.staff-service-row').querySelectorAll('.override-fields input').forEach(i => { if(!this.checked) i.value=''; })">
+                  <strong><%= svc.name %></strong>
+                  <span style="color:#64748b;font-size:.85rem">(<%= svc.duration_minutes %>min &bull; $<%= (svc.price_cents / 100).toFixed(2) %>)</span>
+                </label>
+                <div class="override-fields" style="display:flex;gap:12px;align-items:center">
+                  <div style="display:flex;align-items:center;gap:4px">
+                    <label style="font-size:.8rem;color:#64748b;white-space:nowrap" data-en="Price $" data-fr="Prix $">Price $</label>
+                    <input type="number" name="price_override_<%= svc.id %>" step="0.01" min="0"
+                      value="<%= ss && ss.price_override_cents ? (ss.price_override_cents / 100).toFixed(2) : '' %>"
+                      placeholder="<%= (svc.price_cents / 100).toFixed(2) %>"
+                      style="width:90px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem">
+                  </div>
+                  <div style="display:flex;align-items:center;gap:4px">
+                    <label style="font-size:.8rem;color:#64748b;white-space:nowrap" data-en="Duration" data-fr="Durée">Duration</label>
+                    <input type="number" name="duration_override_<%= svc.id %>" min="5" step="5"
+                      value="<%= ss && ss.duration_override ? ss.duration_override : '' %>"
+                      placeholder="<%= svc.duration_minutes %>"
+                      style="width:70px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem">
+                    <span style="font-size:.8rem;color:#64748b">min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           <% }) %>
         </div>
       </div>

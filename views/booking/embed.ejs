@@ -78,16 +78,16 @@
       <div class="service-list">
         <% services.forEach(s => { %>
           <div class="service-item"
-               @click="selectService(<%= s.id %>, '<%= s.name.replace(/'/g, "\\'") %>', <%= s.duration_minutes %>, <%= s.price_cents %>)"
-               :class="{ selected: serviceId === <%= s.id %> }"
-               data-staff-services="<%= JSON.stringify(staffServices.filter(ss => ss.service_id === s.id).map(ss => ss.staff_id)) %>">
+               x-show="staffOffersService(<%= s.id %>)"
+               @click="selectService(<%= s.id %>, '<%= s.name.replace(/'/g, "\\'") %>', getServiceDuration(<%= s.id %>, <%= s.duration_minutes %>), getServicePrice(<%= s.id %>, <%= s.price_cents %>))"
+               :class="{ selected: serviceId === <%= s.id %> }">
             <div class="service-info">
               <h3><%= s.name %></h3>
               <% if (s.description) { %><p><%= s.description %></p><% } %>
             </div>
             <div class="service-meta">
-              <span class="service-duration"><%= s.duration_minutes %> min</span>
-              <span class="service-price"><%= helpers.formatPrice(s.price_cents) %></span>
+              <span class="service-duration" x-text="getServiceDuration(<%= s.id %>, <%= s.duration_minutes %>) + ' min'"></span>
+              <span class="service-price" x-text="'$' + (getServicePrice(<%= s.id %>, <%= s.price_cents %>) / 100).toFixed(2)"></span>
             </div>
           </div>
         <% }) %>
@@ -210,6 +210,7 @@
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
   <script>
     const SLUG = '<%= tenant.slug %>';
+    const STAFF_SERVICES = <%- JSON.stringify(staffServices.map(ss => ({ staff_id: ss.staff_id, service_id: ss.service_id, price_override_cents: ss.price_override_cents || null, duration_override: ss.duration_override || null }))) %>;
 
     function bookingWizard() {
       return {
@@ -246,7 +247,29 @@
           return cells;
         },
 
-        selectStaff(id, name) { this.staffId = id; this.staffName = name; this.step = 2; },
+        selectStaff(id, name) {
+          this.staffId = id; this.staffName = name;
+          this.serviceId = null; this.serviceName = '';
+          this.serviceDuration = 0; this.servicePrice = 0;
+          this.step = 2;
+        },
+
+        staffOffersService(serviceId) {
+          if (!this.staffId) return true;
+          return STAFF_SERVICES.some(ss => ss.staff_id === this.staffId && ss.service_id === serviceId);
+        },
+
+        getServicePrice(serviceId, basePrice) {
+          if (!this.staffId) return basePrice;
+          const ss = STAFF_SERVICES.find(s => s.staff_id === this.staffId && s.service_id === serviceId);
+          return (ss && ss.price_override_cents) ? ss.price_override_cents : basePrice;
+        },
+
+        getServiceDuration(serviceId, baseDuration) {
+          if (!this.staffId) return baseDuration;
+          const ss = STAFF_SERVICES.find(s => s.staff_id === this.staffId && s.service_id === serviceId);
+          return (ss && ss.duration_override) ? ss.duration_override : baseDuration;
+        },
 
         selectService(id, name, duration, price) {
           this.serviceId = id; this.serviceName = name;

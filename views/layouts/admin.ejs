@@ -26,9 +26,16 @@
         <a href="/admin/customers" class="nav-item <%= title === 'Customers' ? 'active' : '' %>">
           <span class="nav-icon">&#128101;</span> <span data-en="Customers" data-fr="Clients">Customers</span>
         </a>
-        <a href="/admin/services" class="nav-item <%= title === 'Services' ? 'active' : '' %>">
-          <span class="nav-icon">&#9986;</span> <span data-en="Services" data-fr="Services">Services</span>
-        </a>
+        <% if (user && user.staff_id) { %>
+          <a href="/admin/my-services" class="nav-item <%= title === 'My Services' ? 'active' : '' %>">
+            <span class="nav-icon">&#9986;</span> <span data-en="My Services" data-fr="Mes services">My Services</span>
+          </a>
+        <% } %>
+        <% if (user && (user.role === 'owner' || user.role === 'manager')) { %>
+          <a href="/admin/services" class="nav-item <%= title === 'Services' ? 'active' : '' %>">
+            <span class="nav-icon">&#9986;</span> <span data-en="All Services" data-fr="Tous les services">All Services</span>
+          </a>
+        <% } %>
         <a href="/admin/staff" class="nav-item <%= title === 'Staff' ? 'active' : '' %>">
           <span class="nav-icon">&#128100;</span> <span data-en="Staff" data-fr="Personnel">Staff</span>
         </a>
@@ -129,6 +136,8 @@
       'Staff': 'Personnel',
       'Settings': 'Paramètres',
       'Customer Detail': 'Détails du client',
+      'My Services': 'Mes services',
+      'All Services': 'Tous les services',
       'Add Service': 'Ajouter un service',
       'Edit Service': 'Modifier le service',
       'Add Staff': 'Ajouter un membre',
@@ -139,6 +148,8 @@
       'Personnel': 'Staff',
       'Paramètres': 'Settings',
       'Détails du client': 'Customer Detail',
+      'Mes services': 'My Services',
+      'Tous les services': 'All Services',
       'Ajouter un service': 'Add Service',
       'Modifier le service': 'Edit Service',
       'Ajouter un membre': 'Add Staff',

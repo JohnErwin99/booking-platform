@@ -184,6 +184,7 @@ app.use('/admin', requireAuth, require('./routes/admin/dashboard'));
 app.use('/admin', requireAuth, require('./routes/admin/bookings'));
 app.use('/admin', requireAuth, require('./routes/admin/staff'));
 app.use('/admin', requireAuth, require('./routes/admin/services'));
+app.use('/admin', requireAuth, require('./routes/admin/my-services'));
 app.use('/admin', requireAuth, require('./routes/admin/customers'));
 app.use('/admin', requireAuth, require('./routes/admin/settings'));
 app.use('/admin', requireAuth, require('./routes/admin/locations'));
