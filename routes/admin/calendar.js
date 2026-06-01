@@ -4,7 +4,7 @@ const gcal = require('../../services/googleCalendarService');
 const router = express.Router();
 
 // GET /admin/calendar/connect — Redirect to Google OAuth
-router.get('/calendar/connect', requireRole('owner', 'manager'), (req, res) => {
+router.get('/calendar/connect', requireRole('owner'), (req, res) => {
   if (!process.env.GOOGLE_CLIENT_ID) {
     req.flash('error', 'Google Calendar integration is not configured.');
     return res.redirect('/admin/settings#integrations');
@@ -50,7 +50,7 @@ router.get('/calendar/callback', async (req, res) => {
 });
 
 // POST /admin/calendar/disconnect — Disconnect Google Calendar
-router.post('/calendar/disconnect', requireRole('owner', 'manager'), async (req, res) => {
+router.post('/calendar/disconnect', requireRole('owner'), async (req, res) => {
   try {
     await gcal.disconnect(req.user.tenant_id);
     req.flash('success', 'Google Calendar disconnected.');

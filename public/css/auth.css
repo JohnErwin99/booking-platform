@@ -1,77 +1,45 @@
 /* ======================================
    BOOKWIZE - AUTH PAGES (Login + Signup)
-   Shared split-screen layout styles
+   Centered card layout
    ====================================== */
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
-  min-height:100vh;background:#F5F3FA;color:#1A1A2E;
+  min-height:100vh;color:#1A1A2E;
   overflow-x:hidden;-webkit-font-smoothing:antialiased;
 }
 
-/* ====== SHARED SPLIT LAYOUT ====== */
-.login-page,.signup-page{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+/* ====== CENTERED LAYOUT ====== */
+.auth-page{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:24px;
+  background:linear-gradient(135deg,#F5F3FA 0%,#EDE9F5 50%,#FAF7FF 100%);
+}
 
-/* ====== LEFT BRANDING PANEL ====== */
-.login-brand,.signup-brand{
-  display:flex;flex-direction:column;justify-content:center;padding:64px;
-  background:
-    radial-gradient(ellipse at 20% 50%,rgba(242,140,56,.05) 0%,transparent 70%),
-    radial-gradient(ellipse at 80% 80%,rgba(26,26,46,.03) 0%,transparent 60%),
-    #F5F3FA;
-  position:relative;overflow:hidden;
+.auth-card{
+  width:100%;max-width:440px;
+  background:#fff;border-radius:20px;
+  padding:36px 32px;
+  box-shadow:0 8px 32px rgba(26,26,46,.06),0 1px 3px rgba(26,26,46,.04);
 }
-.login-brand::before,.signup-brand::before{
-  content:'';position:absolute;inset:0;
-  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23E8DFD0' fill-opacity='0.12'%3E%3Ccircle cx='1' cy='1' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  opacity:.5;
-}
-.login-brand > *,.signup-brand > *{position:relative;z-index:1}
-.login-brand .logo-row,.signup-brand .logo-row{display:flex;align-items:center;gap:12px;margin-bottom:48px}
-.login-brand .logo-row img,.signup-brand .logo-row img{width:38px;height:38px;border-radius:10px}
-.login-brand .logo-row span,.signup-brand .logo-row span{font-size:1.2rem;font-weight:700;color:#1A1A2E}
-.login-brand .tag,.signup-brand .tag{
-  display:inline-block;font-size:.78rem;font-weight:600;color:#F28C38;
-  background:rgba(242,140,56,.08);padding:6px 18px;border-radius:100px;margin-bottom:20px;
-  border:1px solid rgba(242,140,56,.1);
-}
-.login-brand h1,.signup-brand h1{font-size:clamp(2.2rem,4vw,3.2rem);font-weight:900;line-height:1.1;letter-spacing:-.04em;margin-bottom:20px}
-.login-brand h1 .gradient-text,.signup-brand h1 .gradient-text{
-  background:linear-gradient(135deg,#F28C38 0%,#e07b28 50%,#c96a1e 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.login-brand p,.signup-brand p{font-size:1.05rem;color:#737373;line-height:1.7;max-width:440px}
-.login-brand .features-list,.signup-brand .trial-perks ul{margin-top:0;padding:0}
-.login-brand .features-list{margin-top:32px}
-.signup-brand .trial-perks{margin-top:32px}
-.signup-brand .trial-perks h3{font-size:.9rem;font-weight:700;color:#1A1A2E;margin-bottom:12px}
-.login-brand .features-list li,.signup-brand .trial-perks li{
-  display:flex;align-items:center;gap:10px;padding:8px 0;
-  font-size:.925rem;color:#525252;list-style:none;transition:color .2s;
-}
-.login-brand .features-list li::before,.signup-brand .trial-perks li::before{content:'✓';color:#F28C38;font-weight:700;font-size:.9rem}
-.login-brand .features-list li:hover,.signup-brand .trial-perks li:hover{color:#1A1A2E}
 
-/* ====== RIGHT FORM PANEL ====== */
-.login-form-wrap,.signup-form-wrap{
-  display:flex;align-items:center;justify-content:center;padding:48px;
-  background:rgba(255,255,255,.8);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-}
-.login-card{width:100%;max-width:400px}
-.signup-card{width:100%;max-width:420px}
-.login-card h2,.signup-card h2{font-size:1.5rem;font-weight:800;color:#1A1A2E;margin-bottom:6px}
-.login-card .subtitle,.signup-card .subtitle{color:#9CA3AF;font-size:.9rem;margin-bottom:28px}
+.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+.auth-logo img{width:34px;height:34px;border-radius:10px}
+.auth-logo span{font-size:1.1rem;font-weight:700;color:#1A1A2E}
+
+.auth-card h2{font-size:1.4rem;font-weight:800;color:#1A1A2E;margin-bottom:6px}
+.auth-card .subtitle{color:#9CA3AF;font-size:.88rem;margin-bottom:24px}
 
 /* ====== FORM ELEMENTS ====== */
-.form-group{margin-bottom:18px}
-.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:.82rem;color:#6B7280}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:.8rem;color:#6B7280}
 .form-group input{
-  width:100%;padding:13px 16px;
-  border:1.5px solid rgba(232,223,208,.6);border-radius:14px;
-  font-size:.95rem;color:#1A1A2E;background:rgba(245,243,250,.5);
+  width:100%;padding:12px 16px;
+  border:1.5px solid rgba(232,223,208,.6);border-radius:12px;
+  font-size:.9rem;color:#1A1A2E;background:#FAFAFA;
   transition:all .25s cubic-bezier(.4,0,.2,1);
+  font-family:inherit;
 }
 .form-group input:focus{outline:none;border-color:#F28C38;box-shadow:0 0 0 4px rgba(242,140,56,.1);background:#fff}
 .form-group input::placeholder{color:#D1D5DB}
@@ -79,14 +47,22 @@ body{
 
 /* ====== BUTTONS ====== */
 .btn-login,.btn-signup{
-  width:100%;padding:14px;margin-top:8px;
-  background:linear-gradient(135deg,#F28C38 0%,#e07b28 100%);color:#fff;
-  border:none;border-radius:14px;font-size:1rem;font-weight:600;cursor:pointer;
-  transition:all .3s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 4px 16px rgba(242,140,56,.25);
+  width:100%;padding:13px;margin-top:6px;
+  background:#1A1A2E;color:#fff;
+  border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:all .2s;font-family:inherit;
 }
-.btn-login:hover,.btn-signup:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(242,140,56,.35)}
-.btn-signup:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-login:hover,.btn-signup:hover{background:#2A2A44}
+
+/* ====== TRIAL CHECKLIST ====== */
+.trial-checklist{
+  display:flex;flex-wrap:wrap;gap:6px 16px;
+  margin-top:16px;padding:0;list-style:none;
+}
+.trial-checklist li{
+  font-size:.78rem;color:#9CA3AF;display:flex;align-items:center;gap:5px;
+}
+.trial-checklist li::before{content:'✓';color:#10B981;font-weight:700;font-size:.7rem}
 
 /* ====== FOOTERS ====== */
 .login-footer{text-align:center;margin-top:24px;font-size:.82rem;color:#9CA3AF}
@@ -95,15 +71,12 @@ body{
 .signup-footer{text-align:center;margin-top:20px;font-size:.85rem;color:#9CA3AF}
 .signup-footer a{color:#F28C38;text-decoration:none;font-weight:600;transition:opacity .2s}
 .signup-footer a:hover{opacity:.8}
-.trial-note{text-align:center;font-size:.78rem;color:#9CA3AF;margin-top:12px}
 
 /* ====== FLASH MESSAGES ====== */
-.flash-error{background:#FEE2E2;color:#991B1B;padding:12px 16px;border-radius:14px;font-size:.85rem;margin-bottom:16px;border:1px solid #FECACA}
-.flash-success{background:#DCFCE7;color:#166534;padding:12px 16px;border-radius:14px;font-size:.85rem;margin-bottom:16px;border:1px solid #BBF7D0}
+.flash-error{background:#FEE2E2;color:#991B1B;padding:12px 16px;border-radius:12px;font-size:.85rem;margin-bottom:16px;border:1px solid #FECACA}
+.flash-success{background:#DCFCE7;color:#166534;padding:12px 16px;border-radius:12px;font-size:.85rem;margin-bottom:16px;border:1px solid #BBF7D0}
 
-/* ====== RESPONSIVE ====== */
-@media(max-width:768px){
-  .login-page,.signup-page{grid-template-columns:1fr}
-  .login-brand,.signup-brand{display:none}
-  .login-form-wrap,.signup-form-wrap{min-height:100vh;padding:32px 24px}
+@media(max-width:480px){
+  .auth-card{padding:28px 20px;border-radius:16px}
+  .field-row{grid-template-columns:1fr}
 }

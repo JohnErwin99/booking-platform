@@ -26,9 +26,15 @@ router.get('/customers', async (req, res, next) => {
 
     const [{ count: total }] = await query.clone().count('id as count');
     const customers = await query
-      .orderBy('last_visit_date', 'desc')
+      .orderBy('last_name', 'asc')
+      .orderBy('first_name', 'asc')
       .limit(perPage)
       .offset((currentPage - 1) * perPage);
+
+    // AJAX mode: return JSON for live search
+    if (req.query.ajax === '1') {
+      return res.json({ customers, total });
+    }
 
     res.render('admin/customers/index', {
       title: 'Customers',
@@ -43,6 +49,42 @@ router.get('/customers', async (req, res, next) => {
       },
       helpers: { formatPrice, formatDate }
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /admin/customers - Create new customer
+router.post('/customers', async (req, res, next) => {
+  try {
+    const tenantId = req.user.tenant_id;
+    const { first_name, last_name, email, phone } = req.body;
+
+    if (!first_name || !email) {
+      if (req.query.ajax === '1') return res.json({ success: false, error: 'Name and email are required' });
+      req.flash('error', 'Name and email are required.');
+      return res.redirect('/admin/customers');
+    }
+
+    // Check for duplicate email
+    const existing = await db('customers').where({ tenant_id: tenantId, email }).first();
+    if (existing) {
+      if (req.query.ajax === '1') return res.json({ success: false, error: 'A customer with this email already exists' });
+      req.flash('error', 'A customer with this email already exists.');
+      return res.redirect('/admin/customers');
+    }
+
+    const [id] = await db('customers').insert({
+      tenant_id: tenantId,
+      first_name,
+      last_name: last_name || '',
+      email,
+      phone: phone || null
+    });
+
+    if (req.query.ajax === '1') return res.json({ success: true, id });
+    req.flash('success', 'Customer created.');
+    res.redirect('/admin/customers/' + id);
   } catch (err) {
     next(err);
   }

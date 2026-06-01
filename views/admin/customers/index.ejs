@@ -1,54 +1,166 @@
-<div class="toolbar">
-  <form method="GET" action="/admin/customers" class="search-form">
-    <input type="text" name="search" value="<%= search %>" placeholder="Search customers..." data-en-placeholder="Search customers..." data-fr-placeholder="Rechercher des clients...">
-    <button type="submit" class="btn btn-secondary" data-en="Search" data-fr="Rechercher">Search</button>
-    <% if (search) { %><a href="/admin/customers" class="btn btn-ghost" data-en="Clear" data-fr="Effacer">Clear</a><% } %>
-  </form>
-  <div style="display:flex;align-items:center;gap:12px">
-    <span class="text-muted"><%= pagination.count %> client<%= pagination.count !== 1 ? 's' : '' %></span>
-    <a href="/admin/customers/export" class="btn btn-outline btn-sm" data-en="Export CSV" data-fr="Exporter CSV">Export CSV</a>
-    <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('csvFile').click()" data-en="Import CSV" data-fr="Importer CSV">Import CSV</button>
-    <form id="importForm" method="POST" action="/admin/customers/import" enctype="multipart/form-data" style="display:none">
-      <input type="file" id="csvFile" name="csv" accept=".csv" onchange="document.getElementById('importForm').submit()">
-    </form>
+<!-- Search Bar -->
+<div class="search-sticky">
+  <div class="search-input-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="clientSearch" value="<%= search %>" placeholder="Search name, email, or phone number" data-en-placeholder="Search name, email, or phone number" data-fr-placeholder="Rechercher nom, courriel ou téléphone" autocomplete="off">
   </div>
 </div>
 
-<div class="table-responsive">
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th data-en="Name" data-fr="Nom">Name</th>
-        <th data-en="Email" data-fr="Courriel">Email</th>
-        <th data-en="Phone" data-fr="Téléphone">Phone</th>
-        <th data-en="Bookings" data-fr="Réservations">Bookings</th>
-        <th data-en="Last Visit" data-fr="Dernière visite">Last Visit</th>
-        <th data-en="Actions" data-fr="Actions">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (customers.length === 0) { %>
-        <tr><td colspan="6" class="text-center" data-en="No customers found." data-fr="Aucun client trouvé.">No customers found.</td></tr>
-      <% } %>
-      <% customers.forEach(c => { %>
-        <tr>
-          <td><a href="/admin/customers/<%= c.id %>"><strong><%= c.first_name %> <%= c.last_name %></strong></a></td>
-          <td><%= c.email %></td>
-          <td><%= c.phone || '-' %></td>
-          <td><%= c.total_bookings %></td>
-          <td><%= c.last_visit_date || 'Never' %></td>
-          <td><a href="/admin/customers/<%= c.id %>" class="btn btn-sm btn-secondary" data-en="View" data-fr="Voir">View</a></td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
+<!-- Client List -->
+<div class="client-list" id="clientList">
+  <% if (customers.length === 0) { %>
+    <div class="empty-state" style="padding:40px 0;text-align:center;color:#9CA3AF">
+      <p data-en="No clients found." data-fr="Aucun client trouv&eacute;.">No clients found.</p>
+    </div>
+  <% } else { %>
+    <%
+      let currentLetter = '';
+      customers.forEach(c => {
+        const letter = (c.last_name || c.first_name || '?').charAt(0).toUpperCase();
+        if (letter !== currentLetter) {
+          currentLetter = letter;
+    %>
+      <div class="alpha-header"><%= currentLetter %></div>
+    <%  } %>
+    <a href="/admin/customers/<%= c.id %>" class="client-item">
+      <div class="client-avatar"><%= c.first_name ? c.first_name.charAt(0).toUpperCase() : '' %><%= c.last_name ? c.last_name.charAt(0).toUpperCase() : '' %></div>
+      <div class="client-info">
+        <div class="client-name"><%= c.first_name %> <%= c.last_name %></div>
+        <div class="client-details"><%= c.phone || '' %><% if (c.phone && c.email) { %> &middot; <% } %><%= c.email || '' %></div>
+      </div>
+    </a>
+    <% }) %>
+  <% } %>
 </div>
 
-<% if (pagination.total > 1) { %>
-  <div class="pagination">
-    <% for (let p = 1; p <= pagination.total; p++) { %>
-      <a href="/admin/customers?search=<%= search %>&page=<%= p %>"
-         class="page-link <%= p === pagination.current ? 'active' : '' %>"><%= p %></a>
-    <% } %>
-  </div>
+<% if (pagination.total > 1 && pagination.current < pagination.total) { %>
+<div style="text-align:center;padding:16px 0">
+  <a href="/admin/customers?search=<%= search %>&page=<%= pagination.current + 1 %>" class="btn btn-ghost" id="loadMoreBtn" data-en="Load More" data-fr="Charger plus">Load More</a>
+</div>
 <% } %>
+
+<!-- Hidden import form (accessible from overflow menu or future) -->
+<form id="importForm" method="POST" action="/admin/customers/import" enctype="multipart/form-data" style="display:none">
+  <input type="file" id="csvFile" name="csv" accept=".csv" onchange="document.getElementById('importForm').submit()">
+</form>
+
+<!-- New Client Modal -->
+<div id="newClientModal" style="display:none">
+  <div class="modal-overlay" onclick="closeNewClient()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width:440px">
+      <button class="modal-close" onclick="closeNewClient()">&times;</button>
+      <h3 data-en="New Client" data-fr="Nouveau client">New Client</h3>
+      <form id="newClientForm" onsubmit="submitNewClient(event)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div><label style="display:block;font-size:.75rem;font-weight:600;color:#9CA3AF;margin-bottom:4px">First Name *</label>
+          <input type="text" name="first_name" required style="width:100%;padding:10px 14px;border:1px solid #E8DFD0;border-radius:10px;font-size:.9rem"></div>
+          <div><label style="display:block;font-size:.75rem;font-weight:600;color:#9CA3AF;margin-bottom:4px">Last Name</label>
+          <input type="text" name="last_name" style="width:100%;padding:10px 14px;border:1px solid #E8DFD0;border-radius:10px;font-size:.9rem"></div>
+        </div>
+        <div style="margin-bottom:14px"><label style="display:block;font-size:.75rem;font-weight:600;color:#9CA3AF;margin-bottom:4px">Email *</label>
+        <input type="email" name="email" required style="width:100%;padding:10px 14px;border:1px solid #E8DFD0;border-radius:10px;font-size:.9rem"></div>
+        <div style="margin-bottom:14px"><label style="display:block;font-size:.75rem;font-weight:600;color:#9CA3AF;margin-bottom:4px">Phone</label>
+        <input type="tel" name="phone" style="width:100%;padding:10px 14px;border:1px solid #E8DFD0;border-radius:10px;font-size:.9rem"></div>
+        <button type="submit" style="width:100%;padding:13px;background:#1A1A2E;color:#fff;border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer" data-en="Add Client" data-fr="Ajouter le client">Add Client</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FAB for new client -->
+<div class="fab-container">
+  <button class="fab" onclick="document.getElementById('newClientModal').style.display=''">+</button>
+</div>
+
+<style>
+  .search-sticky{position:sticky;top:0;z-index:10;padding:0 0 12px;background:var(--bg)}
+  .search-input-wrap{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--glass-border);border-radius:14px;padding:10px 16px}
+  .search-icon{width:18px;height:18px;color:#9CA3AF;flex-shrink:0}
+  .search-input-wrap input{border:none;outline:none;font-size:.9rem;font-weight:500;color:#1A1A2E;flex:1;background:transparent;font-family:var(--font)}
+  .search-input-wrap input::placeholder{color:#9CA3AF;font-weight:400}
+
+  .client-list{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+  .alpha-header{font-size:.72rem;font-weight:700;letter-spacing:.06em;color:#9CA3AF;padding:10px 20px 6px;border-bottom:1px solid #F3F4F6;background:#FAFAFA}
+  .client-item{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid #F3F4F6;transition:background .15s;text-decoration:none;color:inherit}
+  .client-item:last-child{border-bottom:none}
+  .client-item:hover{background:#F5F3FA}
+  .client-avatar{width:38px;height:38px;border-radius:50%;background:var(--beige);color:var(--navy);font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .client-info{flex:1;min-width:0}
+  .client-name{font-size:.9rem;font-weight:700;color:#1A1A2E}
+  .client-details{font-size:.78rem;color:#9CA3AF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .fab-container{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom, 8px));right:20px;z-index:250}
+  .fab{width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,#1A1A2E,#2A2A44);color:#fff;font-size:28px;font-weight:300;cursor:pointer;box-shadow:0 4px 20px rgba(26,26,46,.25);display:flex;align-items:center;justify-content:center;line-height:1}
+  .fab:hover{transform:scale(1.05)}
+</style>
+
+<script>
+  // Live search with debounce
+  var searchInput = document.getElementById('clientSearch');
+  var searchTimer;
+
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function() {
+      var q = searchInput.value.trim();
+      fetch('/admin/customers?search=' + encodeURIComponent(q) + '&ajax=1')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          renderClientList(data.customers);
+        }).catch(function() {});
+    }, 300);
+  });
+
+  function closeNewClient() { document.getElementById('newClientModal').style.display = 'none'; }
+  function submitNewClient(e) {
+    e.preventDefault();
+    var form = document.getElementById('newClientForm');
+    var data = {
+      first_name: form.first_name.value,
+      last_name: form.last_name.value,
+      email: form.email.value,
+      phone: form.phone.value
+    };
+    fetch('/admin/customers?ajax=1', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.success) {
+        window.location.href = '/admin/customers/' + result.id;
+      } else {
+        alert(result.error || 'Error creating client');
+      }
+    }).catch(function() { alert('Network error'); });
+  }
+
+  function renderClientList(customers) {
+    var container = document.getElementById('clientList');
+    if (!customers.length) {
+      container.innerHTML = '<div style="padding:40px 0;text-align:center;color:#9CA3AF"><p>' +
+        (adminLang === 'fr' ? 'Aucun client trouvé.' : 'No clients found.') + '</p></div>';
+      var lmb = document.getElementById('loadMoreBtn');
+      if (lmb) lmb.parentElement.style.display = 'none';
+      return;
+    }
+    var html = '';
+    var currentLetter = '';
+    customers.forEach(function(c) {
+      var letter = ((c.last_name || c.first_name || '?').charAt(0)).toUpperCase();
+      if (letter !== currentLetter) {
+        currentLetter = letter;
+        html += '<div class="alpha-header">' + letter + '</div>';
+      }
+      var initials = (c.first_name ? c.first_name.charAt(0).toUpperCase() : '') + (c.last_name ? c.last_name.charAt(0).toUpperCase() : '');
+      var details = (c.phone || '') + (c.phone && c.email ? ' &middot; ' : '') + (c.email || '');
+      html += '<a href="/admin/customers/' + c.id + '" class="client-item">' +
+        '<div class="client-avatar">' + initials + '</div>' +
+        '<div class="client-info"><div class="client-name">' + (c.first_name || '') + ' ' + (c.last_name || '') + '</div>' +
+        '<div class="client-details">' + details + '</div></div></a>';
+    });
+    container.innerHTML = html;
+    var lmb = document.getElementById('loadMoreBtn');
+    if (lmb) lmb.parentElement.style.display = 'none';
+  }
+</script>

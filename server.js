@@ -190,6 +190,8 @@ app.use('/admin', requireAuth, require('./routes/admin/customers'));
 app.use('/admin', requireAuth, require('./routes/admin/settings'));
 app.use('/admin', requireAuth, require('./routes/admin/locations'));
 app.use('/admin', requireAuth, require('./routes/admin/calendar'));
+app.use('/admin', requireAuth, require('./routes/admin/menu'));
+app.use('/admin', requireAuth, require('./routes/admin/share'));
 
 // Mobile API routes (JWT auth)
 app.use('/api/auth', require('./routes/api/auth'));

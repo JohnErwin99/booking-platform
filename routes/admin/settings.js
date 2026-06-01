@@ -8,7 +8,7 @@ const gcal = require('../../services/googleCalendarService');
 const router = express.Router();
 
 // GET /admin/settings
-router.get('/settings', requireRole('owner', 'manager'), async (req, res, next) => {
+router.get('/settings', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const tenant = await db('tenants').where('id', tenantId).first();
@@ -81,7 +81,7 @@ router.post('/settings/policies', requireRole('owner'), async (req, res, next) =
 });
 
 // POST /admin/settings/hours
-router.post('/settings/hours', requireRole('owner', 'manager'), async (req, res, next) => {
+router.post('/settings/hours', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const { location_id, hours } = req.body;

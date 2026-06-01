@@ -37,7 +37,7 @@ const signupLimiter = rateLimit({
 // GET /admin/login
 router.get('/login', (req, res) => {
   if (req.isAuthenticated()) {
-    return res.redirect('/admin/dashboard');
+    return res.redirect('/admin/bookings');
   }
   res.render('admin/login', {
     layout: false,
@@ -61,7 +61,7 @@ router.post('/login', loginLimiter, (req, res, next) => {
     }
     req.logIn(user, (err) => {
       if (err) return next(err);
-      const returnTo = req.session.returnTo || '/admin/dashboard';
+      const returnTo = req.session.returnTo || '/admin/bookings';
       delete req.session.returnTo;
       res.redirect(returnTo);
     });
@@ -79,7 +79,7 @@ router.get('/logout', (req, res, next) => {
 
 // GET /admin/signup
 router.get('/signup', (req, res) => {
-  if (req.isAuthenticated()) return res.redirect('/admin/dashboard');
+  if (req.isAuthenticated()) return res.redirect('/admin/bookings');
   res.render('admin/signup', {
     layout: false,
     title: 'Start Free Trial — Bookwize',

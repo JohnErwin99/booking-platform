@@ -1,0 +1,123 @@
+<!-- Block Time Modal -->
+<div id="blockTimeModal" style="display:none">
+  <div class="modal-overlay" onclick="closeBlockTime()">
+    <div class="modal-card bottom-sheet-card" onclick="event.stopPropagation()">
+      <div class="bottom-sheet-handle"></div>
+      <button class="modal-close" onclick="closeBlockTime()">&times;</button>
+      <h3 data-en="Block Off Time" data-fr="Bloquer du temps">Block Off Time</h3>
+
+      <form id="blockTimeForm" onsubmit="submitBlockTime(event)">
+        <% if (user.role !== 'contributor') { %>
+        <div class="bt-field">
+          <label data-en="Staff" data-fr="Personnel">Staff</label>
+          <select name="staff_id" id="btStaffId">
+            <option value="" data-en="All Staff" data-fr="Tout le personnel">All Staff</option>
+            <% staffList.forEach(s => { %>
+              <option value="<%= s.id %>"><%= s.first_name %> <%= s.last_name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <% } %>
+
+        <div class="bt-field">
+          <label class="bt-checkbox">
+            <input type="checkbox" id="btAllDay" name="all_day" checked onchange="toggleAllDay()">
+            <span data-en="All Day" data-fr="Toute la journ&eacute;e">All Day</span>
+          </label>
+        </div>
+
+        <div class="bt-field" id="btTimeFields" style="display:none">
+          <label data-en="Time" data-fr="Heure">Time</label>
+          <div class="bt-time-row">
+            <input type="time" name="start_time" id="btStartTime" value="09:00">
+            <span>to</span>
+            <input type="time" name="end_time" id="btEndTime" value="17:00">
+          </div>
+        </div>
+
+        <div class="bt-field">
+          <label data-en="Date" data-fr="Date">Date</label>
+          <input type="date" name="blocked_date" id="btDate" required>
+        </div>
+
+        <div class="bt-field">
+          <label data-en="Reason / Notes" data-fr="Raison / Notes">Reason / Notes</label>
+          <input type="text" name="reason" id="btReason" placeholder="Enter a note for this block" data-en-placeholder="Enter a note for this block" data-fr-placeholder="Entrer une note pour ce blocage">
+        </div>
+
+        <button type="submit" class="btn btn-primary bt-submit" data-en="Add Block" data-fr="Ajouter le blocage">Add Block</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bottom-sheet-card{max-width:440px;width:95%;padding:24px 24px 28px}
+  .bottom-sheet-handle{width:36px;height:4px;background:#D4D4D4;border-radius:4px;margin:0 auto 16px}
+  .bt-field{margin-bottom:16px}
+  .bt-field label{display:block;font-size:.75rem;font-weight:700;letter-spacing:.04em;color:#9CA3AF;text-transform:uppercase;margin-bottom:6px}
+  .bt-field input[type="date"],.bt-field input[type="time"],.bt-field input[type="text"],.bt-field select{width:100%;padding:10px 14px;border:1px solid var(--glass-border);border-radius:10px;font-size:.9rem;font-family:var(--font);color:#1A1A2E;background:#fff}
+  .bt-time-row{display:flex;align-items:center;gap:10px}
+  .bt-time-row input{flex:1}
+  .bt-time-row span{font-size:.85rem;color:#9CA3AF}
+  .bt-checkbox{display:flex!important;align-items:center;gap:8px;cursor:pointer;font-size:.9rem!important;font-weight:500!important;color:#1A1A2E!important;text-transform:none!important;letter-spacing:0!important}
+  .bt-checkbox input[type="checkbox"]{width:18px;height:18px;accent-color:#1A1A2E}
+  .bt-submit{width:100%;padding:14px;font-size:.95rem;font-weight:700;border-radius:12px;border:none;background:#1A1A2E;color:#fff;cursor:pointer;margin-top:8px}
+  .bt-submit:hover{background:#2A2A44}
+</style>
+
+<script>
+  function toggleAllDay() {
+    var allDay = document.getElementById('btAllDay').checked;
+    document.getElementById('btTimeFields').style.display = allDay ? 'none' : '';
+  }
+
+  function openBlockTime() {
+    // Pre-fill date with selected calendar date
+    var dateStr = selectedDate.getFullYear() + '-' +
+      String(selectedDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(selectedDate.getDate()).padStart(2, '0');
+    document.getElementById('btDate').value = dateStr;
+    document.getElementById('blockTimeModal').style.display = '';
+  }
+
+  function closeBlockTime() {
+    document.getElementById('blockTimeModal').style.display = 'none';
+  }
+
+  function submitBlockTime(e) {
+    e.preventDefault();
+    var form = document.getElementById('blockTimeForm');
+    var data = {
+      blocked_date: document.getElementById('btDate').value,
+      all_day: document.getElementById('btAllDay').checked,
+      reason: document.getElementById('btReason').value
+    };
+    if (!data.all_day) {
+      data.start_time = document.getElementById('btStartTime').value;
+      data.end_time = document.getElementById('btEndTime').value;
+    }
+    var staffEl = document.getElementById('btStaffId');
+    if (staffEl) data.staff_id = staffEl.value;
+
+    fetch('/admin/bookings/block-time', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.success) {
+        closeBlockTime();
+        if (typeof calendar !== 'undefined' && calendar) calendar.refetchEvents();
+        // Reset form
+        document.getElementById('btReason').value = '';
+        document.getElementById('btAllDay').checked = true;
+        toggleAllDay();
+      } else {
+        alert(result.error || 'Error');
+      }
+    })
+    .catch(function() { alert('Network error'); });
+  }
+</script>

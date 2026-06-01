@@ -1,6 +1,6 @@
 /**
  * Requires the authenticated user to have one of the specified roles.
- * Usage: requireRole('owner', 'manager')
+ * Usage: requireRole('owner')
  */
 function requireRole(...roles) {
   return (req, res, next) => {
@@ -10,7 +10,7 @@ function requireRole(...roles) {
     }
     if (!roles.includes(req.user.role)) {
       req.flash('error', 'You do not have permission to access this page.');
-      return res.redirect('/admin/dashboard');
+      return res.redirect('/admin/bookings');
     }
     next();
   };

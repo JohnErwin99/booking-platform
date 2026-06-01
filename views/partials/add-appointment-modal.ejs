@@ -1,0 +1,155 @@
+<!-- Add Appointment Modal -->
+<div id="addApptModal" style="display:none">
+  <div class="modal-overlay" onclick="closeAddAppt()">
+    <div class="modal-card bottom-sheet-card" onclick="event.stopPropagation()">
+      <div class="bottom-sheet-handle"></div>
+      <button class="modal-close" onclick="closeAddAppt()">&times;</button>
+      <h3 data-en="Add Appointment" data-fr="Ajouter un rendez-vous">Add Appointment</h3>
+
+      <form id="addApptForm" onsubmit="submitAddAppt(event)">
+        <div class="bt-field">
+          <label data-en="Customer" data-fr="Client">Customer</label>
+          <input type="text" id="apptCustomerSearch" placeholder="Search customer..." autocomplete="off"
+            data-en-placeholder="Search customer..." data-fr-placeholder="Rechercher un client...">
+          <select name="customer_id" id="apptCustomerId" required style="margin-top:6px">
+            <option value="" data-en="Select customer..." data-fr="S&eacute;lectionner un client...">Select customer...</option>
+          </select>
+        </div>
+
+        <div class="bt-field">
+          <label data-en="Staff" data-fr="Personnel">Staff</label>
+          <select name="staff_id" id="apptStaffId" required>
+            <% staffList.forEach(s => { %>
+              <option value="<%= s.id %>"><%= s.first_name %> <%= s.last_name %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="bt-field">
+          <label data-en="Service" data-fr="Service">Service</label>
+          <select name="service_id" id="apptServiceId" required>
+            <option value="" data-en="Select service..." data-fr="S&eacute;lectionner un service...">Select service...</option>
+          </select>
+        </div>
+
+        <div class="bt-field">
+          <label data-en="Date" data-fr="Date">Date</label>
+          <input type="date" name="booking_date" id="apptDate" required>
+        </div>
+
+        <div class="bt-field">
+          <label data-en="Time" data-fr="Heure">Time</label>
+          <input type="time" name="start_time" id="apptTime" required value="09:00">
+        </div>
+
+        <div class="bt-field">
+          <label data-en="Notes" data-fr="Notes">Notes</label>
+          <input type="text" name="notes" id="apptNotes" placeholder="Optional notes"
+            data-en-placeholder="Optional notes" data-fr-placeholder="Notes optionnelles">
+        </div>
+
+        <button type="submit" class="bt-submit" data-en="Book Appointment" data-fr="R&eacute;server">Book Appointment</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Customer search for appointment modal
+  var apptSearchTimer;
+  var apptCustomerSearch = document.getElementById('apptCustomerSearch');
+  if (apptCustomerSearch) {
+    apptCustomerSearch.addEventListener('input', function() {
+      clearTimeout(apptSearchTimer);
+      var q = this.value.trim();
+      if (!q) return;
+      apptSearchTimer = setTimeout(function() {
+        fetch('/admin/customers?search=' + encodeURIComponent(q) + '&ajax=1')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            var sel = document.getElementById('apptCustomerId');
+            sel.innerHTML = '<option value="">Select customer...</option>';
+            (data.customers || []).forEach(function(c) {
+              var opt = document.createElement('option');
+              opt.value = c.id;
+              opt.textContent = c.first_name + ' ' + c.last_name + ' (' + c.email + ')';
+              sel.appendChild(opt);
+            });
+            if (data.customers && data.customers.length === 1) sel.value = data.customers[0].id;
+          }).catch(function() {});
+      }, 300);
+    });
+  }
+
+  // Load services when staff changes
+  var apptStaffSelect = document.getElementById('apptStaffId');
+  if (apptStaffSelect) {
+    apptStaffSelect.addEventListener('change', loadStaffServices);
+    // Load initial services
+    loadStaffServices();
+  }
+
+  function loadStaffServices() {
+    var staffId = document.getElementById('apptStaffId').value;
+    if (!staffId) return;
+    fetch('/admin/bookings/staff-services?staff_id=' + staffId)
+      .then(function(r) { return r.json(); })
+      .then(function(services) {
+        var sel = document.getElementById('apptServiceId');
+        sel.innerHTML = '<option value="">Select service...</option>';
+        services.forEach(function(s) {
+          var opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = s.name + ' (' + s.duration_minutes + 'min)';
+          sel.appendChild(opt);
+        });
+      }).catch(function() {});
+  }
+
+  function openAddAppt() {
+    var dateStr = selectedDate.getFullYear() + '-' +
+      String(selectedDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(selectedDate.getDate()).padStart(2, '0');
+    document.getElementById('apptDate').value = dateStr;
+    document.getElementById('addApptModal').style.display = '';
+  }
+
+  function closeAddAppt() {
+    document.getElementById('addApptModal').style.display = 'none';
+  }
+
+  function submitAddAppt(e) {
+    e.preventDefault();
+    var data = {
+      customer_id: document.getElementById('apptCustomerId').value,
+      staff_id: document.getElementById('apptStaffId').value,
+      service_id: document.getElementById('apptServiceId').value,
+      booking_date: document.getElementById('apptDate').value,
+      start_time: document.getElementById('apptTime').value,
+      notes: document.getElementById('apptNotes').value
+    };
+    if (!data.customer_id) { alert('Please select a customer'); return; }
+    if (!data.service_id) { alert('Please select a service'); return; }
+
+    fetch('/admin/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.success) {
+        closeAddAppt();
+        if (typeof calendar !== 'undefined' && calendar) calendar.refetchEvents();
+        updateAppointmentCount();
+        // Reset form
+        document.getElementById('apptCustomerSearch').value = '';
+        document.getElementById('apptCustomerId').innerHTML = '<option value="">Select customer...</option>';
+        document.getElementById('apptNotes').value = '';
+      } else {
+        alert(result.error || 'Error creating appointment');
+      }
+    })
+    .catch(function() { alert('Network error'); });
+  }
+</script>

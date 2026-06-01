@@ -1,117 +1,42 @@
-<div class="toolbar">
-  <form method="GET" action="/admin/bookings" class="filters-form">
-    <input type="date" name="from" value="<%= filters.from || '' %>" placeholder="From">
-    <input type="date" name="to" value="<%= filters.to || '' %>" placeholder="To">
-    <select name="staff_id">
-      <option value="" data-en="All Staff" data-fr="Tout le personnel">All Staff</option>
-      <% staffList.forEach(s => { %>
-        <option value="<%= s.id %>" <%= filters.staff_id == s.id ? 'selected' : '' %>><%= s.first_name %> <%= s.last_name %></option>
-      <% }) %>
-    </select>
-    <select name="status">
-      <option value="" data-en="All Status" data-fr="Tous les statuts">All Status</option>
-      <option value="confirmed" <%= filters.status === 'confirmed' ? 'selected' : '' %> data-en="Confirmed" data-fr="Confirmé">Confirmed</option>
-      <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %> data-en="Completed" data-fr="Terminé">Completed</option>
-      <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %> data-en="Cancelled" data-fr="Annulé">Cancelled</option>
-      <option value="no_show" <%= filters.status === 'no_show' ? 'selected' : '' %> data-en="No Show" data-fr="Absence">No Show</option>
-    </select>
-    <% if (locations && locations.length > 1) { %>
-    <select name="location_id">
-      <option value="" data-en="All Locations" data-fr="Tous les emplacements">All Locations</option>
-      <% locations.forEach(loc => { %>
-        <option value="<%= loc.id %>" <%= filters.location_id == loc.id ? 'selected' : '' %>><%= loc.name %></option>
-      <% }) %>
-    </select>
-    <% } %>
-    <button type="submit" class="btn btn-secondary" data-en="Filter" data-fr="Filtrer">Filter</button>
-    <a href="/admin/bookings" class="btn btn-ghost" data-en="Clear" data-fr="Effacer">Clear</a>
-  </form>
-  <div class="view-toggle">
-    <button class="btn btn-sm" id="listViewBtn" onclick="switchView('list')" data-en="List" data-fr="Liste">List</button>
-    <button class="btn btn-sm" id="calendarViewBtn" onclick="switchView('calendar')" data-en="Calendar" data-fr="Calendrier">Calendar</button>
+<!-- Staff Filter (compact, for owner/manager only) -->
+<% if (user.role !== 'contributor') { %>
+<div class="cal-staff-filter">
+  <select id="staffFilter" onchange="onStaffFilterChange()">
+    <option value="" data-en="All Staff" data-fr="Tout le personnel">All Staff</option>
+    <% staffList.forEach(s => { %>
+      <option value="<%= s.id %>" <%= filters.staff_id == s.id ? 'selected' : '' %>><%= s.first_name %> <%= s.last_name %></option>
+    <% }) %>
+  </select>
+</div>
+<% } %>
+
+<!-- Date Strip Header -->
+<div class="calendar-date-header">
+  <div class="calendar-date-top">
+    <button class="strip-nav" onclick="navigateWeek(-1)">&#8249;</button>
+    <span class="month-label" id="monthLabel"></span>
+    <button class="strip-nav" onclick="navigateWeek(1)">&#8250;</button>
+    <button class="btn btn-sm btn-ghost today-btn" onclick="goToday()" data-en="Today" data-fr="Aujourd'hui">Today</button>
+  </div>
+  <div class="date-days" id="dateDays"></div>
+  <div class="cal-view-toggle">
+    <button class="cal-view-btn active" id="cvDay" onclick="switchCalView('timeGridDay')" data-en="Day" data-fr="Jour">Day</button>
+    <button class="cal-view-btn" id="cvWeek" onclick="switchCalView('timeGridWeek')" data-en="Week" data-fr="Semaine">Week</button>
+    <button class="cal-view-btn" id="cvMonth" onclick="switchCalView('dayGridMonth')" data-en="Month" data-fr="Mois">Month</button>
   </div>
 </div>
 
-<!-- List View -->
-<div id="listView" style="<%= viewMode === 'calendar' ? 'display:none' : '' %>">
-  <div class="table-responsive">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th data-en="Date" data-fr="Date">Date</th>
-          <th data-en="Time" data-fr="Heure">Time</th>
-          <th data-en="Customer" data-fr="Client">Customer</th>
-          <th data-en="Service" data-fr="Service">Service</th>
-          <th data-en="Staff" data-fr="Personnel">Staff</th>
-          <th data-en="Status" data-fr="Statut">Status</th>
-          <% if (calendarConnected) { %><th data-en="Sync" data-fr="Sync">Sync</th><% } %>
-          <th data-en="Actions" data-fr="Actions">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (bookings.length === 0) { %>
-          <tr><td colspan="<%= calendarConnected ? 8 : 7 %>" class="text-center" data-en="No bookings found." data-fr="Aucune réservation trouvée.">No bookings found.</td></tr>
-        <% } %>
-        <% bookings.forEach(b => { %>
-          <tr>
-            <td><%= new Date(b.booking_date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }) %></td>
-            <td><%= helpers.formatTimeLabel(b.start_time) %></td>
-            <td>
-              <strong><%= b.customer_name %></strong>
-              <br><small class="text-muted"><%= b.customer_email %></small>
-            </td>
-            <td><%= b.service_name %></td>
-            <td><%= b.staff_name %></td>
-            <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
-            <% if (calendarConnected) { %>
-            <td>
-              <% if (b.status === 'cancelled') { %>
-                <span class="sync-badge sync-na" title="Cancelled">—</span>
-              <% } else if (b.google_event_id) { %>
-                <span class="sync-badge sync-yes" title="Synced to Google Calendar">&#10003;</span>
-              <% } else { %>
-                <span class="sync-badge sync-no" title="Not synced">&#10005;</span>
-              <% } %>
-            </td>
-            <% } %>
-            <td class="actions">
-              <% if (b.status === 'confirmed') { %>
-                <form method="POST" action="/admin/bookings/<%= b.id %>/complete" style="display:inline">
-                  <button type="submit" class="btn btn-sm btn-success" title="Mark complete" data-en="Done" data-fr="Terminé">Done</button>
-                </form>
-                <form method="POST" action="/admin/bookings/<%= b.id %>/cancel" style="display:inline">
-                  <button type="submit" class="btn btn-sm btn-danger" title="Cancel" onclick="return confirm(adminLang==='fr'?'Annuler cette réservation?':'Cancel this booking?')" data-en="Cancel" data-fr="Annuler">Cancel</button>
-                </form>
-                <form method="POST" action="/admin/bookings/<%= b.id %>/no-show" style="display:inline">
-                  <button type="submit" class="btn btn-sm btn-warning" title="No show" data-en="No Show" data-fr="Absence">No Show</button>
-                </form>
-              <% } %>
-            </td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
+<!-- Staff Header -->
+<div class="staff-header">
+  <span class="staff-header-name" id="staffHeaderName"><%= staffDisplayName || (user.role === 'contributor' ? (user.first_name + ' ' + user.last_name) : '') %></span>
+  <span class="staff-header-count" id="staffHeaderCount">
+    <span id="apptCount"><%= todayCount %></span>
+    <span id="apptLabel">appointment<%= todayCount !== 1 ? 's' : '' %></span>
+  </span>
 </div>
 
-<!-- Calendar View -->
-<div id="calendarView" style="<%= viewMode === 'calendar' ? '' : 'display:none' %>">
-  <div class="calendar-date-header">
-    <div class="calendar-date-top">
-      <button class="strip-nav" onclick="navigateWeek(-1)">&#8249;</button>
-      <span class="month-label" id="monthLabel"></span>
-      <button class="strip-nav" onclick="navigateWeek(1)">&#8250;</button>
-      <button class="btn btn-sm btn-ghost today-btn" onclick="goToday()" data-en="Today" data-fr="Aujourd'hui">Today</button>
-    </div>
-    <div class="date-days" id="dateDays"></div>
-    <div class="cal-view-toggle">
-      <button class="cal-view-btn active" id="cvDay" onclick="switchCalView('timeGridDay')" data-en="Day" data-fr="Jour">Day</button>
-      <button class="cal-view-btn" id="cvWeek" onclick="switchCalView('timeGridWeek')" data-en="Week" data-fr="Semaine">Week</button>
-      <button class="cal-view-btn" id="cvMonth" onclick="switchCalView('dayGridMonth')" data-en="Month" data-fr="Mois">Month</button>
-    </div>
-  </div>
-  <div id="calendar"></div>
-</div>
+<!-- Calendar -->
+<div id="calendar"></div>
 
 <!-- Event Detail Modal -->
 <div id="eventModal" style="display:none">
@@ -126,7 +51,33 @@
         <div class="modal-row"><span data-en="Time" data-fr="Heure">Time</span><span id="modalTime"></span></div>
         <div class="modal-row"><span data-en="Status" data-fr="Statut">Status</span><span id="modalStatus"></span></div>
       </div>
+      <div class="modal-actions" id="modalActions"></div>
     </div>
+  </div>
+</div>
+
+<!-- Add Appointment Modal -->
+<% if (user.role !== 'contributor') { %>
+<%- include('../partials/add-appointment-modal') %>
+<% } %>
+
+<!-- Block Time Modal -->
+<%- include('../partials/block-time-modal') %>
+
+<!-- FAB -->
+<div class="fab-container">
+  <button class="fab" id="fabBtn" onclick="toggleFab()">+</button>
+  <div class="fab-menu" id="fabMenu">
+    <% if (user.role !== 'contributor') { %>
+    <a href="#" class="fab-action" onclick="openAddAppt(); closeFab(); return false;">
+      <span class="fab-action-icon">&#128197;</span>
+      <span data-en="Add Appointment" data-fr="Ajouter un rendez-vous">Add Appointment</span>
+    </a>
+    <% } %>
+    <a href="#" class="fab-action" onclick="openBlockTime(); closeFab(); return false;">
+      <span class="fab-action-icon">&#9201;</span>
+      <span data-en="Block Time" data-fr="Bloquer du temps">Block Time</span>
+    </a>
   </div>
 </div>
 
@@ -134,12 +85,10 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
 
 <style>
-  .view-toggle{display:flex;gap:4px;background:rgba(232,223,208,.35);border-radius:10px;padding:3px}
-  .view-toggle .btn{border:none;border-radius:8px;padding:6px 16px;font-size:.82rem;font-weight:600;background:transparent;color:#6B7280;cursor:pointer}
-  .view-toggle .btn.active{background:#fff;color:#1A1A2E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-  .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+  .cal-staff-filter{margin-bottom:8px}
+  .cal-staff-filter select{width:100%;padding:10px 14px;border:1px solid var(--glass-border);border-radius:12px;font-size:.85rem;font-weight:600;color:#1A1A2E;background:#fff;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
 
-  .calendar-date-header{background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-bottom:8px}
+  .calendar-date-header{background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-bottom:0}
   .calendar-date-top{display:flex;align-items:center;gap:4px;margin-bottom:14px}
   .month-label{font-size:1.15rem;font-weight:700;color:#1A1A2E;min-width:160px}
   .strip-nav{background:none;border:none;font-size:1.4rem;color:#6B7280;cursor:pointer;padding:4px 10px;border-radius:8px;line-height:1}
@@ -160,7 +109,11 @@
   .cal-view-btn:hover{color:#1A1A2E}
   .cal-view-btn.active{background:#fff;color:#1A1A2E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
-  #calendar{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+  .staff-header{display:flex;align-items:center;justify-content:center;flex-direction:column;padding:12px 0 8px;gap:2px}
+  .staff-header-name{font-size:.95rem;font-weight:700;color:#1A1A2E}
+  .staff-header-count{font-size:.8rem;color:#6B7280;font-weight:500}
+
+  #calendar{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
   .fc .fc-event{border-radius:6px;padding:2px 6px;font-size:.75rem;border:none;cursor:pointer}
   .fc .fc-timegrid-slot{height:48px}
   .fc .fc-col-header-cell-cushion{font-size:.8rem;font-weight:600;color:#6B7280;text-transform:uppercase}
@@ -173,44 +126,50 @@
   .modal-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F3F4F6;font-size:.9rem}
   .modal-row span:first-child{color:#9CA3AF;font-weight:500}
   .modal-row span:last-child{color:#1A1A2E;font-weight:600}
+  .modal-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
 
-  .sync-badge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:.8rem;font-weight:700}
-  .sync-yes{background:#D1FAE5;color:#059669}
-  .sync-no{background:#FEE2E2;color:#DC2626}
-  .sync-na{background:#F3F4F6;color:#9CA3AF}
+  /* FAB */
+  .fab-container{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom, 8px));right:20px;z-index:250}
+  .fab{width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,#1A1A2E,#2A2A44);color:#fff;font-size:28px;font-weight:300;cursor:pointer;box-shadow:0 4px 20px rgba(26,26,46,.25);transition:all .2s;display:flex;align-items:center;justify-content:center;line-height:1}
+  .fab:hover{transform:scale(1.05);box-shadow:0 6px 28px rgba(26,26,46,.35)}
+  .fab.open{transform:rotate(45deg)}
+  .fab-menu{display:none;position:absolute;bottom:66px;right:0;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.12);overflow:hidden;min-width:200px}
+  .fab-menu.open{display:block}
+  .fab-action{display:flex;align-items:center;gap:12px;padding:14px 18px;font-size:.88rem;font-weight:500;color:#1A1A2E;transition:background .15s;text-decoration:none}
+  .fab-action:hover{background:#F5F3FA}
+  .fab-action-icon{font-size:1.1rem;width:24px;text-align:center}
 </style>
 
 <script>
-  let currentView = '<%= viewMode %>';
-  let calendar;
-  let selectedDate = new Date();
-  let weekStart = getMonday(selectedDate);
+  var calendar;
+  var selectedDate = new Date();
+  var weekStart = getMonday(selectedDate);
 
   function getMonday(d) {
-    const date = new Date(d);
-    const day = date.getDay();
+    var date = new Date(d);
+    var day = date.getDay();
     date.setDate(date.getDate() - day + (day === 0 ? -6 : 1));
     date.setHours(0,0,0,0);
     return date;
   }
 
   function renderDateStrip() {
-    const container = document.getElementById('dateDays');
+    var container = document.getElementById('dateDays');
     if (!container) return;
-    const dayLabels = (typeof adminLang !== 'undefined' && adminLang === 'fr')
+    var dayLabels = (typeof adminLang !== 'undefined' && adminLang === 'fr')
       ? ['L','M','M','J','V','S','D']
       : ['M','T','W','T','F','S','S'];
     container.innerHTML = '';
-    const today = new Date(); today.setHours(0,0,0,0);
-    const sel = new Date(selectedDate); sel.setHours(0,0,0,0);
+    var today = new Date(); today.setHours(0,0,0,0);
+    var sel = new Date(selectedDate); sel.setHours(0,0,0,0);
 
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(weekStart);
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(weekStart);
       d.setDate(d.getDate() + i);
       d.setHours(0,0,0,0);
-      const isSelected = d.getTime() === sel.getTime();
-      const isToday = d.getTime() === today.getTime();
-      const btn = document.createElement('button');
+      var isSelected = d.getTime() === sel.getTime();
+      var isToday = d.getTime() === today.getTime();
+      var btn = document.createElement('button');
       btn.className = 'date-day' + (isSelected ? ' selected' : '') + (isToday ? ' today' : '');
       btn.innerHTML = '<span class="day-label">' + dayLabels[i] + '</span><span class="day-num">' + d.getDate() + '</span>';
       (function(dateRef) {
@@ -218,12 +177,13 @@
           selectedDate = dateRef;
           renderDateStrip();
           if (calendar) calendar.gotoDate(dateRef);
+          updateAppointmentCount();
         };
       })(new Date(d));
       container.appendChild(btn);
     }
 
-    const monthNames = (typeof adminLang !== 'undefined' && adminLang === 'fr')
+    var monthNames = (typeof adminLang !== 'undefined' && adminLang === 'fr')
       ? ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
       : ['January','February','March','April','May','June','July','August','September','October','November','December'];
     var ml = document.getElementById('monthLabel');
@@ -235,6 +195,7 @@
     selectedDate = new Date(weekStart);
     renderDateStrip();
     if (calendar) calendar.gotoDate(selectedDate);
+    updateAppointmentCount();
   }
 
   function goToday() {
@@ -242,6 +203,7 @@
     weekStart = getMonday(selectedDate);
     renderDateStrip();
     if (calendar) calendar.gotoDate(selectedDate);
+    updateAppointmentCount();
   }
 
   function switchCalView(view) {
@@ -251,24 +213,59 @@
     if (calendar) {
       calendar.changeView(view);
       if (view === 'timeGridDay') calendar.gotoDate(selectedDate);
+      // Wait for view to settle then update count for new range
+      setTimeout(updateAppointmentCount, 100);
     }
   }
 
-  function switchView(view) {
-    currentView = view;
-    document.getElementById('listView').style.display = view === 'list' ? '' : 'none';
-    document.getElementById('calendarView').style.display = view === 'calendar' ? '' : 'none';
-    document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
-    document.getElementById('calendarViewBtn').classList.toggle('active', view === 'calendar');
+  function getStaffFilterValue() {
+    var sf = document.getElementById('staffFilter');
+    return sf ? sf.value : '';
+  }
 
-    if (view === 'calendar' && !calendar) {
-      initCalendar();
+  function onStaffFilterChange() {
+    if (calendar) calendar.refetchEvents();
+    updateAppointmentCount();
+    // Update staff header name
+    var sf = document.getElementById('staffFilter');
+    var nameEl = document.getElementById('staffHeaderName');
+    if (sf && nameEl) {
+      nameEl.textContent = sf.value ? sf.options[sf.selectedIndex].text : '';
     }
-    if (calendar) calendar.updateSize();
+  }
+
+  function updateAppointmentCount() {
+    var startDate, endDate;
+    if (calendar) {
+      var view = calendar.view;
+      startDate = view.activeStart;
+      endDate = view.activeEnd;
+    } else {
+      startDate = selectedDate;
+      endDate = selectedDate;
+    }
+    var startStr = startDate.getFullYear() + '-' +
+      String(startDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(startDate.getDate()).padStart(2, '0');
+    var endStr = endDate.getFullYear() + '-' +
+      String(endDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(endDate.getDate()).padStart(2, '0');
+    var url = '/admin/bookings/api?start=' + startStr + '&end=' + endStr;
+    var sv = getStaffFilterValue();
+    if (sv) url += '&staff_id=' + sv;
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var countEl = document.getElementById('apptCount');
+        var labelEl = document.getElementById('apptLabel');
+        if (countEl) countEl.textContent = data.length;
+        if (labelEl) labelEl.textContent = (adminLang === 'fr' ? 'rendez-vous' :
+          (data.length === 1 ? 'appointment' : 'appointments'));
+      }).catch(function() {});
   }
 
   function initCalendar() {
-    const calendarEl = document.getElementById('calendar');
+    var calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'timeGridDay',
       initialDate: selectedDate,
@@ -280,15 +277,30 @@
       height: 'auto',
       nowIndicator: true,
       dayHeaders: false,
-      events: function(info, successCallback, failureCallback) {
-        var apiUrl = '/admin/bookings/api?start=' + info.startStr.split('T')[0] + '&end=' + info.endStr.split('T')[0];
-        var staffFilter = document.querySelector('select[name="staff_id"]');
-        if (staffFilter && staffFilter.value) apiUrl += '&staff_id=' + staffFilter.value;
-        fetch(apiUrl)
-          .then(function(r) { return r.json(); })
-          .then(function(data) { successCallback(data); })
-          .catch(function(err) { failureCallback(err); });
-      },
+      eventSources: [
+        {
+          events: function(info, successCallback, failureCallback) {
+            var apiUrl = '/admin/bookings/api?start=' + info.startStr.split('T')[0] + '&end=' + info.endStr.split('T')[0];
+            var sv = getStaffFilterValue();
+            if (sv) apiUrl += '&staff_id=' + sv;
+            fetch(apiUrl)
+              .then(function(r) { return r.json(); })
+              .then(function(data) { successCallback(data); })
+              .catch(function(err) { failureCallback(err); });
+          }
+        },
+        {
+          events: function(info, successCallback, failureCallback) {
+            var apiUrl = '/admin/bookings/blocked-times?start=' + info.startStr.split('T')[0] + '&end=' + info.endStr.split('T')[0];
+            var sv = getStaffFilterValue();
+            if (sv) apiUrl += '&staff_id=' + sv;
+            fetch(apiUrl)
+              .then(function(r) { return r.json(); })
+              .then(function(data) { successCallback(data); })
+              .catch(function(err) { failureCallback(err); });
+          }
+        }
+      ],
       eventClick: function(info) {
         var e = info.event;
         var props = e.extendedProps;
@@ -301,6 +313,15 @@
         var end = e.end ? e.end.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
         document.getElementById('modalTime').textContent = start + ' - ' + end;
         document.getElementById('modalStatus').textContent = props.status || '';
+        // Build action buttons
+        var actionsEl = document.getElementById('modalActions');
+        actionsEl.innerHTML = '';
+        if (props.status === 'confirmed') {
+          actionsEl.innerHTML =
+            '<form method="POST" action="/admin/bookings/' + e.id + '/complete" style="display:inline"><button type="submit" class="btn btn-sm btn-success">Done</button></form>' +
+            '<form method="POST" action="/admin/bookings/' + e.id + '/cancel" style="display:inline"><button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Cancel this booking?\')">Cancel</button></form>' +
+            '<form method="POST" action="/admin/bookings/' + e.id + '/no-show" style="display:inline"><button type="submit" class="btn btn-sm btn-warning">No Show</button></form>';
+        }
         document.getElementById('eventModal').style.display = '';
       }
     });
@@ -312,10 +333,24 @@
     document.getElementById('eventModal').style.display = 'none';
   }
 
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
+  // FAB
+  function toggleFab() {
+    document.getElementById('fabBtn').classList.toggle('open');
+    document.getElementById('fabMenu').classList.toggle('open');
+  }
+  function closeFab() {
+    document.getElementById('fabBtn').classList.remove('open');
+    document.getElementById('fabMenu').classList.remove('open');
+  }
+  // Close FAB when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.fab-container')) closeFab();
   });
 
-  // Apply default view
-  switchView(currentView);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closeModal(); closeFab(); }
+  });
+
+  // Init
+  initCalendar();
 </script>

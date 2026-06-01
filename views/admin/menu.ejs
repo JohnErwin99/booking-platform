@@ -1,0 +1,96 @@
+<div class="menu-page">
+
+  <!-- User Card -->
+  <div class="menu-user-card">
+    <div class="menu-user-avatar">
+      <%= user.first_name ? user.first_name.charAt(0).toUpperCase() : '' %><%= user.last_name ? user.last_name.charAt(0).toUpperCase() : '' %>
+    </div>
+    <div class="menu-user-info">
+      <div class="menu-user-name"><%= user.first_name %> <%= user.last_name %></div>
+      <div class="menu-user-email"><%= user.email %></div>
+    </div>
+    <span class="badge"><%= user.role %></span>
+  </div>
+
+  <% if (user.role === 'owner') { %>
+  <!-- MANAGE Section -->
+  <div class="menu-section">
+    <div class="menu-section-title" data-en="MANAGE" data-fr="GESTION">MANAGE</div>
+    <a href="/admin/dashboard" class="menu-item">
+      <span class="menu-item-icon">&#9632;</span>
+      <span data-en="Dashboard" data-fr="Tableau de bord">Dashboard</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+    <a href="/admin/services" class="menu-item">
+      <span class="menu-item-icon">&#9986;</span>
+      <span data-en="Services" data-fr="Services">Services</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+    <a href="/admin/locations" class="menu-item">
+      <span class="menu-item-icon">&#128205;</span>
+      <span data-en="Locations" data-fr="Emplacements">Locations</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+    <a href="/book/<%= tenant ? tenant.slug : user.tenant_slug %>" target="_blank" class="menu-item">
+      <span class="menu-item-icon">&#128279;</span>
+      <span data-en="Share Booking Page" data-fr="Partager la page">Share Booking Page</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+    <a href="/admin/settings" class="menu-item">
+      <span class="menu-item-icon">&#9881;</span>
+      <span data-en="Settings" data-fr="Param&egrave;tres">Settings</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+  </div>
+  <% } else { %>
+  <!-- Staff MANAGE Section -->
+  <div class="menu-section">
+    <div class="menu-section-title" data-en="MANAGE" data-fr="GESTION">MANAGE</div>
+    <a href="/admin/dashboard" class="menu-item">
+      <span class="menu-item-icon">&#9632;</span>
+      <span data-en="Dashboard" data-fr="Tableau de bord">Dashboard</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+    <% if (user.staff_id) { %>
+    <a href="/admin/my-services" class="menu-item">
+      <span class="menu-item-icon">&#9986;</span>
+      <span data-en="My Services" data-fr="Mes services">My Services</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+    <% } %>
+  </div>
+  <% } %>
+
+  <!-- ACCOUNT Section -->
+  <div class="menu-section">
+    <div class="menu-section-title" data-en="ACCOUNT" data-fr="COMPTE">ACCOUNT</div>
+    <a href="/admin/profile" class="menu-item">
+      <span class="menu-item-icon">&#128100;</span>
+      <span data-en="My Profile" data-fr="Mon profil">My Profile</span>
+      <span class="menu-chevron">&#8250;</span>
+    </a>
+    <div class="menu-item menu-lang-row" onclick="toggleAdminLang(); return false;">
+      <span class="menu-item-icon">&#127760;</span>
+      <span data-en="Language" data-fr="Langue">Language</span>
+      <span class="menu-lang-value" id="menuLangValue"><%= (typeof lang !== 'undefined' && lang === 'fr') ? 'Fran&ccedil;ais' : 'English' %></span>
+    </div>
+    <a href="/admin/logout" class="menu-item menu-item-danger">
+      <span class="menu-item-icon">&#10140;</span>
+      <span data-en="Log Out" data-fr="D&eacute;connexion">Log Out</span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // Update language label when toggled from this page
+  var origToggle = typeof toggleAdminLang === 'function' ? toggleAdminLang : null;
+  if (origToggle) {
+    var _origToggle = toggleAdminLang;
+    toggleAdminLang = function() {
+      _origToggle();
+      var lv = document.getElementById('menuLangValue');
+      if (lv) lv.textContent = adminLang === 'fr' ? 'Français' : 'English';
+    };
+  }
+</script>

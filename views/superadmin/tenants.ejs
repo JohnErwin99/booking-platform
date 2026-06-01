@@ -51,6 +51,10 @@
               <td>
                 <a href="/superadmin/tenants/<%= t.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
                 <a href="/book/<%= t.slug %>" target="_blank" class="btn btn-sm btn-ghost">View</a>
+                <form method="POST" action="/superadmin/tenants/<%= t.id %>/delete" style="display:inline"
+                  onsubmit="return confirm('PERMANENTLY DELETE &quot;<%= t.name %>&quot; and ALL their data (staff, bookings, customers, services)? This cannot be undone.')">
+                  <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
               </td>
             </tr>
           <% }) %>

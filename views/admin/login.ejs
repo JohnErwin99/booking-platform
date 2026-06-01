@@ -7,47 +7,30 @@
   <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
-  <div class="login-page">
-    <!-- Left — Branding -->
-    <div class="login-brand">
-      <div class="logo-row">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">
         <img src="/img/logo.svg" alt="Bookwize">
         <span>Bookwize</span>
       </div>
-      <span class="tag">Efficient booking solutions for modern businesses</span>
-      <h1><span class="gradient-text">Stack your schedule.</span></h1>
-      <p>The all-in-one online booking system for salons, barbershops, and service businesses in Canada. Manage appointments, staff, and clients from one dashboard.</p>
-      <ul class="features-list">
-        <li>24/7 online booking page</li>
-        <li>Staff & service management</li>
-        <li>Automated email reminders</li>
-        <li>White-label branding</li>
-        <li>Embeddable widget for any website</li>
-      </ul>
-    </div>
-
-    <!-- Right — Login Form -->
-    <div class="login-form-wrap">
-      <div class="login-card">
-        <h2>Welcome back</h2>
-        <p class="subtitle">Sign in to manage your bookings</p>
-        <%- include('../partials/flash') %>
-        <form method="POST" action="/admin/login">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required autofocus placeholder="you@business.com">
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required placeholder="Enter your password">
-          </div>
-          <button type="submit" class="btn-login">Sign In</button>
-        </form>
-        <div class="login-footer">
-          <a href="/">← Back to Bookwize</a>
-          <span style="margin:0 8px;color:#D1D5DB">|</span>
-          <a href="/admin/signup">Start Free Trial</a>
+      <h2>Welcome back</h2>
+      <p class="subtitle">Sign in to manage your bookings</p>
+      <%- include('../partials/flash') %>
+      <form method="POST" action="/admin/login">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autofocus placeholder="you@business.com">
         </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="Enter your password">
+        </div>
+        <button type="submit" class="btn-login">Sign In</button>
+      </form>
+      <div class="login-footer">
+        <a href="/">&larr; Back to Bookwize</a>
+        <span style="margin:0 8px;color:#D1D5DB">|</span>
+        <a href="/admin/signup">Start Free Trial</a>
       </div>
     </div>
   </div>

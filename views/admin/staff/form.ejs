@@ -43,8 +43,7 @@
       <div class="form-group">
         <label data-en="Role *" data-fr="Rôle *">Role *</label>
         <select name="role">
-          <option value="staff" <%= staffUser && staffUser.role === 'staff' ? 'selected' : '' %>>Staff</option>
-          <option value="manager" <%= staffUser && staffUser.role === 'manager' ? 'selected' : '' %>>Manager</option>
+          <option value="contributor" <%= staffUser && staffUser.role === 'contributor' ? 'selected' : '' %>>Contributor</option>
           <option value="owner" <%= staffUser && staffUser.role === 'owner' ? 'selected' : '' %>>Owner</option>
         </select>
       </div>

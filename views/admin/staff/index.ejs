@@ -1,38 +1,48 @@
-<div class="toolbar">
-  <a href="/admin/staff/new" class="btn btn-primary" data-en="+ Add Staff" data-fr="+ Ajouter un membre">+ Add Staff</a>
-</div>
-
-<div class="cards-grid">
+<!-- Staff List -->
+<div class="client-list">
   <% if (staffList.length === 0) { %>
-    <div class="empty-state">
-      <p data-en="No staff members yet. Add your first staff member to get started." data-fr="Aucun membre du personnel. Ajoutez votre premier membre pour commencer.">No staff members yet. Add your first staff member to get started.</p>
+    <div style="padding:40px 0;text-align:center;color:#9CA3AF">
+      <p data-en="No staff members yet." data-fr="Aucun membre du personnel.">No staff members yet.</p>
     </div>
   <% } %>
   <% staffList.forEach(s => { %>
-    <div class="staff-card">
-      <div class="staff-card-header">
-        <div class="staff-avatar">
-          <% if (s.photo_url) { %>
-            <img src="<%= s.photo_url %>" alt="<%= s.first_name %>">
-          <% } else { %>
-            <span class="avatar-initials"><%= s.first_name[0] %><%= s.last_name[0] %></span>
-          <% } %>
-        </div>
-        <div class="staff-info">
-          <h3><%= s.display_name || (s.first_name + ' ' + s.last_name) %></h3>
-          <% if (s.title) { %><span class="text-muted"><%= s.title %></span><% } %>
-        </div>
+    <a href="/admin/staff/<%= s.id %>/edit" class="client-item">
+      <div class="staff-avatar-sm">
+        <% if (s.photo_url) { %>
+          <img src="<%= s.photo_url %>" alt="<%= s.first_name %>" style="width:100%;height:100%;border-radius:50%;object-fit:cover">
+        <% } else { %>
+          <%= s.first_name[0] %><%= s.last_name[0] %>
+        <% } %>
       </div>
-      <div class="staff-card-body">
-        <div class="staff-meta">
-          <span><%= serviceCountMap[s.id] || 0 %> services</span>
-          <% if (s.location_name) { %><span><%= s.location_name %></span><% } %>
-          <span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>" data-en="<%= s.is_active ? 'Active' : 'Inactive' %>" data-fr="<%= s.is_active ? 'Actif' : 'Inactif' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span>
+      <div class="client-info">
+        <div class="client-name"><%= s.display_name || (s.first_name + ' ' + s.last_name) %></div>
+        <div class="client-details">
+          <% if (s.title) { %><%= s.title %> &middot; <% } %>
+          <%= serviceCountMap[s.id] || 0 %> <span data-en="services" data-fr="services">services</span>
+          <% if (s.location_name) { %> &middot; <%= s.location_name %><% } %>
         </div>
       </div>
-      <div class="staff-card-footer">
-        <a href="/admin/staff/<%= s.id %>/edit" class="btn btn-sm btn-secondary" data-en="Edit" data-fr="Modifier">Edit</a>
-      </div>
-    </div>
+      <span class="badge badge-<%= s.is_active ? 'confirmed' : 'cancelled' %>" style="font-size:.7rem;flex-shrink:0"><%= s.is_active ? 'Active' : 'Inactive' %></span>
+    </a>
   <% }) %>
 </div>
+
+<% if (user.role === 'owner') { %>
+<div class="fab-container">
+  <a href="/admin/staff/new" class="fab">+</a>
+</div>
+<% } %>
+
+<style>
+  .staff-avatar-sm{width:38px;height:38px;border-radius:50%;background:#E8DFD0;color:#1A1A2E;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .client-list{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+  .client-item{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid #F3F4F6;transition:background .15s;text-decoration:none;color:inherit}
+  .client-item:last-child{border-bottom:none}
+  .client-item:hover{background:#F5F3FA}
+  .client-info{flex:1;min-width:0}
+  .client-name{font-size:.9rem;font-weight:700;color:#1A1A2E}
+  .client-details{font-size:.78rem;color:#9CA3AF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fab-container{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom, 8px));right:20px;z-index:250}
+  .fab{width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,#1A1A2E,#2A2A44);color:#fff;font-size:28px;font-weight:300;cursor:pointer;box-shadow:0 4px 20px rgba(26,26,46,.25);display:flex;align-items:center;justify-content:center;line-height:1;text-decoration:none}
+  .fab:hover{transform:scale(1.05)}
+</style>

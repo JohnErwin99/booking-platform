@@ -99,7 +99,7 @@ router.post('/onboarding/staff', async (req, res, next) => {
           password_hash: hash,
           first_name,
           last_name,
-          role: role || 'staff',
+          role: role || 'contributor',
         });
       }
     }

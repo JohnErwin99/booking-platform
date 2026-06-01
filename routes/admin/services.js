@@ -36,7 +36,7 @@ router.get('/services', async (req, res, next) => {
 });
 
 // GET /admin/services/new
-router.get('/services/new', requireRole('owner', 'manager'), (req, res) => {
+router.get('/services/new', requireRole('owner'), (req, res) => {
   res.render('admin/services/form', {
     title: 'Add Service',
     user: req.user,
@@ -46,7 +46,7 @@ router.get('/services/new', requireRole('owner', 'manager'), (req, res) => {
 });
 
 // POST /admin/services
-router.post('/services', requireRole('owner', 'manager'), async (req, res, next) => {
+router.post('/services', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const { name, category, description, duration_minutes, price, sort_order } = req.body;
@@ -69,7 +69,7 @@ router.post('/services', requireRole('owner', 'manager'), async (req, res, next)
 });
 
 // GET /admin/services/:id/edit
-router.get('/services/:id/edit', requireRole('owner', 'manager'), async (req, res, next) => {
+router.get('/services/:id/edit', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const service = await db('services')
@@ -92,7 +92,7 @@ router.get('/services/:id/edit', requireRole('owner', 'manager'), async (req, re
 });
 
 // POST /admin/services/:id
-router.post('/services/:id', requireRole('owner', 'manager'), async (req, res, next) => {
+router.post('/services/:id', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const { name, category, description, duration_minutes, price, sort_order, is_active } = req.body;
@@ -115,7 +115,7 @@ router.post('/services/:id', requireRole('owner', 'manager'), async (req, res, n
 });
 
 // POST /admin/services/:id/delete
-router.post('/services/:id/delete', requireRole('owner', 'manager'), async (req, res, next) => {
+router.post('/services/:id/delete', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     await db('services').where({ id: req.params.id, tenant_id: tenantId }).del();

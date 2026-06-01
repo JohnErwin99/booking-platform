@@ -4,7 +4,7 @@ const requireRole = require('../../middleware/requireRole');
 const router = express.Router();
 
 // GET /admin/locations
-router.get('/locations', requireRole('owner', 'manager'), async (req, res, next) => {
+router.get('/locations', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
 
@@ -46,7 +46,7 @@ router.get('/locations/new', requireRole('owner'), (req, res) => {
 });
 
 // GET /admin/locations/:id/edit
-router.get('/locations/:id/edit', requireRole('owner', 'manager'), async (req, res, next) => {
+router.get('/locations/:id/edit', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const location = await db('locations')
@@ -112,7 +112,7 @@ router.post('/locations', requireRole('owner'), async (req, res, next) => {
 });
 
 // POST /admin/locations/:id
-router.post('/locations/:id', requireRole('owner', 'manager'), async (req, res, next) => {
+router.post('/locations/:id', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const { id } = req.params;

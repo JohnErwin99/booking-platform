@@ -49,7 +49,7 @@ router.get('/staff', async (req, res, next) => {
 });
 
 // GET /admin/staff/new
-router.get('/staff/new', requireRole('owner', 'manager'), async (req, res, next) => {
+router.get('/staff/new', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const locations = await db('locations').where({ tenant_id: tenantId, is_active: true });
@@ -72,7 +72,7 @@ router.get('/staff/new', requireRole('owner', 'manager'), async (req, res, next)
 });
 
 // POST /admin/staff
-router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), async (req, res, next) => {
+router.post('/staff', requireRole('owner'), upload.single('photo'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const { first_name, last_name, display_name, email, phone, title, bio,
@@ -126,7 +126,7 @@ router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), a
       password_hash: passwordHash,
       first_name,
       last_name,
-      role: role || 'staff'
+      role: role || 'contributor'
     });
 
     // Assign services with optional price/duration overrides
@@ -161,12 +161,12 @@ router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), a
             <p><strong>Login:</strong> <a href="${baseUrl}/admin/login">${baseUrl}/admin/login</a></p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Password:</strong> ${password}</p>
-            <p><strong>Role:</strong> ${role || 'staff'}</p>
+            <p><strong>Role:</strong> ${role || 'contributor'}</p>
             <p>We recommend changing your password after your first login.</p>
           </div>
           <p style="text-align:center;margin-top:24px;font-size:13px;color:#94a3b8">Sent by ${tenant.name} via Bookwize</p>
         </div>`,
-      text: `Hi ${first_name},\n\nAn account has been created for you on ${tenant.name}.\n\nLogin: ${baseUrl}/admin/login\nEmail: ${email}\nPassword: ${password}\nRole: ${role || 'staff'}\n\nPlease change your password after first login.`
+      text: `Hi ${first_name},\n\nAn account has been created for you on ${tenant.name}.\n\nLogin: ${baseUrl}/admin/login\nEmail: ${email}\nPassword: ${password}\nRole: ${role || 'contributor'}\n\nPlease change your password after first login.`
     }).catch(err => console.error('Staff welcome email failed:', err.message));
 
     req.flash('success', `Staff member added. A welcome email with login credentials has been sent to ${email}. Please ask them to check their inbox or spam folder.`);
@@ -177,7 +177,7 @@ router.post('/staff', requireRole('owner', 'manager'), upload.single('photo'), a
 });
 
 // GET /admin/staff/:id/edit
-router.get('/staff/:id/edit', requireRole('owner', 'manager'), async (req, res, next) => {
+router.get('/staff/:id/edit', requireRole('owner'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const staffMember = await db('staff')
@@ -214,7 +214,7 @@ router.get('/staff/:id/edit', requireRole('owner', 'manager'), async (req, res, 
 });
 
 // POST /admin/staff/:id
-router.post('/staff/:id', requireRole('owner', 'manager'), upload.single('photo'), async (req, res, next) => {
+router.post('/staff/:id', requireRole('owner'), upload.single('photo'), async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
     const { id } = req.params;

@@ -1,0 +1,91 @@
+<div class="share-page">
+
+  <!-- General Scheduling Page -->
+  <div class="share-card">
+    <div class="share-card-label" data-en="GENERAL SCHEDULING PAGE" data-fr="PAGE DE R&Eacute;SERVATION G&Eacute;N&Eacute;RALE">GENERAL SCHEDULING PAGE</div>
+    <div class="share-url" id="bookingUrl"><%= typeof req !== 'undefined' ? req.protocol + '://' + req.get('host') : '' %>/book/<%= slug %></div>
+    <div class="share-actions">
+      <button class="btn btn-ghost" onclick="copyLink()" data-en="Copy Link" data-fr="Copier le lien">Copy Link</button>
+      <button class="btn btn-ghost" onclick="shareLink()" data-en="Share" data-fr="Partager">Share</button>
+    </div>
+  </div>
+
+  <!-- Direct Links -->
+  <% if (services.length > 0) { %>
+  <div class="share-section">
+    <div class="share-section-title" data-en="DIRECT LINKS — SERVICES" data-fr="LIENS DIRECTS — SERVICES">DIRECT LINKS — SERVICES</div>
+    <div class="share-list">
+      <% services.forEach(s => { %>
+      <div class="share-list-item">
+        <span class="share-list-name"><%= s.name %></span>
+        <button class="btn btn-sm btn-ghost" onclick="copyText('/book/<%= slug %>?service=<%= s.id %>')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+  <% } %>
+
+  <% if (staffList.length > 0) { %>
+  <div class="share-section">
+    <div class="share-section-title" data-en="DIRECT LINKS — STAFF" data-fr="LIENS DIRECTS — PERSONNEL">DIRECT LINKS — STAFF</div>
+    <div class="share-list">
+      <% staffList.forEach(s => { %>
+      <div class="share-list-item">
+        <span class="share-list-name"><%= s.first_name %> <%= s.last_name %></span>
+        <button class="btn btn-sm btn-ghost" onclick="copyText('/book/<%= slug %>?staff=<%= s.id %>')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+  <% } %>
+
+</div>
+
+<style>
+  .share-page{max-width:600px;margin:0 auto}
+  .share-card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-bottom:20px}
+  .share-card-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;color:#9CA3AF;margin-bottom:12px}
+  .share-url{font-size:.92rem;font-weight:500;color:#1A1A2E;word-break:break-all;padding:14px 16px;background:#F5F3FA;border-radius:10px;margin-bottom:16px}
+  .share-actions{display:flex;gap:8px}
+  .share-actions .btn{flex:1;text-align:center;font-weight:600;border:1px solid var(--glass-border);border-radius:10px;padding:10px}
+
+  .share-section{margin-bottom:20px}
+  .share-section-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;color:#9CA3AF;padding:12px 0 8px}
+  .share-list{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+  .share-list-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #F3F4F6}
+  .share-list-item:last-child{border-bottom:none}
+  .share-list-name{font-size:.88rem;font-weight:500;color:#1A1A2E}
+</style>
+
+<script>
+  function getBaseUrl() {
+    return window.location.protocol + '//' + window.location.host;
+  }
+
+  function copyLink() {
+    var url = getBaseUrl() + '/book/<%= slug %>';
+    navigator.clipboard.writeText(url).then(function() {
+      alert(adminLang === 'fr' ? 'Lien copié!' : 'Link copied!');
+    });
+  }
+
+  function copyText(path) {
+    var url = getBaseUrl() + path;
+    navigator.clipboard.writeText(url).then(function() {
+      alert(adminLang === 'fr' ? 'Lien copié!' : 'Link copied!');
+    });
+  }
+
+  function shareLink() {
+    var url = getBaseUrl() + '/book/<%= slug %>';
+    if (navigator.share) {
+      navigator.share({ title: '<%= tenant ? tenant.name : "Booking Page" %>', url: url });
+    } else {
+      copyLink();
+    }
+  }
+</script>

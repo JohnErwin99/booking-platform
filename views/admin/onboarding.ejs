@@ -8,116 +8,118 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Inter',system-ui,sans-serif;background:#F5F3FA;color:#1A1A2E;min-height:100vh;-webkit-font-smoothing:antialiased}
+    body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#1A1A2E;min-height:100vh;-webkit-font-smoothing:antialiased}
 
-    .wizard{max-width:580px;margin:0 auto;padding:32px 20px;min-height:100vh;display:flex;flex-direction:column;justify-content:center}
+    .wizard{max-width:520px;margin:0 auto;padding:24px 20px;min-height:100vh;display:flex;flex-direction:column}
+    .wizard-header{display:flex;align-items:center;gap:10px;padding:12px 0 24px}
+    .wizard-header img{width:28px;height:28px;border-radius:8px}
+    .wizard-header span{font-size:1rem;font-weight:700}
 
     /* Progress */
-    .progress{display:flex;gap:8px;margin-bottom:40px}
-    .progress-dot{flex:1;height:5px;border-radius:100px;background:rgba(232,223,208,.5);transition:all .4s cubic-bezier(.4,0,.2,1)}
-    .progress-dot.active{background:linear-gradient(90deg,#F28C38,#e07b28)}
-    .progress-dot.done{background:#22C55E}
+    .progress{display:flex;gap:6px;margin-bottom:32px}
+    .progress-dot{flex:1;height:4px;border-radius:100px;background:#E5E7EB;transition:all .4s}
+    .progress-dot.active{background:#1A1A2E}
+    .progress-dot.done{background:#1A1A2E}
 
-    /* Step cards */
-    .step{display:none;animation:fadeUp .4s cubic-bezier(.4,0,.2,1)}
-    .step.active{display:block}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+    /* Steps */
+    .step{display:none;animation:fadeUp .3s ease;flex:1}
+    .step.active{display:flex;flex-direction:column}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-    .step-emoji{font-size:3rem;margin-bottom:16px}
-    .step h2{font-size:1.6rem;font-weight:800;margin-bottom:8px;line-height:1.2}
-    .step p.desc{color:#9CA3AF;font-size:.95rem;line-height:1.6;margin-bottom:28px}
+    .step h2{font-size:1.4rem;font-weight:800;margin-bottom:6px;line-height:1.2}
+    .step p.desc{color:#9CA3AF;font-size:.88rem;line-height:1.6;margin-bottom:24px}
 
     /* Form elements */
-    .field{margin-bottom:18px}
-    .field label{display:block;font-size:.82rem;font-weight:600;color:#6B7280;margin-bottom:6px}
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:.75rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
     .field input,.field select,.field textarea{
-      width:100%;padding:14px 16px;border:1.5px solid rgba(232,223,208,.6);border-radius:14px;
-      font-size:.95rem;color:#1A1A2E;background:rgba(255,255,255,.8);
-      transition:all .25s cubic-bezier(.4,0,.2,1);outline:none;
-      backdrop-filter:blur(4px);
+      width:100%;padding:12px 16px;border:1px solid #E5E7EB;border-radius:10px;
+      font-size:.9rem;color:#1A1A2E;background:#FAFAFA;
+      transition:all .2s;outline:none;font-family:inherit;
     }
-    .field input:focus,.field select:focus,.field textarea:focus{border-color:#F28C38;box-shadow:0 0 0 4px rgba(242,140,56,.1);background:#fff}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:#1A1A2E;box-shadow:0 0 0 3px rgba(26,26,46,.08);background:#fff}
     .field input::placeholder{color:#D1D5DB}
     .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .field-file{position:relative}
-    .field-file input[type="file"]{padding:12px;background:rgba(249,250,251,.8);cursor:pointer;border-radius:14px}
+    .field input[type="file"]{padding:10px;background:#FAFAFA;cursor:pointer}
 
     /* Buttons */
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:14px 28px;border-radius:14px;font-size:.95rem;font-weight:600;
-      border:none;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);
+      padding:13px 24px;border-radius:12px;font-size:.9rem;font-weight:700;
+      border:none;cursor:pointer;transition:all .2s;font-family:inherit;
     }
-    .btn-primary{
-      background:linear-gradient(135deg,#F28C38,#e07b28);color:#fff;
-      box-shadow:0 4px 16px rgba(242,140,56,.25);width:100%;
-    }
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(242,140,56,.35)}
-    .btn-secondary{background:rgba(255,255,255,.8);color:#1A1A2E;border:1.5px solid rgba(232,223,208,.6);width:100%;backdrop-filter:blur(4px)}
-    .btn-secondary:hover{border-color:#F28C38;color:#F28C38;background:#fff}
+    .btn-primary{background:#1A1A2E;color:#fff;width:100%}
+    .btn-primary:hover{background:#2A2A44}
+    .btn-secondary{background:#fff;color:#1A1A2E;border:1px solid #E5E7EB;width:100%}
+    .btn-secondary:hover{border-color:#1A1A2E}
     .btn-ghost{background:none;color:#9CA3AF;font-size:.85rem;padding:10px;transition:color .2s}
-    .btn-ghost:hover{color:#F28C38}
-    .btn-row{display:flex;gap:10px;margin-top:24px}
-    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .btn-ghost:hover{color:#1A1A2E}
+    .btn-row{display:flex;gap:10px;margin-top:auto;padding-top:24px}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
 
-    /* Tags / chips */
-    .added-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+    /* Chips */
+    .added-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
     .chip{
       display:inline-flex;align-items:center;gap:6px;
-      padding:8px 16px;border-radius:100px;font-size:.82rem;font-weight:600;
-      background:rgba(242,140,56,.08);color:#F28C38;
-      border:1px solid rgba(242,140,56,.1);
+      padding:6px 14px;border-radius:100px;font-size:.78rem;font-weight:600;
+      background:#F5F3FA;color:#1A1A2E;border:1px solid #E5E7EB;
     }
 
-    /* Inline form card */
+    /* Form card */
     .form-card{
-      background:rgba(255,255,255,.7);border-radius:20px;padding:22px;
-      margin-bottom:16px;border:1px solid rgba(232,223,208,.4);
-      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      background:#FAFAFA;border-radius:14px;padding:20px;
+      margin-bottom:16px;border:1px solid #E5E7EB;
     }
 
     /* Hours grid */
-    .hours-grid{display:flex;flex-direction:column;gap:8px}
+    .hours-grid{display:flex;flex-direction:column;gap:6px}
     .hour-row{
-      display:grid;grid-template-columns:80px 1fr 1fr auto;gap:8px;align-items:center;
-      padding:12px 16px;background:rgba(255,255,255,.7);border-radius:16px;
-      border:1px solid rgba(232,223,208,.4);
-      backdrop-filter:blur(8px);transition:border-color .2s;
+      display:grid;grid-template-columns:70px 1fr 1fr auto;gap:8px;align-items:center;
+      padding:10px 14px;background:#FAFAFA;border-radius:10px;border:1px solid #E5E7EB;
     }
-    .hour-row:hover{border-color:rgba(242,140,56,.2)}
     .hour-row label{font-size:.85rem;font-weight:600;color:#1A1A2E}
-    .hour-row input[type="time"]{padding:8px 10px;border:1px solid rgba(232,223,208,.5);border-radius:10px;font-size:.85rem;background:rgba(255,255,255,.8)}
-    .hour-toggle{width:44px;height:26px;border-radius:100px;background:rgba(232,223,208,.6);border:none;cursor:pointer;position:relative;transition:background .3s cubic-bezier(.4,0,.2,1)}
-    .hour-toggle.on{background:#F28C38}
-    .hour-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .3s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.12)}
-    .hour-toggle.on::after{left:21px}
+    .hour-row input[type="time"]{padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:.85rem;background:#fff;font-family:inherit}
+    .hour-toggle{width:40px;height:24px;border-radius:100px;background:#E5E7EB;border:none;cursor:pointer;position:relative;transition:background .3s}
+    .hour-toggle.on{background:#1A1A2E}
+    .hour-toggle::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+    .hour-toggle.on::after{left:19px}
 
     /* Success */
-    .success-icon{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,#22C55E,#16A34A);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.5rem;color:#fff;box-shadow:0 8px 24px rgba(34,197,94,.25)}
+    .success-icon{width:72px;height:72px;border-radius:50%;background:#1A1A2E;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2rem;color:#fff}
     .booking-link{
-      display:block;padding:18px;background:rgba(255,255,255,.7);border-radius:18px;
-      text-align:center;font-size:.95rem;font-weight:600;color:#F28C38;
-      border:1.5px dashed rgba(232,223,208,.6);margin:20px 0;word-break:break-all;
-      backdrop-filter:blur(8px);
+      display:block;padding:16px;background:#FAFAFA;border-radius:12px;
+      text-align:center;font-size:.9rem;font-weight:600;color:#1A1A2E;
+      border:1px solid #E5E7EB;margin:20px 0;word-break:break-all;
     }
 
     /* Service checkbox labels */
     .svc-check{
       display:flex;align-items:center;gap:6px;
-      padding:8px 16px;border-radius:12px;border:1.5px solid rgba(232,223,208,.5);
+      padding:8px 14px;border-radius:10px;border:1px solid #E5E7EB;
       font-size:.82rem;font-weight:500;cursor:pointer;
-      background:rgba(255,255,255,.7);transition:all .2s;
+      background:#fff;transition:all .2s;
     }
-    .svc-check:hover{border-color:#F28C38;background:#fff}
+    .svc-check:hover{border-color:#1A1A2E}
+
+    /* Location row */
+    .loc-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#FAFAFA;border-radius:10px;margin-bottom:6px;border:1px solid #E5E7EB}
+    .loc-row span.loc-name{flex:1;font-weight:500;font-size:.88rem}
+
+    .status-msg{font-size:.82rem;color:#22C55E;font-weight:600;margin-bottom:12px}
 
     @media(max-width:480px){
       .field-row{grid-template-columns:1fr}
-      .hour-row{grid-template-columns:60px 1fr 1fr auto;gap:4px;padding:8px 10px}
+      .hour-row{grid-template-columns:55px 1fr 1fr auto;gap:4px;padding:8px 10px}
     }
   </style>
 </head>
 <body>
   <div class="wizard" x-data="onboardingWizard()" x-cloak>
+    <div class="wizard-header">
+      <img src="/img/logo.svg" alt="Bookwize">
+      <span>Bookwize</span>
+    </div>
+
     <!-- Progress bar -->
     <div class="progress">
       <template x-for="i in 5">
@@ -125,11 +127,10 @@
       </template>
     </div>
 
-    <!-- Step 1: Welcome / Business Info -->
+    <!-- Step 1: Business Info -->
     <div class="step" :class="{ active: step === 1 }">
-      <div class="step-emoji">&#128075;</div>
-      <h2>Welcome to Bookwize!</h2>
-      <p class="desc">Let's set up your business in under 2 minutes. First, tell us about your business.</p>
+      <h2>Set up your business</h2>
+      <p class="desc">Tell us about your business to get started.</p>
       <form @submit.prevent="saveBusiness()" id="businessForm" enctype="multipart/form-data">
         <div class="field">
           <label>Business Name</label>
@@ -137,7 +138,7 @@
         </div>
         <div class="field">
           <label>Logo (optional)</label>
-          <input type="file" name="logo" accept="image/*" class="field-file" @change="logoFile = $event.target.files[0]">
+          <input type="file" name="logo" accept="image/*" @change="logoFile = $event.target.files[0]">
         </div>
         <div class="field">
           <label>Phone</label>
@@ -165,42 +166,41 @@
             </select>
           </div>
         </div>
-        <button type="submit" class="btn btn-primary" :disabled="saving">
-          <span x-show="!saving">Next — Add your services</span>
-          <span x-show="saving">Saving...</span>
-        </button>
-      </form>
 
-      <!-- Locations Section -->
-      <div style="margin-top:32px;border-top:1px solid rgba(232,223,208,.4);padding-top:24px">
-        <h3 style="font-size:1rem;font-weight:700;margin-bottom:4px">Multiple Locations?</h3>
-        <p style="font-size:.85rem;color:#9CA3AF;margin-bottom:16px">Add additional branches or studios. Your first location was created automatically. You can always add more later from Settings.</p>
-
-        <template x-for="loc in locationList" :key="loc.id">
-          <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(242,140,56,.04);border-radius:10px;margin-bottom:8px;border:1px solid rgba(232,223,208,.3)">
-            <span>&#128205;</span>
-            <span style="flex:1;font-weight:500;font-size:.9rem" x-text="loc.name"></span>
-            <template x-if="!loc.is_default">
-              <button type="button" class="btn btn-sm btn-danger" @click="removeLocation(loc.id)" style="font-size:.75rem;padding:4px 10px">Remove</button>
-            </template>
-            <template x-if="loc.is_default">
-              <span style="font-size:.7rem;color:#9CA3AF;font-weight:500">Default</span>
-            </template>
+        <!-- Locations -->
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid #E5E7EB">
+          <label style="display:block;font-size:.75rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Locations</label>
+          <template x-for="loc in locationList" :key="loc.id">
+            <div class="loc-row">
+              <span>&#128205;</span>
+              <span class="loc-name" x-text="loc.name"></span>
+              <template x-if="!loc.is_default">
+                <button type="button" style="font-size:.72rem;color:#EF4444;background:none;border:none;cursor:pointer;font-weight:600" @click="removeLocation(loc.id)">Remove</button>
+              </template>
+              <template x-if="loc.is_default">
+                <span style="font-size:.7rem;color:#9CA3AF;font-weight:500">Default</span>
+              </template>
+            </div>
+          </template>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input type="text" x-model="newLocationName" placeholder="New location name" style="flex:1;font-size:.85rem">
+            <button type="button" class="btn-ghost" @click="addLocation()" :disabled="!newLocationName.trim()" style="font-size:.82rem;white-space:nowrap;font-weight:600">+ Add</button>
           </div>
-        </template>
-
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <input type="text" x-model="newLocationName" placeholder="New location name (e.g. West End Branch)" style="flex:1;font-size:.85rem">
-          <button type="button" class="btn btn-ghost" @click="addLocation()" :disabled="!newLocationName.trim()" style="font-size:.85rem;white-space:nowrap">+ Add</button>
         </div>
-      </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary" :disabled="saving">
+            <span x-show="!saving">Continue</span>
+            <span x-show="saving">Saving...</span>
+          </button>
+        </div>
+      </form>
     </div>
 
-    <!-- Step 2: Add Services -->
+    <!-- Step 2: Services -->
     <div class="step" :class="{ active: step === 2 }">
-      <div class="step-emoji">&#9986;&#65039;</div>
-      <h2>What services do you offer?</h2>
-      <p class="desc">Add at least one service your clients can book. You can always add more later in Settings.</p>
+      <h2>Add your services</h2>
+      <p class="desc">What can clients book? Add at least one service.</p>
 
       <div class="added-list" x-show="serviceList.length">
         <template x-for="s in serviceList" :key="s.id">
@@ -216,7 +216,7 @@
           </div>
           <div class="field-row">
             <div class="field">
-              <label>Duration (minutes)</label>
+              <label>Duration (min)</label>
               <input type="number" x-model="newService.duration_minutes" placeholder="30" min="5" step="5">
             </div>
             <div class="field">
@@ -228,28 +228,27 @@
             <label>Category (optional)</label>
             <input type="text" x-model="newService.category" placeholder="e.g. Haircuts">
           </div>
-          <button type="submit" class="btn btn-secondary" :disabled="saving" style="width:100%">
+          <button type="submit" class="btn btn-secondary" :disabled="saving">
             <span x-show="!saving">Save Service</span>
             <span x-show="saving">Saving...</span>
           </button>
         </form>
       </div>
 
-      <p x-show="serviceList.length" style="font-size:.82rem;color:#22C55E;font-weight:600;margin-bottom:12px">&#10003; <span x-text="serviceList.length"></span> service(s) saved</p>
+      <p x-show="serviceList.length" class="status-msg">&#10003; <span x-text="serviceList.length"></span> service(s) added</p>
 
       <div class="btn-row">
         <button class="btn btn-ghost" @click="step = 1">&larr; Back</button>
         <button class="btn btn-primary" @click="serviceList.length ? step = 3 : (errorMsg = 'Please add at least one service.')" style="flex:1">
-          Save & Continue
+          Continue
         </button>
       </div>
     </div>
 
-    <!-- Step 3: Add Staff -->
+    <!-- Step 3: Staff -->
     <div class="step" :class="{ active: step === 3 }">
-      <div class="step-emoji">&#128102;</div>
-      <h2>Who's on your team?</h2>
-      <p class="desc">Add at least one team member who will take bookings. Assign them the services they offer. You can add more later in Settings.</p>
+      <h2>Add your team</h2>
+      <p class="desc">Who will take bookings? Add at least one team member.</p>
 
       <div class="added-list" x-show="staffList.length">
         <template x-for="s in staffList" :key="s.id">
@@ -281,8 +280,7 @@
             <div class="field">
               <label>Role</label>
               <select x-model="newStaff.role">
-                <option value="staff">Staff</option>
-                <option value="manager">Manager</option>
+                <option value="contributor">Contributor</option>
                 <option value="owner">Owner</option>
               </select>
             </div>
@@ -291,42 +289,38 @@
             <label>Password (for their login)</label>
             <input type="password" x-model="newStaff.password" placeholder="Min 6 characters" minlength="6">
           </div>
-
-          <!-- Assign services -->
           <div class="field" x-show="serviceList.length">
             <label>Assign Services</label>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
               <template x-for="svc in serviceList" :key="svc.id">
                 <label class="svc-check">
-                  <input type="checkbox" :value="svc.id" x-model="newStaff.service_ids" style="accent-color:#F28C38">
+                  <input type="checkbox" :value="svc.id" x-model="newStaff.service_ids" style="accent-color:#1A1A2E">
                   <span x-text="svc.name"></span>
                 </label>
               </template>
             </div>
           </div>
-
-          <button type="submit" class="btn btn-secondary" :disabled="saving" style="width:100%">
+          <button type="submit" class="btn btn-secondary" :disabled="saving">
             <span x-show="!saving">Save Staff Member</span>
             <span x-show="saving">Saving...</span>
           </button>
         </form>
       </div>
 
-      <p x-show="staffList.length" style="font-size:.82rem;color:#22C55E;font-weight:600;margin-bottom:12px">&#10003; <span x-text="staffList.length"></span> staff member(s) saved</p>
+      <p x-show="staffList.length" class="status-msg">&#10003; <span x-text="staffList.length"></span> staff member(s) added</p>
 
       <div class="btn-row">
         <button class="btn btn-ghost" @click="step = 2">&larr; Back</button>
         <button class="btn btn-primary" @click="staffList.length ? step = 4 : (errorMsg = 'Please add at least one staff member.')" style="flex:1">
-          Save & Continue
+          Continue
         </button>
       </div>
     </div>
 
-    <!-- Step 4: Business Hours -->
+    <!-- Step 4: Hours -->
     <div class="step" :class="{ active: step === 4 }">
-      <div class="step-emoji">&#128337;</div>
-      <h2>When are you open?</h2>
-      <p class="desc">Set your business hours. Toggle off days you're closed.</p>
+      <h2>Set your hours</h2>
+      <p class="desc">When are you open for business? Toggle off days you're closed.</p>
 
       <div class="hours-grid">
         <template x-for="(day, i) in dayNames" :key="i">
@@ -356,19 +350,18 @@
       </div>
     </div>
 
-    <!-- Step 5: Done! -->
-    <div class="step" :class="{ active: step === 5 }" style="text-align:center">
+    <!-- Step 5: Done -->
+    <div class="step" :class="{ active: step === 5 }" style="text-align:center;justify-content:center">
       <div class="success-icon">&#10003;</div>
       <h2>You're all set!</h2>
-      <p class="desc">Your booking page is live and ready for clients.</p>
+      <p class="desc" style="margin-bottom:16px">Your booking page is live and ready for clients.</p>
       <div class="booking-link"><%= (process.env.BASE_URL || 'https://bookwizeapp.com') %>/book/<%= tenant.slug %></div>
-      <a href="/admin/dashboard" class="btn btn-primary">Go to Dashboard</a>
-      <div style="margin-top:16px">
-        <a href="/book/<%= tenant.slug %>" class="btn btn-ghost" target="_blank">Preview Booking Page &rarr;</a>
-      </div>
+      <a href="/admin/bookings" class="btn btn-primary" style="text-decoration:none;margin-bottom:12px">Go to Calendar</a>
+      <a href="/book/<%= tenant.slug %>" class="btn btn-ghost" target="_blank">Preview Booking Page &rarr;</a>
     </div>
 
-    <div x-show="errorMsg" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(239,68,68,.95);color:#fff;padding:12px 28px;border-radius:16px;font-size:.85rem;font-weight:600;z-index:9999;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(239,68,68,.2)" x-transition @click="errorMsg=''">
+    <!-- Error toast -->
+    <div x-show="errorMsg" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1A1A2E;color:#fff;padding:12px 28px;border-radius:12px;font-size:.85rem;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.15)" x-transition @click="errorMsg=''">
       <span x-text="errorMsg"></span>
     </div>
   </div>
@@ -394,7 +387,7 @@
         newLocationName: '',
 
         staffList: <%= JSON.stringify((staff || []).map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }))) %>,
-        newStaff: { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '', service_ids: [] },
+        newStaff: { first_name: '', last_name: '', email: '', title: '', role: 'contributor', password: '', service_ids: [] },
 
         serviceList: <%= JSON.stringify((services || []).map(s => ({ id: s.id, name: s.name, price_cents: s.price_cents }))) %>,
         newService: { name: '', duration_minutes: '30', price: '', category: '' },
@@ -465,7 +458,7 @@
             const data = await res.json();
             if (data.success) {
               this.staffList = data.staff.map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }));
-              this.newStaff = { first_name: '', last_name: '', email: '', title: '', role: 'staff', password: '', service_ids: [] };
+              this.newStaff = { first_name: '', last_name: '', email: '', title: '', role: 'contributor', password: '', service_ids: [] };
             } else { this.errorMsg = data.error || 'Failed to add.'; }
           } catch (e) { this.errorMsg = 'Connection error.'; }
           this.saving = false;
@@ -499,7 +492,6 @@
             });
             const data = await res.json();
             if (data.success) {
-              // Mark onboarding complete
               await fetch('/admin/onboarding/complete', { method: 'POST' });
               this.step = 5;
             } else { this.errorMsg = data.error || 'Failed to save.'; }

@@ -269,4 +269,42 @@ router.post('/tenants/:id', requireSuperadmin, async (req, res, next) => {
   }
 });
 
+// POST /superadmin/tenants/:id/delete - Delete tenant and all their data
+router.post('/tenants/:id/delete', requireSuperadmin, async (req, res, next) => {
+  try {
+    const tenantId = parseInt(req.params.id);
+    const tenant = await db('tenants').where('id', tenantId).first();
+    if (!tenant) {
+      req.flash('error', 'Tenant not found.');
+      return res.redirect('/superadmin/tenants');
+    }
+
+    // Manually delete all tenant data (in case FK cascades aren't enforced)
+    const tables = [
+      'booking_payments', 'bookings', 'customer_notes', 'customers',
+      'blocked_dates', 'business_hours', 'notification_templates',
+      'notification_log', 'calendar_sync', 'subscriptions'
+    ];
+    for (const table of tables) {
+      try { await db(table).where('tenant_id', tenantId).delete(); } catch (e) { /* table may not exist */ }
+    }
+    // Staff services via staff_id
+    try {
+      await db('staff_services').whereIn('staff_id',
+        db('staff').where('tenant_id', tenantId).select('id')
+      ).delete();
+    } catch (e) { /* ignore */ }
+    await db('staff').where('tenant_id', tenantId).delete();
+    try { await db('services').where('tenant_id', tenantId).delete(); } catch (e) {}
+    await db('users').where('tenant_id', tenantId).delete();
+    await db('locations').where('tenant_id', tenantId).delete();
+    await db('tenants').where('id', tenantId).delete();
+
+    req.flash('success', `Tenant "${tenant.name}" and all associated data have been permanently deleted.`);
+    res.redirect('/superadmin/tenants');
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
