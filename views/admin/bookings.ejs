@@ -33,7 +33,7 @@
 </div>
 
 <!-- List View -->
-<div id="listView">
+<div id="listView" style="<%= viewMode === 'calendar' ? 'display:none' : '' %>">
   <div class="table-responsive">
     <table class="data-table">
       <thead>
@@ -95,7 +95,21 @@
 </div>
 
 <!-- Calendar View -->
-<div id="calendarView" style="display:none">
+<div id="calendarView" style="<%= viewMode === 'calendar' ? '' : 'display:none' %>">
+  <div class="calendar-date-header">
+    <div class="calendar-date-top">
+      <button class="strip-nav" onclick="navigateWeek(-1)">&#8249;</button>
+      <span class="month-label" id="monthLabel"></span>
+      <button class="strip-nav" onclick="navigateWeek(1)">&#8250;</button>
+      <button class="btn btn-sm btn-ghost today-btn" onclick="goToday()" data-en="Today" data-fr="Aujourd'hui">Today</button>
+    </div>
+    <div class="date-days" id="dateDays"></div>
+    <div class="cal-view-toggle">
+      <button class="cal-view-btn active" id="cvDay" onclick="switchCalView('timeGridDay')" data-en="Day" data-fr="Jour">Day</button>
+      <button class="cal-view-btn" id="cvWeek" onclick="switchCalView('timeGridWeek')" data-en="Week" data-fr="Semaine">Week</button>
+      <button class="cal-view-btn" id="cvMonth" onclick="switchCalView('dayGridMonth')" data-en="Month" data-fr="Mois">Month</button>
+    </div>
+  </div>
   <div id="calendar"></div>
 </div>
 
@@ -125,15 +139,32 @@
   .view-toggle .btn.active{background:#fff;color:#1A1A2E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
   .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 
-  #calendar{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-top:4px}
-  .fc .fc-toolbar-title{font-size:1.1rem;font-weight:700;color:#1A1A2E}
-  .fc .fc-button{background:#F28C38;border:none;font-size:.8rem;font-weight:600;border-radius:8px;padding:6px 14px}
-  .fc .fc-button:hover{background:#e07b28}
-  .fc .fc-button-active{background:#1A1A2E}
-  .fc .fc-daygrid-day-number{font-size:.85rem;color:#1A1A2E;font-weight:500}
+  .calendar-date-header{background:#fff;border-radius:12px;padding:16px 20px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-bottom:8px}
+  .calendar-date-top{display:flex;align-items:center;gap:4px;margin-bottom:14px}
+  .month-label{font-size:1.15rem;font-weight:700;color:#1A1A2E;min-width:160px}
+  .strip-nav{background:none;border:none;font-size:1.4rem;color:#6B7280;cursor:pointer;padding:4px 10px;border-radius:8px;line-height:1}
+  .strip-nav:hover{background:#F3F4F6}
+  .today-btn{margin-left:auto!important;font-size:.8rem}
+  .date-days{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+  .date-days::-webkit-scrollbar{display:none}
+  .date-day{display:flex;flex-direction:column;align-items:center;padding:6px 0;border-radius:12px;border:none;background:transparent;cursor:pointer;flex:1 0 auto;min-width:46px;transition:background .15s}
+  .date-day:hover{background:#F3F4F6}
+  .date-day .day-label{font-size:.7rem;font-weight:600;color:#9CA3AF;text-transform:uppercase;margin-bottom:4px}
+  .date-day .day-num{font-size:.95rem;font-weight:700;color:#1A1A2E;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s}
+  .date-day.today .day-num{background:#F28C38;color:#fff}
+  .date-day.selected .day-num{background:#1A1A2E;color:#fff}
+  .date-day.selected.today .day-num{background:#1A1A2E;color:#fff}
+
+  .cal-view-toggle{display:flex;gap:4px;margin-top:12px;background:rgba(232,223,208,.35);border-radius:10px;padding:3px}
+  .cal-view-btn{border:none;border-radius:8px;padding:6px 16px;font-size:.78rem;font-weight:600;background:transparent;color:#6B7280;cursor:pointer;flex:1;transition:all .15s}
+  .cal-view-btn:hover{color:#1A1A2E}
+  .cal-view-btn.active{background:#fff;color:#1A1A2E;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+  #calendar{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
   .fc .fc-event{border-radius:6px;padding:2px 6px;font-size:.75rem;border:none;cursor:pointer}
   .fc .fc-timegrid-slot{height:48px}
   .fc .fc-col-header-cell-cushion{font-size:.8rem;font-weight:600;color:#6B7280;text-transform:uppercase}
+  .fc .fc-daygrid-day-number{font-size:.85rem;color:#1A1A2E;font-weight:500}
 
   .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:9999}
   .modal-card{background:#fff;border-radius:16px;padding:28px;max-width:400px;width:90%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,.15)}
@@ -150,8 +181,78 @@
 </style>
 
 <script>
-  let currentView = 'list';
+  let currentView = '<%= viewMode %>';
   let calendar;
+  let selectedDate = new Date();
+  let weekStart = getMonday(selectedDate);
+
+  function getMonday(d) {
+    const date = new Date(d);
+    const day = date.getDay();
+    date.setDate(date.getDate() - day + (day === 0 ? -6 : 1));
+    date.setHours(0,0,0,0);
+    return date;
+  }
+
+  function renderDateStrip() {
+    const container = document.getElementById('dateDays');
+    if (!container) return;
+    const dayLabels = (typeof adminLang !== 'undefined' && adminLang === 'fr')
+      ? ['L','M','M','J','V','S','D']
+      : ['M','T','W','T','F','S','S'];
+    container.innerHTML = '';
+    const today = new Date(); today.setHours(0,0,0,0);
+    const sel = new Date(selectedDate); sel.setHours(0,0,0,0);
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(weekStart);
+      d.setDate(d.getDate() + i);
+      d.setHours(0,0,0,0);
+      const isSelected = d.getTime() === sel.getTime();
+      const isToday = d.getTime() === today.getTime();
+      const btn = document.createElement('button');
+      btn.className = 'date-day' + (isSelected ? ' selected' : '') + (isToday ? ' today' : '');
+      btn.innerHTML = '<span class="day-label">' + dayLabels[i] + '</span><span class="day-num">' + d.getDate() + '</span>';
+      (function(dateRef) {
+        btn.onclick = function() {
+          selectedDate = dateRef;
+          renderDateStrip();
+          if (calendar) calendar.gotoDate(dateRef);
+        };
+      })(new Date(d));
+      container.appendChild(btn);
+    }
+
+    const monthNames = (typeof adminLang !== 'undefined' && adminLang === 'fr')
+      ? ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
+      : ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var ml = document.getElementById('monthLabel');
+    if (ml) ml.textContent = monthNames[selectedDate.getMonth()] + ' ' + selectedDate.getFullYear();
+  }
+
+  function navigateWeek(dir) {
+    weekStart.setDate(weekStart.getDate() + (dir * 7));
+    selectedDate = new Date(weekStart);
+    renderDateStrip();
+    if (calendar) calendar.gotoDate(selectedDate);
+  }
+
+  function goToday() {
+    selectedDate = new Date();
+    weekStart = getMonday(selectedDate);
+    renderDateStrip();
+    if (calendar) calendar.gotoDate(selectedDate);
+  }
+
+  function switchCalView(view) {
+    document.getElementById('cvDay').classList.toggle('active', view === 'timeGridDay');
+    document.getElementById('cvWeek').classList.toggle('active', view === 'timeGridWeek');
+    document.getElementById('cvMonth').classList.toggle('active', view === 'dayGridMonth');
+    if (calendar) {
+      calendar.changeView(view);
+      if (view === 'timeGridDay') calendar.gotoDate(selectedDate);
+    }
+  }
 
   function switchView(view) {
     currentView = view;
@@ -169,40 +270,42 @@
   function initCalendar() {
     const calendarEl = document.getElementById('calendar');
     calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'timeGridWeek',
-      locale: adminLang === 'fr' ? 'fr' : 'en',
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
+      initialView: 'timeGridDay',
+      initialDate: selectedDate,
+      locale: (typeof adminLang !== 'undefined' && adminLang === 'fr') ? 'fr' : 'en',
+      headerToolbar: false,
       slotMinTime: '07:00:00',
       slotMaxTime: '22:00:00',
       allDaySlot: false,
       height: 'auto',
       nowIndicator: true,
+      dayHeaders: false,
       events: function(info, successCallback, failureCallback) {
-        fetch('/admin/bookings/api?start=' + info.startStr.split('T')[0] + '&end=' + info.endStr.split('T')[0])
-          .then(r => r.json())
-          .then(data => successCallback(data))
-          .catch(err => failureCallback(err));
+        var apiUrl = '/admin/bookings/api?start=' + info.startStr.split('T')[0] + '&end=' + info.endStr.split('T')[0];
+        var staffFilter = document.querySelector('select[name="staff_id"]');
+        if (staffFilter && staffFilter.value) apiUrl += '&staff_id=' + staffFilter.value;
+        fetch(apiUrl)
+          .then(function(r) { return r.json(); })
+          .then(function(data) { successCallback(data); })
+          .catch(function(err) { failureCallback(err); });
       },
       eventClick: function(info) {
-        const e = info.event;
-        const props = e.extendedProps;
-        const parts = e.title.split(' - ');
+        var e = info.event;
+        var props = e.extendedProps;
+        var parts = e.title.split(' - ');
         document.getElementById('modalTitle').textContent = e.title;
         document.getElementById('modalCustomer').textContent = parts[0] || '';
         document.getElementById('modalService').textContent = parts[1] || '';
         document.getElementById('modalStaff').textContent = props.staffName || '';
-        const start = e.start ? e.start.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
-        const end = e.end ? e.end.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+        var start = e.start ? e.start.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+        var end = e.end ? e.end.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
         document.getElementById('modalTime').textContent = start + ' - ' + end;
         document.getElementById('modalStatus').textContent = props.status || '';
         document.getElementById('eventModal').style.display = '';
       }
     });
     calendar.render();
+    renderDateStrip();
   }
 
   function closeModal() {
@@ -213,6 +316,6 @@
     if (e.key === 'Escape') closeModal();
   });
 
-  // Default to list view active
-  document.getElementById('listViewBtn').classList.add('active');
+  // Apply default view
+  switchView(currentView);
 </script>

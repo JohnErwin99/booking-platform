@@ -9,7 +9,9 @@ const router = express.Router();
 router.get('/bookings', async (req, res, next) => {
   try {
     const tenantId = req.user.tenant_id;
-    const { from, to, staff_id, status, location_id, view } = req.query;
+    const { from, to, status, location_id, view } = req.query;
+    // Staff role: force filter to own staff_id; others: use query param
+    const staff_id = req.user.role === 'staff' ? req.user.staff_id : req.query.staff_id;
 
     let query = db('bookings').where('bookings.tenant_id', tenantId);
 
@@ -42,7 +44,7 @@ router.get('/bookings', async (req, res, next) => {
       locations,
       calendarConnected: calendarSync.connected,
       filters: { from, to, staff_id, status, location_id },
-      viewMode: view || 'list',
+      viewMode: view || 'calendar',
       helpers: { formatTimeLabel, formatPrice }
     });
   } catch (err) {
@@ -129,11 +131,18 @@ router.get('/bookings/api', async (req, res, next) => {
     const tenantId = req.user.tenant_id;
     const { start, end } = req.query;
 
-    const bookings = await db('bookings')
+    // Staff role: force filter to own staff_id; others: use query param
+    const staff_id = req.user.role === 'staff' ? req.user.staff_id : req.query.staff_id;
+
+    let query = db('bookings')
       .where('tenant_id', tenantId)
       .where('booking_date', '>=', start)
       .where('booking_date', '<=', end)
       .whereNot('status', 'cancelled');
+
+    if (staff_id) query = query.where('staff_id', staff_id);
+
+    const bookings = await query;
 
     // Format for FullCalendar
     const events = bookings.map(b => {
