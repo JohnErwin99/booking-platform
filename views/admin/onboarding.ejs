@@ -7,6 +7,7 @@
   <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    [x-cloak]{display:none!important}
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:#1A1A2E;min-height:100vh;-webkit-font-smoothing:antialiased}
 
@@ -366,7 +367,6 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
   <script>
     function onboardingWizard() {
       return {
@@ -383,13 +383,13 @@
         },
         logoFile: null,
 
-        locationList: <%= JSON.stringify((locations || []).map(l => ({ id: l.id, name: l.name, is_default: l.is_default }))) %>,
+        locationList: <%- JSON.stringify((locations || []).map(l => ({ id: l.id, name: l.name, is_default: l.is_default }))) %>,
         newLocationName: '',
 
-        staffList: <%= JSON.stringify((staff || []).map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }))) %>,
+        staffList: <%- JSON.stringify((staff || []).map(s => ({ id: s.id, first_name: s.first_name, last_name: s.last_name }))) %>,
         newStaff: { first_name: '', last_name: '', email: '', title: '', role: 'contributor', password: '', service_ids: [] },
 
-        serviceList: <%= JSON.stringify((services || []).map(s => ({ id: s.id, name: s.name, price_cents: s.price_cents }))) %>,
+        serviceList: <%- JSON.stringify((services || []).map(s => ({ id: s.id, name: s.name, price_cents: s.price_cents }))) %>,
         newService: { name: '', duration_minutes: '30', price: '', category: '' },
 
         hours: {
@@ -501,5 +501,6 @@
       };
     }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
 </body>
 </html>
