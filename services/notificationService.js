@@ -397,6 +397,12 @@ async function autoCompleteConfirmed() {
       if (now > endTime) {
         await db('bookings').where('id', booking.id).update({ status: 'completed' });
         console.log(`Auto-completed booking ${booking.id} (customer confirmed)`);
+
+        // Create rebook reminder if service has rebook_days configured
+        try {
+          const { createRebookReminder } = require('./rebookService');
+          createRebookReminder(booking.id).catch(() => {});
+        } catch (e) {}
       }
     }
   } catch (err) {

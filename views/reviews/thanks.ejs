@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      padding: 48px 32px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .brand img {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+    .brand h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary, #F28C38);
+      margin-bottom: 28px;
+    }
+    .icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 0.95rem;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: var(--primary, #F28C38);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .btn:hover { opacity: 0.88; }
+    :root { --primary: <%= tenant.primary_color || '#F28C38' %>; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+      <% if (tenant.logo_url) { %>
+        <img src="<%= tenant.logo_url %>" alt="<%= tenant.name %>">
+      <% } %>
+      <h1><%= tenant.name %></h1>
+    </div>
+
+    <% if (alreadySubmitted) { %>
+      <div class="icon">&#128736;</div>
+      <h2>Already Reviewed</h2>
+      <p>You've already submitted a review for this appointment. Thank you!</p>
+    <% } else { %>
+      <div class="icon">&#127775;</div>
+      <h2>Thanks for your review!</h2>
+      <p>We really appreciate your feedback. It helps us keep delivering great experiences.</p>
+    <% } %>
+
+    <a href="/book/<%= tenant.slug %>" class="btn">Book Again</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!-- Upload Form -->
+<div class="settings-form" style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-bottom:24px">
+  <h3 style="font-size:.85rem;font-weight:700;letter-spacing:.06em;color:#9CA3AF;margin:0 0 16px" data-en="UPLOAD PHOTO" data-fr="TÉLÉVERSER UNE PHOTO">UPLOAD PHOTO</h3>
+  <form method="POST" action="/admin/portfolio/upload" enctype="multipart/form-data">
+    <% if (isOwner) { %>
+    <div class="form-group">
+      <label data-en="Staff Member" data-fr="Membre du personnel">Staff Member</label>
+      <select name="staff_id" required>
+        <option value="">-- Select staff --</option>
+        <% staffList.forEach(s => { %>
+          <option value="<%= s.id %>"><%= s.display_name || (s.first_name + ' ' + s.last_name) %></option>
+        <% }) %>
+      </select>
+    </div>
+    <% } else if (myStaffId) { %>
+      <input type="hidden" name="staff_id" value="<%= myStaffId %>">
+    <% } %>
+
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label data-en="Photo" data-fr="Photo">Photo</label>
+        <input type="file" name="photo" accept="image/*" required>
+      </div>
+      <div class="form-group" style="flex:2">
+        <label data-en="Linked Service (optional)" data-fr="Service lié (optionnel)">Linked Service (optional)</label>
+        <select name="service_id">
+          <option value="">-- No service --</option>
+          <% services.forEach(sv => { %>
+            <option value="<%= sv.id %>"><%= sv.name %></option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label data-en="Caption (optional)" data-fr="Légende (optionnel)">Caption (optional)</label>
+      <input type="text" name="caption" placeholder="e.g., Classic taper fade" maxlength="500">
+    </div>
+
+    <button type="submit" class="btn btn-secondary" data-en="Upload Photo" data-fr="Téléverser">Upload Photo</button>
+  </form>
+</div>
+
+<!-- Gallery grouped by staff -->
+<% if (staffList.length === 0) { %>
+  <div style="text-align:center;padding:48px 0;color:#9CA3AF">
+    <p data-en="No staff profiles found." data-fr="Aucun profil de personnel trouvé.">No staff profiles found.</p>
+  </div>
+<% } else { %>
+  <% staffList.forEach(s => { %>
+    <% const photos = photosByStaff[s.id] || []; %>
+    <div style="margin-bottom:32px">
+      <!-- Staff heading -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div class="portfolio-avatar">
+          <% if (s.photo_url) { %>
+            <img src="<%= s.photo_url %>" alt="<%= s.first_name %>" style="width:100%;height:100%;border-radius:50%;object-fit:cover">
+          <% } else { %>
+            <%= s.first_name[0] %><%= s.last_name[0] %>
+          <% } %>
+        </div>
+        <span style="font-size:.9rem;font-weight:700;color:#1A1A2E"><%= s.display_name || (s.first_name + ' ' + s.last_name) %></span>
+        <span style="font-size:.75rem;color:#9CA3AF">(<%= photos.length %> photo<%= photos.length !== 1 ? 's' : '' %>)</span>
+      </div>
+
+      <% if (photos.length === 0) { %>
+        <div style="padding:20px;background:#f9fafb;border-radius:12px;text-align:center;color:#9CA3AF;font-size:.85rem">
+          No photos yet.
+        </div>
+      <% } else { %>
+        <div class="portfolio-grid">
+          <% photos.forEach(photo => { %>
+            <div class="portfolio-card">
+              <div class="portfolio-img-wrap">
+                <img src="<%= photo.photo_url %>" alt="<%= photo.caption || 'Portfolio photo' %>" class="portfolio-img">
+              </div>
+              <div class="portfolio-meta">
+                <% if (photo.caption) { %>
+                  <p class="portfolio-caption"><%= photo.caption %></p>
+                <% } %>
+                <% if (photo.service_name) { %>
+                  <span class="portfolio-service-badge"><%= photo.service_name %></span>
+                <% } %>
+                <form method="POST" action="/admin/portfolio/<%= photo.id %>/delete" style="margin-top:8px" onsubmit="return confirm('Remove this photo?')">
+                  <button type="submit" class="btn btn-sm" style="font-size:.72rem;color:#EF4444;background:none;border:1px solid #FECACA;border-radius:8px;padding:4px 10px;cursor:pointer">
+                    Remove
+                  </button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  <% }) %>
+<% } %>
+
+<style>
+  .portfolio-avatar{width:36px;height:36px;border-radius:50%;background:#E8DFD0;color:#1A1A2E;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+  .portfolio-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .portfolio-img-wrap{aspect-ratio:1/1;overflow:hidden;background:#f3f4f6}
+  .portfolio-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
+  .portfolio-img:hover{transform:scale(1.04)}
+  .portfolio-meta{padding:10px 12px}
+  .portfolio-caption{font-size:.8rem;color:#374151;margin:0 0 6px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .portfolio-service-badge{display:inline-block;font-size:.68rem;font-weight:600;color:#6366F1;background:#EEF2FF;border-radius:20px;padding:2px 8px}
+</style>

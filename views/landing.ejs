@@ -91,6 +91,54 @@
   }
   </script>
 
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://bookwizeapp.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Pricing",
+        "item": "https://bookwizeapp.com/#pricing"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Blog",
+        "item": "https://bookwizeapp.com/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "About",
+        "item": "https://bookwizeapp.com/about"
+      }
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD: Speakable (AI/voice search optimization) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Bookwize — Online Booking System for Service Businesses in Canada",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".faq-item summary", ".faq-item p", ".stats .stat-number", ".stats .stat-label"]
+    },
+    "url": "https://bookwizeapp.com/"
+  }
+  </script>
+
   <!-- JSON-LD: WebSite with SearchAction -->
   <script type="application/ld+json">
   {
@@ -148,7 +196,7 @@
     "applicationSubCategory": "Appointment Scheduling Software",
     "operatingSystem": "Web",
     "description": "Bookwize is a commission-free online booking system and CRM for salons, barbershops, spas, and service businesses in Canada. Features include 24/7 online booking, contributor scheduling, automated reminders, white-label branding, and embeddable widgets.",
-    "featureList": "Commission-Free Online Booking, Contributor Scheduling, CRM & Client History, Automated Email Reminders, White-Label Branding, Embeddable Booking Widget, Multi-Contributor Management, Bilingual French-English Support",
+    "featureList": "Commission-Free Online Booking, Contributor Scheduling, CRM & Client History, Automated Email Reminders, White-Label Branding, Embeddable Booking Widget, Multi-Contributor Management, Bilingual French-English Support, Visual Portfolio Booking (Book This Cut), Walk-In Live Queue, Auto-Rebook Cycle Reminders, Post-Cut Client Reviews with Photos",
     "offers": {
       "@type": "AggregateOffer",
       "priceCurrency": "CAD",
@@ -485,6 +533,26 @@
           <h3>Multi-Location</h3>
           <p>Manage multiple businesses or locations from a single dashboard. Scale without switching tools.</p>
         </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="font-size:32px;display:flex;align-items:center;justify-content:center;width:56px;height:56px">&#128247;</div>
+          <h3 data-en="Book This Cut" data-fr="Réserver cette coupe">Book This Cut</h3>
+          <p data-en="Barbers upload photos of their work. Clients tap a photo to book that exact style — visual booking that Gen Z expects." data-fr="Les barbiers téléchargent des photos de leur travail. Les clients tapent sur une photo pour réserver ce style exact.">Barbers upload photos of their work. Clients tap a photo to book that exact style — visual booking that Gen Z expects.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="font-size:32px;display:flex;align-items:center;justify-content:center;width:56px;height:56px">&#128101;</div>
+          <h3 data-en="Walk-In Live Queue" data-fr="File d'attente en direct">Walk-In Live Queue</h3>
+          <p data-en="Walk-in clients join a virtual queue from their phone. Real-time position, estimated wait time, notified when they're next." data-fr="Les clients sans rendez-vous rejoignent une file virtuelle depuis leur téléphone. Position en temps réel et notification.">Walk-in clients join a virtual queue from their phone. Real-time position, estimated wait time, notified when they're next.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="font-size:32px;display:flex;align-items:center;justify-content:center;width:56px;height:56px">&#128260;</div>
+          <h3 data-en="Auto-Rebook Reminders" data-fr="Rappels de re-réservation">Auto-Rebook Reminders</h3>
+          <p data-en="System suggests rebooking based on service cycle — fade every 2 weeks, cut every 4. One-tap rebook from email." data-fr="Le système suggère une re-réservation basée sur le cycle du service — dégradé tous les 14 jours, coupe tous les 28.">System suggests rebooking based on service cycle — fade every 2 weeks, cut every 4. One-tap rebook from email.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="font-size:32px;display:flex;align-items:center;justify-content:center;width:56px;height:56px">&#11088;</div>
+          <h3 data-en="Post-Cut Reviews & Photos" data-fr="Avis et photos post-coupe">Post-Cut Reviews & Photos</h3>
+          <p data-en="After each appointment, clients rate and upload a photo. Builds your barber portfolio automatically with real social proof." data-fr="Après chaque rendez-vous, les clients notent et téléchargent une photo. Construit automatiquement le portfolio de votre barbier.">After each appointment, clients rate and upload a photo. Builds your barber portfolio automatically with real social proof.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -545,6 +613,24 @@
         <div class="stat">
           <div class="stat-number">4.9/5</div>
           <div class="stat-label" data-en="Customer rating" data-fr="Évaluation client">Customer rating</div>
+        </div>
+      </div>
+      <div class="trust-badges" style="display:flex;justify-content:center;gap:24px;margin-top:36px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 18px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6772e5" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:13px;color:#ccc" data-en="Stripe Verified Payments" data-fr="Paiements vérifiés Stripe">Stripe Verified Payments</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 18px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span style="font-size:13px;color:#ccc" data-en="256-bit SSL Secured" data-fr="Sécurisé SSL 256-bit">256-bit SSL Secured</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 18px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span style="font-size:13px;color:#ccc" data-en="99.9% Uptime" data-fr="Disponibilité 99,9%">99.9% Uptime</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 18px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4m0 4h.01"/></svg>
+          <span style="font-size:13px;color:#ccc" data-en="PIPEDA Compliant" data-fr="Conforme à la LPRPDE">PIPEDA Compliant</span>
         </div>
       </div>
     </div>
@@ -841,7 +927,8 @@
           <a href="/salon-booking-ottawa">Ottawa</a>
         </div>
         <div class="footer-col">
-          <h4 data-en="Support" data-fr="Soutien">Support</h4>
+          <h4 data-en="Company" data-fr="Entreprise">Company</h4>
+          <a href="/about" data-en="About" data-fr="À propos">About</a>
           <a href="#faq" data-en="Help Center" data-fr="Centre d'aide">Help Center</a>
           <a href="https://www.instagram.com/bookwizeapp" target="_blank">Contact</a>
           <a href="https://www.g2.com/products/bookwize-bookwize/reviews" target="_blank" rel="noopener">Reviews on G2</a>

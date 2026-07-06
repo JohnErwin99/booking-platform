@@ -1,0 +1,144 @@
+<div class="section">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+    <div>
+      <p style="font-size:.8rem;color:#9CA3AF;margin-bottom:2px"><%= today %></p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:.82rem;color:#6B7280;background:#F3F4F6;padding:5px 14px;border-radius:20px;font-weight:600">
+        <%= activeEntries.length %> active &middot; <%= completedCount %> done today
+      </span>
+      <button onclick="location.reload()" style="background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:7px 14px;font-size:.82rem;font-weight:600;color:#6B7280;cursor:pointer">
+        &#8635; Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Add to Queue Form -->
+  <div style="background:#fff;border-radius:16px;border:1px solid #F0EBE3;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)">
+    <h3 style="font-size:.9rem;font-weight:700;color:#1A1A2E;margin-bottom:14px">Add Walk-In</h3>
+    <form method="POST" action="/admin/queue/add">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="display:block;font-size:.72rem;font-weight:600;color:#9CA3AF;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Name *</label>
+          <input type="text" name="customer_name" required placeholder="Customer name"
+            style="width:100%;padding:10px 14px;border:1px solid #E5E7EB;border-radius:10px;font-size:.9rem;color:#1A1A2E;outline:none;transition:border .2s"
+            onfocus="this.style.borderColor='#F28C38'" onblur="this.style.borderColor='#E5E7EB'">
+        </div>
+        <div>
+          <label style="display:block;font-size:.72rem;font-weight:600;color:#9CA3AF;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Phone (optional)</label>
+          <input type="tel" name="customer_phone" placeholder="e.g. 555-1234"
+            style="width:100%;padding:10px 14px;border:1px solid #E5E7EB;border-radius:10px;font-size:.9rem;color:#1A1A2E;outline:none;transition:border .2s"
+            onfocus="this.style.borderColor='#F28C38'" onblur="this.style.borderColor='#E5E7EB'">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div>
+          <label style="display:block;font-size:.72rem;font-weight:600;color:#9CA3AF;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Service (optional)</label>
+          <select name="service_name"
+            style="width:100%;padding:10px 14px;border:1px solid #E5E7EB;border-radius:10px;font-size:.9rem;color:#1A1A2E;background:#fff;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center">
+            <option value="">— Any service —</option>
+            <% services.forEach(s => { %>
+              <option value="<%= s.name %>"><%= s.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:.72rem;font-weight:600;color:#9CA3AF;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">Preferred Barber (optional)</label>
+          <select name="staff_id"
+            style="width:100%;padding:10px 14px;border:1px solid #E5E7EB;border-radius:10px;font-size:.9rem;color:#1A1A2E;background:#fff;outline:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center">
+            <option value="">— No preference —</option>
+            <% staffList.forEach(s => { %>
+              <option value="<%= s.id %>"><%= s.display_name || (s.first_name + ' ' + s.last_name) %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+      <button type="submit"
+        style="background:linear-gradient(135deg,#F28C38,#e07b28);color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(242,140,56,.3);transition:all .2s"
+        onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+        Add to Queue
+      </button>
+    </form>
+  </div>
+
+  <!-- Queue List -->
+  <% if (activeEntries.length === 0) { %>
+    <div style="text-align:center;padding:48px 24px;color:#9CA3AF;background:#fff;border-radius:16px;border:1px solid #F0EBE3">
+      <div style="font-size:2.5rem;margin-bottom:10px">&#x23f3;</div>
+      <p style="font-weight:600;font-size:.95rem">Queue is empty</p>
+      <p style="font-size:.82rem;margin-top:4px">Add walk-in clients above or share the public queue link.</p>
+    </div>
+  <% } else { %>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <% activeEntries.forEach(entry => { %>
+        <div style="background:<%= entry.status === 'serving' ? 'linear-gradient(135deg,rgba(242,140,56,.08),rgba(242,140,56,.04))' : '#fff' %>;border-radius:16px;border:1.5px solid <%= entry.status === 'serving' ? 'rgba(242,140,56,.35)' : '#F0EBE3' %>;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.03)">
+          <!-- Position badge -->
+          <div style="width:40px;height:40px;border-radius:12px;background:<%= entry.status === 'serving' ? '#F28C38' : '#1A1A2E' %>;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:800;flex-shrink:0">
+            <%= entry.status === 'serving' ? '&#9988;' : entry.position %>
+          </div>
+
+          <!-- Info -->
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:.95rem;font-weight:700;color:#1A1A2E"><%= entry.customer_name %></span>
+              <span style="font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:20px;background:<%= entry.status === 'serving' ? '#F28C38' : '#E5E7EB' %>;color:<%= entry.status === 'serving' ? '#fff' : '#6B7280' %>">
+                <%= entry.status === 'serving' ? 'NOW SERVING' : 'WAITING' %>
+              </span>
+            </div>
+            <div style="font-size:.8rem;color:#6B7280;margin-top:3px;display:flex;gap:10px;flex-wrap:wrap">
+              <% if (entry.service_name) { %><span>&#9986; <%= entry.service_name %></span><% } %>
+              <% if (entry.staff_name) { %><span>&#128100; <%= entry.staff_name %></span><% } %>
+              <% if (entry.customer_phone) { %><span>&#128222; <%= entry.customer_phone %></span><% } %>
+              <% if (entry.status === 'waiting' && entry.estimated_wait_minutes) { %>
+                <span>&#8987; ~<%= entry.estimated_wait_minutes %> min</span>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
+            <% if (entry.status === 'waiting') { %>
+              <form method="POST" action="/admin/queue/<%= entry.id %>/serve" style="display:inline">
+                <button type="submit"
+                  style="background:#1A1A2E;color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s"
+                  onmouseover="this.style.background='#2d2d4e'" onmouseout="this.style.background='#1A1A2E'">
+                  Serve
+                </button>
+              </form>
+            <% } %>
+            <% if (entry.status === 'serving') { %>
+              <form method="POST" action="/admin/queue/<%= entry.id %>/complete" style="display:inline">
+                <button type="submit"
+                  style="background:#16a34a;color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s"
+                  onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
+                  Complete
+                </button>
+              </form>
+            <% } %>
+            <form method="POST" action="/admin/queue/<%= entry.id %>/cancel" style="display:inline"
+              onsubmit="return confirm('Remove <%= entry.customer_name %> from the queue?')">
+              <button type="submit"
+                style="background:#fff;color:#EF4444;border:1.5px solid #FCA5A5;border-radius:10px;padding:7px 14px;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s"
+                onmouseover="this.style.background='#FEF2F2'" onmouseout="this.style.background='#fff'">
+                Remove
+              </button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Public Queue Link -->
+  <div style="margin-top:20px;padding:14px 18px;background:#F8FAFC;border-radius:12px;border:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+    <div>
+      <p style="font-size:.78rem;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Client Self-Check-In Link</p>
+      <code style="font-size:.82rem;color:#1A1A2E">/queue/<%= tenant.slug %></code>
+    </div>
+    <a href="/queue/<%= tenant.slug %>" target="_blank"
+      style="font-size:.82rem;font-weight:700;color:#F28C38;text-decoration:none;border:1.5px solid #F28C38;border-radius:10px;padding:7px 16px;transition:all .2s"
+      onmouseover="this.style.background='#FFF7ED'" onmouseout="this.style.background='transparent'">
+      Open &#8599;
+    </a>
+  </div>
+</div>

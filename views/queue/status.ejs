@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <% if (entry.status === 'waiting') { %>
+  <meta http-equiv="refresh" content="30">
+  <% } %>
+  <title><%= title %></title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: <%= tenant.primary_color || '#F28C38' %>;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #F5F3FA;
+      color: #1A1A2E;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .status-card {
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 36px 28px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 12px 48px rgba(26,26,46,.08);
+      border: 1px solid rgba(232,223,208,.4);
+    }
+    .biz-logo {
+      max-height: 48px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+    }
+    .biz-name {
+      font-size: .95rem;
+      font-weight: 700;
+      color: #6B7280;
+      margin-bottom: 24px;
+    }
+    .status-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 18px;
+    }
+    .status-icon.waiting { background: linear-gradient(135deg, rgba(242,140,56,.12), rgba(242,140,56,.06)); border: 1.5px solid rgba(242,140,56,.3); }
+    .status-icon.serving { background: linear-gradient(135deg, #F28C38, #e07b28); color: #fff; box-shadow: 0 8px 24px rgba(242,140,56,.3); }
+    .status-icon.completed { background: linear-gradient(135deg, #22C55E, #16A34A); color: #fff; box-shadow: 0 8px 24px rgba(34,197,94,.25); }
+    .status-icon.cancelled { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.1); }
+    .position-number {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .position-label {
+      font-size: .88rem;
+      color: #9CA3AF;
+      margin-bottom: 20px;
+    }
+    .status-heading {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .status-sub {
+      font-size: .92rem;
+      color: #6B7280;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .detail-box {
+      background: rgba(245,243,250,.6);
+      border-radius: 16px;
+      padding: 16px 20px;
+      text-align: left;
+      margin-bottom: 22px;
+      border: 1px solid rgba(232,223,208,.3);
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      font-size: .87rem;
+      border-bottom: 1px solid rgba(0,0,0,.04);
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row span:first-child { color: #9CA3AF; }
+    .detail-row span:last-child { font-weight: 600; }
+    .refresh-note {
+      font-size: .75rem;
+      color: #9CA3AF;
+      margin-bottom: 16px;
+    }
+    .btn-back {
+      display: inline-block;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, var(--primary), #e07b28);
+      color: #fff;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .9rem;
+      box-shadow: 0 4px 14px rgba(242,140,56,.3);
+      transition: all .2s;
+    }
+    .btn-back:hover { transform: translateY(-1px); }
+    .badge-pill {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .badge-waiting { background: rgba(242,140,56,.1); color: #e07b28; }
+    .badge-serving { background: rgba(242,140,56,.9); color: #fff; }
+    .badge-completed { background: rgba(34,197,94,.1); color: #16a34a; }
+    .badge-cancelled { background: rgba(239,68,68,.08); color: #EF4444; }
+  </style>
+</head>
+<body>
+  <div class="status-card">
+    <!-- Business header -->
+    <% if (tenant.logo_url) { %>
+      <img src="<%= tenant.logo_url %>" alt="<%= tenant.name %>" class="biz-logo">
+    <% } %>
+    <div class="biz-name"><%= tenant.name %></div>
+
+    <% if (entry.status === 'waiting') { %>
+      <!-- Waiting state -->
+      <div class="status-icon waiting">&#9200;</div>
+      <% if (aheadCount === 0) { %>
+        <div class="position-number">Next!</div>
+        <div class="position-label">You're up next</div>
+        <h2 class="status-heading">Almost your turn</h2>
+        <p class="status-sub">Please make your way to the counter — you're next in line.</p>
+      <% } else { %>
+        <div class="position-number"><%= aheadCount %></div>
+        <div class="position-label"><%= aheadCount === 1 ? 'person' : 'people' %> ahead of you</div>
+        <h2 class="status-heading">You're in the queue</h2>
+        <p class="status-sub">Estimated wait: ~<%= currentWait %> min. We'll get to you soon!</p>
+      <% } %>
+
+    <% } else if (entry.status === 'serving') { %>
+      <!-- Serving state -->
+      <div class="status-icon serving">&#10024;</div>
+      <h2 class="status-heading">It's your turn!</h2>
+      <p class="status-sub">Please come to the counter now — we're ready for you.</p>
+
+    <% } else if (entry.status === 'completed') { %>
+      <!-- Completed state -->
+      <div class="status-icon completed">&#10003;</div>
+      <h2 class="status-heading">All done!</h2>
+      <p class="status-sub">Thanks for visiting <%= tenant.name %>. See you next time!</p>
+
+    <% } else if (entry.status === 'cancelled') { %>
+      <!-- Cancelled state -->
+      <div class="status-icon cancelled">&#10007;</div>
+      <h2 class="status-heading">Removed from queue</h2>
+      <p class="status-sub">Your queue entry was cancelled. Join again if you'd like to wait.</p>
+    <% } %>
+
+    <!-- Detail box -->
+    <div class="detail-box">
+      <div class="detail-row">
+        <span>Name</span>
+        <span><%= entry.customer_name %></span>
+      </div>
+      <% if (entry.service_name) { %>
+      <div class="detail-row">
+        <span>Service</span>
+        <span><%= entry.service_name %></span>
+      </div>
+      <% } %>
+      <% if (entry.staff_name && entry.staff_name.trim()) { %>
+      <div class="detail-row">
+        <span>Preferred Barber</span>
+        <span><%= entry.staff_name %></span>
+      </div>
+      <% } %>
+      <div class="detail-row">
+        <span>Status</span>
+        <span class="badge-pill badge-<%= entry.status %>"><%= entry.status %></span>
+      </div>
+    </div>
+
+    <% if (entry.status === 'waiting') { %>
+      <p class="refresh-note">This page refreshes automatically every 30 seconds.</p>
+    <% } %>
+
+    <% if (entry.status === 'completed' || entry.status === 'cancelled') { %>
+      <a href="/queue/<%= tenant.slug %>" class="btn-back">Join Queue Again</a>
+    <% } %>
+  </div>
+</body>
+</html>

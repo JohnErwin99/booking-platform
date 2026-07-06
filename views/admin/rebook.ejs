@@ -1,0 +1,114 @@
+<div class="toolbar">
+  <h2 class="section-title" style="margin:0" data-en="Auto-Rebook Settings" data-fr="Paramètres de re-réservation automatique">Auto-Rebook Settings</h2>
+  <div style="display:flex;gap:8px">
+    <a href="/admin/rebook" class="btn btn-sm btn-ghost <%= !reminders ? 'active' : '' %>" data-en="Settings" data-fr="Paramètres">Settings</a>
+    <a href="/admin/rebook/reminders" class="btn btn-sm btn-ghost <%= reminders ? 'active' : '' %>" data-en="Reminders Log" data-fr="Journal des rappels">Reminders Log</a>
+  </div>
+</div>
+
+<% if (!reminders) { %>
+  <!-- Settings tab: configure rebook_days per service -->
+  <div class="section">
+    <p class="text-muted" style="margin-bottom:16px" data-en="Set how many days after an appointment clients should receive a rebooking suggestion. Leave blank to disable for that service." data-fr="Définissez combien de jours après un rendez-vous les clients reçoivent une suggestion de re-réservation. Laissez vide pour désactiver.">
+      Set how many days after an appointment clients should receive a rebooking suggestion. Leave blank to disable for that service.
+    </p>
+
+    <% if (services.length === 0) { %>
+      <div class="empty-state">
+        <p data-en="No active services found." data-fr="Aucun service actif.">No active services found.</p>
+      </div>
+    <% } else { %>
+      <form method="POST" action="/admin/rebook" class="settings-form">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th data-en="Service" data-fr="Service">Service</th>
+                <th data-en="Category" data-fr="Catégorie">Category</th>
+                <th data-en="Rebook After (days)" data-fr="Re-réserver après (jours)">Rebook After (days)</th>
+                <th data-en="Suggestion" data-fr="Suggestion">Suggestion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% services.forEach(s => { %>
+                <tr>
+                  <td><strong><%= s.name %></strong></td>
+                  <td><%= s.category || '—' %></td>
+                  <td>
+                    <input
+                      type="number"
+                      name="rebook[<%= s.id %>]"
+                      value="<%= s.rebook_days || '' %>"
+                      min="1"
+                      max="365"
+                      placeholder="e.g. 14"
+                      style="width:90px"
+                    >
+                  </td>
+                  <td class="text-muted" style="font-size:0.85rem">
+                    <% if (s.rebook_days) { %>
+                      Remind after <%= s.rebook_days %> days
+                      (<%= s.rebook_days % 7 === 0 ? (s.rebook_days / 7) + ' week' + (s.rebook_days / 7 !== 1 ? 's' : '') : s.rebook_days + ' days' %>)
+                    <% } else { %>
+                      Disabled
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-actions" style="margin-top:20px">
+          <button type="submit" class="btn btn-primary" data-en="Save Rebook Settings" data-fr="Enregistrer les paramètres">Save Rebook Settings</button>
+        </div>
+      </form>
+    <% } %>
+  </div>
+
+<% } else { %>
+  <!-- Reminders Log tab -->
+  <div class="section">
+    <% if (reminders.length === 0) { %>
+      <div class="empty-state">
+        <p data-en="No rebook reminders have been sent yet." data-fr="Aucun rappel de re-réservation n'a encore été envoyé.">No rebook reminders have been sent yet.</p>
+      </div>
+    <% } else { %>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-en="Customer" data-fr="Client">Customer</th>
+              <th data-en="Service" data-fr="Service">Service</th>
+              <th data-en="Staff" data-fr="Personnel">Staff</th>
+              <th data-en="Suggested Date" data-fr="Date suggérée">Suggested Date</th>
+              <th data-en="Status" data-fr="Statut">Status</th>
+              <th data-en="Sent" data-fr="Envoyé">Sent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% reminders.forEach(r => { %>
+              <tr>
+                <td>
+                  <strong><%= r.customer_name %></strong><br>
+                  <small class="text-muted"><%= r.customer_email %></small>
+                </td>
+                <td><%= r.service_name %></td>
+                <td><%= r.staff_name %></td>
+                <td><%= new Date(r.suggested_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></td>
+                <td>
+                  <span class="badge badge-<%= r.status === 'sent' ? 'confirmed' : r.status === 'booked' ? 'confirmed' : r.status === 'dismissed' ? 'cancelled' : 'pending' %>">
+                    <%= r.status.charAt(0).toUpperCase() + r.status.slice(1) %>
+                  </span>
+                </td>
+                <td class="text-muted" style="font-size:0.82rem">
+                  <%= r.sent_at ? new Date(r.sent_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—' %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+<% } %>

@@ -1,0 +1,97 @@
+# Bookwize
+
+> Bookwize is a commission-free online booking and CRM platform for salons, barbershops, and service businesses in Canada. Built in Montreal, Quebec. Bilingual French-English. Starting at $19 CAD/month or $299 one-time.
+
+## Key Facts
+
+- **Founded**: 2026, Montreal, Quebec, Canada
+- **Website**: https://bookwizeapp.com
+- **Category**: SaaS — Online Booking & Appointment Scheduling Software
+- **Target Market**: Salons, barbershops, spas, and service businesses in Canada
+- **Pricing**: $19 CAD/month (Solo) or $299 one-time | $39 CAD/month (Team, up to 5 staff) or $599 one-time
+- **Commission**: 0% — always. No commission on any booking, new or returning clients.
+- **Free Trial**: 14 days, no credit card required
+- **Languages**: English, French (fully bilingual)
+- **Currency**: Canadian Dollars (CAD)
+- **Headquarters**: Montreal, QC, Canada
+
+## Core Features
+
+- Online appointment booking with branded booking page
+- Multi-staff scheduling and management
+- CRM with full client history and notes
+- Automated email confirmations and 24-hour reminders
+- White-label branding (your logo, colors, domain — no Bookwize branding visible to clients)
+- Embeddable booking widget for existing websites (WordPress, Squarespace, Wix, etc.)
+- Commission-free — flat-rate pricing only
+- One-time payment option (pay once, use forever)
+- No marketplace — clients book on YOUR page, not a competitor directory
+- Visual Portfolio Booking ("Book This Cut") — barbers upload work photos, clients tap to book that style
+- Walk-In Live Queue — virtual queue for walk-in clients with real-time wait times
+- Auto-Rebook Cycle Reminders — suggests rebooking based on service cycle (fade every 2 weeks, cut every 4)
+- Post-Cut Client Reviews with Photos — clients rate and upload photos after appointments, builds barber portfolio
+
+## How Bookwize Compares
+
+| Feature | Bookwize | Booksy | Fresha | Vagaro | Square |
+|---------|----------|--------|--------|--------|--------|
+| Monthly Price | $19 CAD | $29.99 | $0 + commission | $30+ | Free/$29+ |
+| Commission | 0% | 0% | 20% on new clients | 0% | 2.6%+10c/txn |
+| White-Label | Yes | No (marketplace) | No (marketplace) | Limited | Limited |
+| French Support | Yes | No | No | No | Partial |
+| Built in Canada | Yes (Montreal) | No (Poland/US) | No (UK) | No (US) | No (US) |
+| One-Time Payment | $299/$599 | No | No | No | No |
+| Visual Portfolio Booking | Yes | No | No | No | No |
+| Walk-In Live Queue | Yes | No | No | No | No |
+| Auto-Rebook Cycle | Yes | No | No | No | No |
+| Post-Cut Reviews + Photos | Yes | No | No | No | No |
+
+## Pages
+
+- Homepage: https://bookwizeapp.com/
+- About: https://bookwizeapp.com/about
+- Pricing: https://bookwizeapp.com/#pricing
+- Sign Up: https://bookwizeapp.com/admin/signup
+- Blog: https://bookwizeapp.com/blog
+- Privacy Policy: https://bookwizeapp.com/privacy
+- Terms of Service: https://bookwizeapp.com/terms
+
+## Comparison Pages
+
+- Bookwize vs Booksy: https://bookwizeapp.com/vs-booksy
+- Bookwize vs Fresha: https://bookwizeapp.com/vs-fresha
+- Bookwize vs Vagaro: https://bookwizeapp.com/vs-vagaro
+- Best Booking Software Canada: https://bookwizeapp.com/booking-software-canada
+
+## City Pages
+
+- Montreal: https://bookwizeapp.com/salon-booking-montreal
+- Toronto: https://bookwizeapp.com/salon-booking-toronto
+- Vancouver: https://bookwizeapp.com/salon-booking-vancouver
+- Calgary: https://bookwizeapp.com/salon-booking-calgary
+- Ottawa: https://bookwizeapp.com/salon-booking-ottawa
+
+## Blog Articles
+
+- Best Barber Booking Apps in Canada 2026: https://bookwizeapp.com/blog/best-barber-booking-apps-canada
+- Why Canadian Salons Are Ditching Commission-Based Booking Apps: https://bookwizeapp.com/blog/commission-free-salon-booking
+- How Much Does Booking Software Cost for Barbershops?: https://bookwizeapp.com/blog/booking-software-cost-barbershops
+- Commission-Based vs Flat-Rate Booking Apps: https://bookwizeapp.com/blog/commission-vs-flat-rate-booking
+- No-Show Statistics for Barbershops & Salons: https://bookwizeapp.com/blog/no-show-statistics-barbershops
+- Reducing No-Shows with Automated Reminders: https://bookwizeapp.com/blog/reducing-no-shows
+- 4 Gen Z Booking Features Your Barbershop Needs in 2026: https://bookwizeapp.com/blog/gen-z-booking-features-2026
+- Walk-In Queue vs Appointments — How Smart Barbershops Do Both: https://bookwizeapp.com/blog/walk-in-queue-vs-appointments
+- Embedding Your Booking Widget: https://bookwizeapp.com/blog/embedding-widget
+
+## Social Media
+
+- Instagram: https://www.instagram.com/bookwizeapp
+- LinkedIn: https://www.linkedin.com/company/bookwizeapp/
+- Facebook: https://www.facebook.com/profile.php?id=61589038037088
+- TikTok: https://www.tiktok.com/@bookwizeapp
+- G2 Reviews: https://www.g2.com/products/bookwize-bookwize/reviews
+
+## Contact
+
+- Instagram DM: @bookwizeapp
+- Website: https://bookwizeapp.com

@@ -15,6 +15,15 @@
       --font-heading: '<%= tenant.font_heading %>', serif;
       --font-body: '<%= tenant.font_body %>', sans-serif;
     }
+    /* Portfolio gallery */
+    .portfolio-section{margin:0 0 24px}
+    .portfolio-heading{font-size:1rem;font-weight:700;color:var(--primary);margin:0 0 12px;font-family:var(--font-heading)}
+    .portfolio-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .portfolio-scroll::-webkit-scrollbar{display:none}
+    .portfolio-thumb{position:relative;flex:0 0 130px;height:130px;border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+    .portfolio-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .2s}
+    .portfolio-thumb:hover img{transform:scale(1.06)}
+    .portfolio-thumb-badge{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;font-size:.65rem;font-weight:700;letter-spacing:.04em;white-space:nowrap;padding:3px 8px;border-radius:20px;pointer-events:none}
   </style>
 </head>
 <body>
@@ -26,7 +35,33 @@
       <% } %>
       <h1 class="booking-title"><%= tenant.name %></h1>
       <p class="booking-subtitle">Book your appointment</p>
+      <div style="margin-top:10px">
+        <a href="/queue/<%= tenant.slug %>" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--primary);text-decoration:none;border:1px solid var(--primary);border-radius:20px;padding:6px 16px;transition:all .2s">
+          <span style="font-size:16px">&#128101;</span> Walk-in? Join the live queue
+        </a>
+      </div>
     </header>
+
+    <!-- Portfolio Gallery (shown on step 1 only) -->
+    <% if (typeof portfolio !== 'undefined' && portfolio.length > 0) { %>
+    <div x-show="step === 1">
+      <div class="portfolio-section">
+        <h2 class="portfolio-heading">Our Work</h2>
+        <div class="portfolio-scroll">
+          <% portfolio.forEach(photo => { %>
+            <div class="portfolio-thumb"
+                 onclick="bookThisCut(<%= photo.staff_id %>, <%= photo.service_id || 'null' %>)"
+                 title="<%= photo.caption ? photo.caption.replace(/'/g, '&#39;') : 'Book this cut' %>">
+              <img src="<%= photo.photo_url %>" alt="<%= photo.caption || 'Portfolio photo' %>">
+              <% if (photo.service_id) { %>
+                <div class="portfolio-thumb-badge">Book this cut</div>
+              <% } %>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+    <% } %>
 
     <!-- Progress -->
     <div class="progress-bar">
@@ -219,6 +254,38 @@
   <script>
     const SLUG = '<%= tenant.slug %>';
     const STAFF_SERVICES = <%- JSON.stringify(staffServices.map(ss => ({ staff_id: ss.staff_id, service_id: ss.service_id, price_override_cents: ss.price_override_cents || null, duration_override: ss.duration_override || null }))) %>;
+    const PORTFOLIO_STAFF = <%- JSON.stringify((typeof portfolio !== 'undefined' ? portfolio : []).map(p => ({ id: p.staff_id, name: '' }))) %>;
+    const SERVICES_DATA = <%- JSON.stringify((typeof services !== 'undefined' ? services : []).map(s => ({ id: s.id, name: s.name, duration_minutes: s.duration_minutes, price_cents: s.price_cents }))) %>;
+    const STAFF_DATA = <%- JSON.stringify((typeof staff !== 'undefined' ? staff : []).map(s => ({ id: s.id, name: s.display_name || (s.first_name + ' ' + s.last_name) }))) %>;
+
+    // "Book this cut" — pre-fill staff + service from portfolio tap, then jump to date step
+    function bookThisCut(staffId, serviceId) {
+      const wizard = Alpine.$data(document.querySelector('[x-data]'));
+      if (!wizard) return;
+
+      const staffMember = STAFF_DATA.find(s => s.id === staffId);
+      if (staffMember) {
+        wizard.staffId = staffMember.id;
+        wizard.staffName = staffMember.name;
+      }
+
+      if (serviceId) {
+        const svc = SERVICES_DATA.find(s => s.id === serviceId);
+        if (svc) {
+          const ss = STAFF_SERVICES.find(x => x.staff_id === staffId && x.service_id === serviceId);
+          wizard.serviceId = svc.id;
+          wizard.serviceName = svc.name;
+          wizard.serviceDuration = (ss && ss.duration_override) ? ss.duration_override : svc.duration_minutes;
+          wizard.servicePrice = (ss && ss.price_override_cents) ? ss.price_override_cents : svc.price_cents;
+          // Jump directly to date/time step
+          wizard.step = wizard.staffStep + 2;
+          return;
+        }
+      }
+
+      // No service linked — jump to service selection step
+      wizard.step = wizard.staffStep + 1;
+    }
 
     function bookingWizard() {
       const multiLoc = <%= locations.length > 1 ? 'true' : 'false' %>;

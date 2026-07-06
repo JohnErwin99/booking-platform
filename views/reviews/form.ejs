@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 16px 48px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 480px;
+    }
+    .brand {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .brand img {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      object-fit: contain;
+      margin-bottom: 8px;
+    }
+    .brand h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary, #F28C38);
+    }
+    .intro {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .intro h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .intro p {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    .booking-detail {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 0.875rem;
+      color: #475569;
+    }
+    .booking-detail strong { color: #1e293b; }
+
+    /* Star Rating */
+    .star-group {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 8px 0 20px;
+      flex-direction: row-reverse;
+    }
+    .star-group input[type="radio"] { display: none; }
+    .star-group label {
+      font-size: 2.2rem;
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: color .15s, transform .1s;
+      line-height: 1;
+    }
+    .star-group input[type="radio"]:checked ~ label,
+    .star-group label:hover,
+    .star-group label:hover ~ label {
+      color: #F59E0B;
+      transform: scale(1.15);
+    }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #374151;
+    }
+    textarea {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      resize: vertical;
+      color: #1e293b;
+      transition: border-color .2s;
+    }
+    textarea:focus { outline: none; border-color: var(--primary, #F28C38); }
+    input[type="file"] {
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 12px 14px;
+      width: 100%;
+      font-size: 0.875rem;
+      color: #64748b;
+      cursor: pointer;
+      background: #f8fafc;
+    }
+    .photo-hint {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: var(--primary, #F28C38);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+    .btn-submit:active { transform: scale(0.98); }
+    .error-msg {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.875rem;
+      margin-bottom: 16px;
+    }
+    .star-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 4px;
+      text-align: center;
+    }
+  </style>
+  <style>:root { --primary: <%= tenant.primary_color || '#F28C38' %>; }</style>
+</head>
+<body>
+  <div class="card">
+    <!-- Brand Header -->
+    <div class="brand">
+      <% if (tenant.logo_url) { %>
+        <img src="<%= tenant.logo_url %>" alt="<%= tenant.name %>">
+      <% } %>
+      <h1><%= tenant.name %></h1>
+    </div>
+
+    <!-- Intro -->
+    <div class="intro">
+      <h2>How was your experience?</h2>
+      <p>Your feedback means a lot to us.</p>
+    </div>
+
+    <!-- Booking Summary -->
+    <div class="booking-detail">
+      <strong><%= review.service_name %></strong> with <strong><%= review.staff_name %></strong>
+      <% if (review.booking_date) { %>
+        &nbsp;&middot;&nbsp;
+        <%= new Date(review.booking_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %>
+      <% } %>
+    </div>
+
+    <% if (error) { %>
+      <div class="error-msg"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/book/<%= tenant.slug %>/review/<%= review.review_token %>" enctype="multipart/form-data">
+
+      <!-- Star Rating -->
+      <div class="form-group">
+        <span class="star-label">Your Rating *</span>
+        <div class="star-group">
+          <input type="radio" id="s5" name="rating" value="5">
+          <label for="s5" title="5 stars">&#9733;</label>
+          <input type="radio" id="s4" name="rating" value="4">
+          <label for="s4" title="4 stars">&#9733;</label>
+          <input type="radio" id="s3" name="rating" value="3">
+          <label for="s3" title="3 stars">&#9733;</label>
+          <input type="radio" id="s2" name="rating" value="2">
+          <label for="s2" title="2 stars">&#9733;</label>
+          <input type="radio" id="s1" name="rating" value="1">
+          <label for="s1" title="1 star">&#9733;</label>
+        </div>
+      </div>
+
+      <!-- Comment -->
+      <div class="form-group">
+        <label for="comment">Your Comments (optional)</label>
+        <textarea name="comment" id="comment" rows="4" placeholder="Tell us about your experience..."><%= (typeof comment !== 'undefined' && comment) ? comment : '' %></textarea>
+      </div>
+
+      <!-- Photo Upload -->
+      <div class="form-group">
+        <label for="photo">Upload a Photo (optional)</label>
+        <input type="file" name="photo" id="photo" accept="image/*">
+        <p class="photo-hint">Show off your new look! Max 1MB. JPG, PNG, or WebP.</p>
+      </div>
+
+      <button type="submit" class="btn-submit">Submit Review</button>
+    </form>
+  </div>
+</body>
+</html>

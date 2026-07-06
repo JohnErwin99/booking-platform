@@ -36,6 +36,12 @@ router.get('/:slug', async (req, res, next) => {
     const staffServices = await db('staff_services')
       .where('tenant_id', tenant.id);
 
+    // Get active portfolio photos
+    const portfolio = await db('portfolio_photos')
+      .where({ tenant_id: tenant.id, is_active: true })
+      .orderBy('sort_order')
+      .orderBy('created_at', 'desc');
+
     res.render('booking/page', {
     layout: false,
       title: `Book with ${tenant.name}`,
@@ -44,6 +50,7 @@ router.get('/:slug', async (req, res, next) => {
       staff,
       services,
       staffServices,
+      portfolio,
       user: null,
       helpers: { formatPrice },
       flash: { error: [], success: [] }

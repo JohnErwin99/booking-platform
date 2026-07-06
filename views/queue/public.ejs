@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: <%= tenant.primary_color || '#F28C38' %>;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #F5F3FA;
+      color: #1A1A2E;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    .queue-card {
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 36px 28px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 12px 48px rgba(26,26,46,.08);
+      border: 1px solid rgba(232,223,208,.4);
+    }
+    .queue-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .queue-logo {
+      max-height: 56px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+    }
+    .queue-biz-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #1A1A2E;
+      margin-bottom: 2px;
+    }
+    .queue-subtitle {
+      font-size: .85rem;
+      color: #9CA3AF;
+    }
+    .wait-info {
+      background: linear-gradient(135deg, rgba(242,140,56,.08), rgba(242,140,56,.04));
+      border: 1.5px solid rgba(242,140,56,.25);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .wait-count {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .wait-label {
+      font-size: .88rem;
+      color: #6B7280;
+    }
+    .wait-time {
+      display: inline-block;
+      background: rgba(26,26,46,.06);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #1A1A2E;
+      margin-top: 8px;
+    }
+    .section-title {
+      font-size: .75rem;
+      font-weight: 700;
+      color: #9CA3AF;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 16px;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 600;
+      color: #6B7280;
+      margin-bottom: 5px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: .9rem;
+      color: #1A1A2E;
+      background: #fff;
+      outline: none;
+      transition: border-color .2s;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--primary);
+    }
+    .form-group select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+    .btn-join {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), #e07b28);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+      box-shadow: 0 4px 16px rgba(242,140,56,.3);
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .btn-join:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(242,140,56,.35);
+    }
+    .error-banner {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: .85rem;
+      color: #EF4444;
+      margin-bottom: 16px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid #F0EBE3;
+      margin: 22px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="queue-card">
+    <!-- Header -->
+    <div class="queue-header">
+      <% if (tenant.logo_url) { %>
+        <img src="<%= tenant.logo_url %>" alt="<%= tenant.name %>" class="queue-logo">
+      <% } %>
+      <div class="queue-biz-name"><%= tenant.name %></div>
+      <div class="queue-subtitle">Walk-In Queue</div>
+    </div>
+
+    <% if (typeof locals.query !== 'undefined' && locals.query && locals.query.error === 'name_required') { %>
+      <div class="error-banner">Please enter your name to join the queue.</div>
+    <% } %>
+
+    <!-- Current Wait Info -->
+    <div class="wait-info">
+      <div class="wait-count"><%= queueLength %></div>
+      <div class="wait-label"><%= queueLength === 1 ? 'person' : 'people' %> in queue</div>
+      <% if (estimatedWait > 0) { %>
+        <div class="wait-time">~<%= estimatedWait %> min estimated wait</div>
+      <% } else { %>
+        <div class="wait-time">No wait — you'd be first!</div>
+      <% } %>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Join Form -->
+    <p class="section-title">Join the Queue</p>
+    <form method="POST" action="/queue/<%= tenant.slug %>/join">
+      <div class="form-group">
+        <label>Your Name *</label>
+        <input type="text" name="customer_name" required placeholder="e.g. John Smith" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label>Phone Number (optional)</label>
+        <input type="tel" name="customer_phone" placeholder="e.g. 555-1234" autocomplete="tel">
+      </div>
+      <% if (services.length > 0) { %>
+      <div class="form-group">
+        <label>Service Wanted (optional)</label>
+        <select name="service_name">
+          <option value="">— Choose a service —</option>
+          <% services.forEach(s => { %>
+            <option value="<%= s.name %>"><%= s.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <% } %>
+      <% if (staffList.length > 0) { %>
+      <div class="form-group">
+        <label>Preferred Barber (optional)</label>
+        <select name="staff_id">
+          <option value="">— No preference —</option>
+          <% staffList.forEach(s => { %>
+            <option value="<%= s.id %>"><%= s.display_name || (s.first_name + ' ' + s.last_name) %></option>
+          <% }) %>
+        </select>
+      </div>
+      <% } %>
+      <button type="submit" class="btn-join">Join Queue &rarr;</button>
+    </form>
+  </div>
+</body>
+</html>

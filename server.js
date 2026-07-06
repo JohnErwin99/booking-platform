@@ -13,6 +13,8 @@ const { tenantResolver } = require('./middleware/tenantResolver');
 const cron = require('node-cron');
 const { verifyConnection, processEmailQueue } = require('./services/emailService');
 const { processReminders, processFollowups, autoCompleteConfirmed } = require('./services/notificationService');
+const { processRebookReminders } = require('./services/rebookService');
+const { processReviewRequests } = require('./services/reviewService');
 const { t } = require('./locales');
 
 const app = express();
@@ -124,6 +126,14 @@ app.get('/blog/dashboard-guide', (req, res) => res.render('blog/dashboard-guide'
 app.get('/blog/upgrading-your-plan', (req, res) => res.render('blog/upgrading-your-plan', { layout: false }));
 app.get('/blog/commission-free-salon-booking', (req, res) => res.render('blog/commission-free-salon-booking', { layout: false }));
 app.get('/blog/best-barber-booking-apps-canada', (req, res) => res.render('blog/best-barber-booking-apps-canada', { layout: false }));
+app.get('/blog/booking-software-cost-barbershops', (req, res) => res.render('blog/booking-software-cost-barbershops', { layout: false }));
+app.get('/blog/commission-vs-flat-rate-booking', (req, res) => res.render('blog/commission-vs-flat-rate-booking', { layout: false }));
+app.get('/blog/no-show-statistics-barbershops', (req, res) => res.render('blog/no-show-statistics-barbershops', { layout: false }));
+app.get('/blog/gen-z-booking-features-2026', (req, res) => res.render('blog/gen-z-booking-features-2026', { layout: false }));
+app.get('/blog/walk-in-queue-vs-appointments', (req, res) => res.render('blog/walk-in-queue-vs-appointments', { layout: false }));
+
+// About page
+app.get('/about', (req, res) => res.render('about', { layout: false }));
 
 // Resource pages
 app.get('/resources/community', (req, res) => res.render('resources/community', { layout: false }));
@@ -192,13 +202,24 @@ app.use('/admin', requireAuth, require('./routes/admin/locations'));
 app.use('/admin', requireAuth, require('./routes/admin/calendar'));
 app.use('/admin', requireAuth, require('./routes/admin/menu'));
 app.use('/admin', requireAuth, require('./routes/admin/share'));
+app.use('/admin', requireAuth, require('./routes/admin/portfolio'));
+app.use('/admin', requireAuth, require('./routes/admin/queue'));
+app.use('/admin', requireAuth, require('./routes/admin/rebook'));
+app.use('/admin', requireAuth, require('./routes/admin/reviews'));
 
 // Mobile API routes (JWT auth)
 app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/mobile', require('./routes/api/mobile'));
 
 // Public booking routes (no auth, tenant from slug)
+app.use('/book', require('./routes/public/reviews'));
 app.use('/book', require('./routes/public/booking'));
+
+// Walk-in queue (public)
+app.use('/queue', require('./routes/public/queue'));
+
+// Portfolio API (public)
+app.use('/api', require('./routes/public/portfolio'));
 
 // Stripe checkout & webhook routes (must be before slug-based /api/:slug routes)
 app.use('/api', require('./routes/public/checkout'));
@@ -259,7 +280,9 @@ app.listen(PORT, async () => {
   cron.schedule('0 * * * *', processFollowups);
   cron.schedule('*/10 * * * *', autoCompleteConfirmed);
   cron.schedule('*/15 * * * *', processEmailQueue);
-  console.log('  Cron jobs:       reminders (15min), follow-ups (1hr)\n');
+  cron.schedule('0 * * * *', processRebookReminders);
+  cron.schedule('0 * * * *', processReviewRequests);
+  console.log('  Cron jobs:       reminders (15min), follow-ups (1hr), rebook & reviews (1hr)\n');
 });
 
 module.exports = app;

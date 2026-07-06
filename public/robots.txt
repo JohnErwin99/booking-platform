@@ -19,3 +19,7 @@ User-agent: Google-Extended
 Allow: /
 
 Sitemap: https://bookwizeapp.com/sitemap.xml
+
+# AI model context file
+# See https://llmstxt.org/
+LLMs-Txt: https://bookwizeapp.com/llms.txt

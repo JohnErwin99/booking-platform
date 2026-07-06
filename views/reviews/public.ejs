@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+    .page-header {
+      background: var(--primary, #F28C38);
+      color: #fff;
+      padding: 32px 20px 28px;
+      text-align: center;
+    }
+    .page-header img {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      object-fit: contain;
+      background: rgba(255,255,255,.15);
+      padding: 4px;
+      margin-bottom: 10px;
+    }
+    .page-header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+    .page-header p { font-size: 0.9rem; opacity: .85; }
+    .summary-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: #fff;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .avg-rating {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary, #F28C38);
+    }
+    .avg-stars { font-size: 1.2rem; color: #F59E0B; letter-spacing: 2px; }
+    .review-count { font-size: 0.9rem; color: #64748b; }
+    .container { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .review-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .review-photo {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+    .review-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .review-stars { font-size: 1.1rem; color: #F59E0B; letter-spacing: 1px; }
+    .review-comment {
+      font-size: 0.875rem;
+      color: #374151;
+      line-height: 1.6;
+      flex: 1;
+    }
+    .review-meta { font-size: 0.78rem; color: #94a3b8; }
+    .review-meta strong { color: #64748b; font-weight: 600; }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+    .empty-state p { font-size: 1rem; }
+    .book-cta {
+      text-align: center;
+      margin-top: 32px;
+    }
+    .book-cta a {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--primary, #F28C38);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .book-cta a:hover { opacity: 0.88; }
+    :root { --primary: <%= tenant.primary_color || '#F28C38' %>; }
+  </style>
+</head>
+<body>
+  <!-- Page Header -->
+  <div class="page-header">
+    <% if (tenant.logo_url) { %>
+      <img src="<%= tenant.logo_url %>" alt="<%= tenant.name %>">
+    <% } %>
+    <h1>Reviews — <%= tenant.name %></h1>
+    <p>Real feedback from real clients</p>
+  </div>
+
+  <!-- Summary Bar -->
+  <% if (totalReviews > 0) { %>
+    <div class="summary-bar">
+      <span class="avg-rating"><%= avgRating %></span>
+      <div>
+        <div class="avg-stars">
+          <% const avg = parseFloat(avgRating); for (let i = 1; i <= 5; i++) { %>
+            <%= i <= Math.round(avg) ? '★' : '☆' %>
+          <% } %>
+        </div>
+        <div class="review-count"><%= totalReviews %> verified review<%= totalReviews !== 1 ? 's' : '' %></div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Reviews Grid -->
+  <div class="container">
+    <% if (reviews.length === 0) { %>
+      <div class="empty-state">
+        <p>No reviews yet — be the first to leave one!</p>
+      </div>
+    <% } else { %>
+      <div class="reviews-grid">
+        <% reviews.forEach(r => { %>
+          <div class="review-card">
+            <% if (r.photo_url) { %>
+              <img src="<%= r.photo_url %>" alt="Review photo" class="review-photo">
+            <% } %>
+            <div class="review-body">
+              <div class="review-stars">
+                <% for (let i = 1; i <= 5; i++) { %><%= i <= r.rating ? '★' : '☆' %><% } %>
+              </div>
+              <% if (r.comment) { %>
+                <div class="review-comment">"<%= r.comment %>"</div>
+              <% } %>
+              <div class="review-meta">
+                <strong><%= r.service_name %></strong> with <strong><%= r.staff_name %></strong><br>
+                <%= new Date(r.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <div class="book-cta">
+      <a href="/book/<%= tenant.slug %>">Book an Appointment</a>
+    </div>
+  </div>
+</body>
+</html>
