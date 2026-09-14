@@ -17,6 +17,12 @@
       <p class="subtitle">Free 14-day trial. No credit card needed.</p>
       <%- include('../partials/flash') %>
       <form method="POST" action="/admin/signup">
+        <input type="hidden" name="signup_ts" value="<%= signupTs %>">
+        <input type="hidden" name="signup_sig" value="<%= signupSig %>">
+        <div style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true">
+          <label>Website</label>
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
         <div class="form-group">
           <label>Business Name</label>
           <input type="text" name="business_name" placeholder="e.g. Faded Studio" required>

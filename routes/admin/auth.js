@@ -2,8 +2,23 @@ const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const rateLimit = require('express-rate-limit');
+const crypto = require('crypto');
 const db = require('../../config/database');
 const { slugify } = require('../../utils/helpers');
+const { normalizeEmail, scoreSignup } = require('../../utils/spamCheck');
+
+const SIGNUP_HMAC_SECRET = process.env.SESSION_SECRET || 'change-this-secret';
+const signSignupTs = (ts) =>
+  crypto.createHmac('sha256', SIGNUP_HMAC_SECRET).update(String(ts)).digest('hex');
+
+// Silent rejection: pretend success so bots can't tell they were filtered
+function fakeSuccess(req, res, email, reason) {
+  console.warn(`Signup blocked (${reason}):`, JSON.stringify({
+    email, ip: req.ip, business_name: req.body.business_name,
+  }));
+  req.flash('success', `Welcome! A confirmation email has been sent to ${email}. Please check your inbox or spam folder.`);
+  return res.redirect('/admin/signup');
+}
 const { sendEmail } = require('../../services/emailService');
 const router = express.Router();
 
@@ -80,11 +95,14 @@ router.get('/logout', (req, res, next) => {
 // GET /admin/signup
 router.get('/signup', (req, res) => {
   if (req.isAuthenticated()) return res.redirect('/admin/bookings');
+  const signupTs = Date.now();
   res.render('admin/signup', {
     layout: false,
     title: 'Start Free Trial — Bookwize',
     user: null,
     tenant: null,
+    signupTs,
+    signupSig: signSignupTs(signupTs),
     flash: { error: req.flash('error'), success: req.flash('success') }
   });
 });
@@ -99,13 +117,41 @@ router.post('/signup', signupLimiter, async (req, res, next) => {
       return res.redirect('/admin/signup');
     }
 
+    // Honeypot: real users never see or fill this field
+    if (req.body.website) {
+      return fakeSuccess(req, res, email, 'honeypot');
+    }
+
+    // Timing check: a signed timestamp proves the form was rendered by us,
+    // and humans take more than 3 seconds to fill 5 fields
+    const ts = parseInt(req.body.signup_ts, 10);
+    const sig = req.body.signup_sig || '';
+    const elapsed = Date.now() - ts;
+    if (!ts || sig !== signSignupTs(ts) || elapsed < 3000 || elapsed > 2 * 60 * 60 * 1000) {
+      req.flash('error', 'Something went wrong. Please try again.');
+      return res.redirect('/admin/signup');
+    }
+
     if (password.length < 6) {
       req.flash('error', 'Password must be at least 6 characters.');
       return res.redirect('/admin/signup');
     }
 
-    // Check if email already exists
-    const existingUser = await db('users').where('email', email.toLowerCase().trim()).first();
+    // Heuristic spam scoring (gibberish names, disposable domains, etc.)
+    const { score, reasons } = scoreSignup({ business_name, first_name, last_name, email });
+    if (score >= 3) {
+      return fakeSuccess(req, res, email, `spam score ${score}: ${reasons.join(', ')}`);
+    }
+    if (score > 0) {
+      console.warn(`Signup flagged (score ${score}: ${reasons.join(', ')}):`, email);
+    }
+
+    // Check if email already exists (normalized: catches gmail dot/+ variants)
+    const emailNorm = normalizeEmail(email);
+    const existingUser = await db('users')
+      .where('email', email.toLowerCase().trim())
+      .orWhere('email_normalized', emailNorm)
+      .first();
     if (existingUser) {
       req.flash('error', 'An account with this email already exists.');
       return res.redirect('/admin/signup');
@@ -148,6 +194,7 @@ router.post('/signup', signupLimiter, async (req, res, next) => {
     await db('users').insert({
       tenant_id: tenantId,
       email: email.toLowerCase().trim(),
+      email_normalized: emailNorm,
       password_hash: passwordHash,
       first_name,
       last_name,
@@ -202,15 +249,15 @@ router.post('/signup', signupLimiter, async (req, res, next) => {
         <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:560px;margin:0 auto;padding:32px 24px;color:#1e293b">
           <h2 style="text-align:center;color:#F28C38;margin-bottom:24px">Welcome to Bookwize!</h2>
           <div style="background:#f8fafc;border-radius:16px;padding:24px;line-height:1.7">
-            <p>Hi ${first_name},</p>
-            <p>Your 14-day free trial for <strong>${business_name}</strong> is now active!</p>
+            <p>Hi there,</p>
+            <p>Your 14-day free trial is now active!</p>
             <p><strong>Dashboard:</strong> <a href="${baseUrl}/admin/login">${baseUrl}/admin/login</a></p>
             <p><strong>Booking Page:</strong> <a href="${baseUrl}/book/${slug}">${baseUrl}/book/${slug}</a></p>
             <p>Log in to complete your setup and start accepting bookings.</p>
             <p>Welcome aboard!<br>The Bookwize Team</p>
           </div>
         </div>`,
-      text: `Hi ${first_name},\n\nYour 14-day free trial for "${business_name}" is active!\n\nDashboard: ${baseUrl}/admin/login\nBooking Page: ${baseUrl}/book/${slug}\n\nWelcome aboard!\nThe Bookwize Team`
+      text: `Hi there,\n\nYour 14-day free trial is active!\n\nDashboard: ${baseUrl}/admin/login\nBooking Page: ${baseUrl}/book/${slug}\n\nWelcome aboard!\nThe Bookwize Team`
     }).catch(err => console.error('Welcome email failed:', err.message));
 
     // Auto-login the new user
